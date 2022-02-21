@@ -9,15 +9,12 @@ import { useRead_Service_Cus_Pet } from 'hooks/ajax_crud/useAjax_Read'
 import {useDispatch, useSelector} from "react-redux";
 
 // Redux
-import { set_Current_Beautician } from 'store/actions/action_Beautician'
-
-
+import { set_Current_Beautician } from 'store/actions/action_Beautician' ;
 import axios from "utils/axios" ;
 import cookie from "react-cookies";
-
-
 import moment from "moment";
 
+import { get_Service_Records_By_Date } from "store/actions/action_Service"
 
 
 /* @ 美容師頁面  */
@@ -25,28 +22,33 @@ const Beautician = () => {
 
     const dispatch = useDispatch();
 
+    // 取得 _ 今日 : 服務資料
+    const service_Records_By_Date = useSelector( ( state : any ) => state.Service.service_Records_By_Date ) ;
+
+
     // 所有美容師資料
     const [ beauticians , set_Beauticians ] = useState<any[]>([]) ;
-
 
     // 使用者類別 ( Ex. 櫃台、美容 .... )
     const [ userInfo , set_UserInfo ] = useState<any>( {} ) ;
 
     // 目前所點選寵物
-    const Current_Pet = useSelector( ( state : any ) => state.Beautician.Current_Pet ) ;
+    const Current_Pet         = useSelector( ( state : any ) => state.Beautician.Current_Pet ) ;
+    const current_Pet_Id      = Current_Pet ? Current_Pet['pet_id'] : null ;
+
+    // 目前寵物是否已處理完畢
+    const Current_Pet_Is_Done = useSelector( ( state : any ) => state.Beautician.Current_Pet_Is_Done ) ;
 
     // 判斷是否有點選寵物
     const [ has_PetData , set_Has_PetData ] = useState(false) ;
 
-    // 取得資料 : 服務、客戶、寵物
-    const pet_Arr    = useRead_Service_Cus_Pet() ;
-
+    
     // 今日
-    const today = moment( new Date() ).format('YYYY-MM-DD' ) ;
+    const today   = moment( new Date() ).format('YYYY-MM-DD' ) ;
 
+    // 篩選出 _ 到店狀態( shop_status ) 為 : "到店等候中" & "到店美容中"
+    const shop_Wait  = service_Records_By_Date.filter( ( x:any ) => { return ( x['shop_status'] === '到店等候中' || x['shop_status'] === '到店美容中' )  ;  } ) ;
 
-    // 篩選出 _ 到店狀態( shop_status ) 為 : "到店等候中" ( 之後加上 "今天" 2021.06.15 )
-    const shop_Wait  = pet_Arr.filter( x => { return ( x['shop_status'] === '到店等候中' || x['shop_status'] === '到店美容中' ) && x['service_date'] === today  ;  } ) ;
 
     // 點選 _ 美容師姓名
     const click_Beautician = ( beautician : string ) => {
@@ -61,11 +63,11 @@ const Beautician = () => {
 
 
     // 設定 _ 判斷是否有點選寵物狀態
-    useEffect(( ) => {
+    useEffect( ( ) => {
 
-        set_Has_PetData(Current_Pet['pet_id'] ? true : false ) ;
+        set_Has_PetData( current_Pet_Id ? true : false ) ;
 
-    } ,[ Current_Pet['pet_id'] ] ) ;
+    } ,[ current_Pet_Id ] ) ;
 
 
     // 設定 _ Cookie
@@ -87,7 +89,7 @@ const Beautician = () => {
 
 
     // 取得 _ 美容師資料
-    useEffect(( ) : any => {
+    useEffect( () : any => {
 
        let is_Mounted = true ;
 
@@ -99,11 +101,39 @@ const Beautician = () => {
              set_Beauticians( beauticianArr ) ;
           }
 
+       }).catch( error => {
+
+          // console.error( error.response.data ) ; // 顯示詳細錯誤訊息
+     
        }) ;
 
        return () => is_Mounted = false
 
     } , [] ) ;
+
+
+    // 每隔 5 秒取得資料，以美容師資料與櫃台新增資料一致
+    useEffect( () => { 
+
+      let is_Mounted    = true ;   
+        
+      const get_Records = setInterval( () => {
+          
+                      if( is_Mounted ) dispatch( get_Service_Records_By_Date( today ) ) ;
+                    
+                    } , 5000  ) 
+
+      return () => {
+
+                     is_Mounted = false ;
+
+                     clearInterval( get_Records )   // 元件掛載前，先清除 setInterval
+
+                   } 
+
+    } , [ ] ) ;
+
+
 
     return <div className="relative" style={{ top:"-40px" }}>
 
@@ -134,18 +164,19 @@ const Beautician = () => {
 
                     { /* 告知主人、主人確認 */}
                     <div className="column is-4-desktop relative">
-                        <Inform_Cutomer />
+                         <Inform_Cutomer />
                     </div>
 
                     { /* 左側 : 等待中、處理中 面板 */}
                     <div className="column is-3-desktop relative">
-                        <Left_Cards pet_Arr={ shop_Wait } />
+                         <Left_Cards pet_Arr={ shop_Wait } />
                     </div>
+
                     { /* 右側 : 主要面板 */}
-                    { has_PetData &&
+                    { ( has_PetData && !Current_Pet_Is_Done ) &&
 
                        <div className="column is-9-desktop relative">
-                         <Main_Card/>
+                          <Main_Card/>
                        </div>
 
                     }

@@ -79,6 +79,8 @@
   },
   "devDependencies": {
     "identity-obj-proxy": "^3.0.0",
+    "react-app-rewired": "^2.1.8",
+    "sass": "^1.49.8",
     "ts-jest": "^26.5.6"
   }
 }

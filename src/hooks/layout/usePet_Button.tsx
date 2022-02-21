@@ -31,6 +31,8 @@ const usePet_Button = ( pets : any[] ) => {
         pet_Button = pets.map( ( x , y) => {
 
 
+            if( !x ) return null 
+
             return  <span key = { y }
                           className = "tag is-medium relative m_Right_20 pointer"
                           style = {{ paddingTop:"4px" }}

@@ -1,4 +1,4 @@
-import React, { FC , useEffect , useState } from "react" ;
+import { FC } from "react" ;
 import { Edit_Form_Type } from "utils/Interface_Type"
 import useSection_Folding from "hooks/layout/useSection_Folding";
 import { useSelector } from "react-redux";
@@ -13,16 +13,19 @@ interface IBath extends Edit_Form_Type {
 
 
 /* 洗澡單選項 */
-const Bath_Form : FC< IBath > = ( { register , errors  , current , editType, serviceData } ) => {
+const Bath_Form : FC< IBath > = ( { register , current , editType, serviceData } ) => {
+
 
     // 洗澡價格
-    const price = useSelector(( state:any ) => state.Bath.Bath_Price ) ;
+    const price = useSelector( ( state : any ) => state.Bath.Bath_Price ) ;
 
     // 服務類型
-    const type  = useSelector(( state:any ) => state.Service.current_Create_Service_Type ) ;
+    const type  = useSelector( ( state : any ) => state.Service.current_Create_Service_Type ) ;
+    
 
+    // 收折區塊
+    const { is_folding , Folding_Bt } = useSection_Folding( false ) ; 
 
-    const { is_folding , Folding_Bt } = useSection_Folding( false ) ;  // 收折區塊
 
     return <>
 
@@ -30,28 +33,28 @@ const Bath_Form : FC< IBath > = ( { register , errors  , current , editType, ser
 
                     <div className="column is-2-desktop">
 
-                        <b className="tag is-large is-success"> <i className="fas fa-bath"></i> &nbsp; 洗 澡
+                        <b className="tag is-large is-success"> 
+                        
+                            <i className="fas fa-bath"></i> &nbsp; 洗 澡
 
                             { /* 顯示 : 洗澡價格 */ }
-
+   
                             { /* for 新增 */ }
-                            { ( price !== 0 && editType !== '編輯' ) &&
+                            { ( price !== 0 && !editType && current === '洗澡' ) &&
 
                                 <>
-                                    &nbsp;&nbsp;
-                                    <b className="tag is-rounded is-white" style={{ fontSize : "12pt" }} > 小計 : <span style={{color:"red"}}> &nbsp; { price } &nbsp; </span> 元 </b>
-                                    &nbsp;&nbsp;
+                                    <b className="tag is-rounded is-white m_Left_10 m_Right_10 f_12" > 小計 : <span style={{color:"red"}} > &nbsp; { price } &nbsp; </span> 元 </b>
                                     { type && <span> ( { type } ) </span> }
                                 </>
 
                             }
 
                             { /* for 編輯 */ }
-                            { ( editType === '編輯' && current === '洗澡' ) &&
-
-                                <>
-                                    &nbsp;&nbsp;
-                                    <b className="tag is-rounded is-white" style={{ fontSize : "12pt" }} > 小計 : <span style={{color:"red"}}> &nbsp; { serviceData.bath_fee } &nbsp; </span> 元 </b>
+                            { ( editType && serviceData.payment_method === '現金' &&  current === '洗澡' ) &&
+                         
+                                <>  
+                                   <b className="tag is-rounded is-white f_12 m_Left_10 m_Right_10" > 小計 : <span style={{color:"red"}}> &nbsp; { serviceData.bath_fee } &nbsp; </span> 元 </b>
+                                   ( { serviceData.payment_type } )   
                                 </>
 
                             }
@@ -80,8 +83,8 @@ const Bath_Form : FC< IBath > = ( { register , errors  , current , editType, ser
 
                 </div>
 
-                { /* 是否收折 : 客戶資料 */ }
-                { is_folding ||
+                { /* 新增 */ }
+                { ( !is_folding && editType === undefined ) &&
 
                     <>
 
@@ -98,6 +101,7 @@ const Bath_Form : FC< IBath > = ( { register , errors  , current , editType, ser
                             </div>
 
                             <div className="column is-2-desktop"><b className="tag is-light is-large"> 第二次洗澡 </b></div>
+
                             <div className="column is-10-desktop">
                                 <input type="radio" value="第一道"  {...register("bath_Option_2")} /> 第一道  &nbsp; &nbsp;
                                 <input type="radio" value="伊斯特除蚤_皮膚"  {...register("bath_Option_2")} /> 伊斯特除蚤_皮膚 &nbsp; &nbsp;
@@ -112,12 +116,15 @@ const Bath_Form : FC< IBath > = ( { register , errors  , current , editType, ser
                             </div>
 
                             <div className="column is-2-desktop"><b className="tag is-light is-large"> 第一次浸泡 </b></div>
+
                             <div className="column is-10-desktop">
                                 <input type="radio" value="滴食鹽水"  {...register("bath_Option_3")} /> 滴食鹽水 &nbsp; &nbsp;
                             </div>
 
-                            <div className="column is-2-desktop"><b className="tag is-light is-large"> 第三次洗澡 </b> <br/> <span
-                                className="fDred"> ( 必要時 或 重洗 ) </span></div>
+                            <div className="column is-2-desktop"><b className="tag is-light is-large"> 第三次洗澡 </b> <br/>
+                               <span className="fDred"> ( 必要時 或 重洗 ) </span>
+                            </div>
+
                             <div className="column is-10-desktop">
                                 <input type="radio" value="第一道"  {...register("bath_Option_4")} /> 第一道  &nbsp; &nbsp;
                                 <input type="radio" value="伊斯特除蚤_皮膚"  {...register("bath_Option_4")} /> 伊斯特除蚤_皮膚  &nbsp; &nbsp;
@@ -130,11 +137,13 @@ const Bath_Form : FC< IBath > = ( { register , errors  , current , editType, ser
                             </div>
 
                             <div className="column is-2-desktop"><b className="tag is-light is-large"> 第二次浸泡 </b></div>
+
                             <div className="column is-10-desktop">
                                 <input type="radio" value="滴食鹽水"  {...register("bath_Option_5")} /> 滴食鹽水  &nbsp; &nbsp;
                             </div>
 
                             <div className="column is-2-desktop"><b className="tag is-light is-large"> 烘 乾 </b></div>
+                            
                             <div className="column is-10-desktop">
                                 <input type="radio" value="進烘箱" {...register("bath_Option_6")} /> 進烘箱  &nbsp; &nbsp;
                                 <input type="radio" value="手吹"  {...register("bath_Option_6")} /> 手吹 &nbsp; &nbsp;
@@ -147,9 +156,54 @@ const Bath_Form : FC< IBath > = ( { register , errors  , current , editType, ser
 
                 }
 
+
+                { /* 編輯 */ }
+                { ( !is_folding && editType === '編輯' ) &&
+
+                   <>
+
+                      <div className="column is-12-desktop"> 
+                          <b className="tag is-light is-large"> 第一次洗澡 </b> 
+                          &nbsp; <b className="tag is-large is-white fDblue" > { serviceData.bath_1 ? serviceData.bath_1 : "無" } </b>
+                      </div>
+                     
+                      <div className="column is-12-desktop">
+                          <b className="tag is-light is-large"> 第二次洗澡 </b>
+                          &nbsp; <b className="tag is-large is-white fDblue" > { serviceData.bath_2 ? serviceData.bath_2 : "無" } </b>
+                      </div>
+
+                      <div className="column is-12-desktop">
+                          <b className="tag is-light is-large"> 第一次浸泡 </b>
+                          &nbsp; <b className="tag is-large is-white fDblue" > { serviceData.bath_3 ? serviceData.bath_3 : "無" } </b>
+                      </div>
+
+                      <div className="column is-12-desktop">
+                          <b className="tag is-light is-large"> 第三次洗澡 </b>
+                          &nbsp; <b className="tag is-large is-white fDblue" > { serviceData.bath_4 ? serviceData.bath_4 : "無" } </b>
+                          <br/> <span className="fDred"> ( 必要時 或 重洗 ) </span>
+                      </div>
+                   
+                      <div className="column is-12-desktop">
+                          <b className="tag is-light is-large"> 第二次浸泡 </b>
+                          &nbsp; <b className="tag is-large is-white fDblue" > { serviceData.bath_5 ? serviceData.bath_5 : "無" } </b>
+                      </div>
+                   
+                      <div className="column is-12-desktop">
+                          <b className="tag is-light is-large"> 烘 乾 </b>
+                          &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;
+                           <b className="tag is-large is-white fDblue" > { serviceData.bath_6 ? serviceData.bath_6 : "無" } </b>
+                      </div>
+                   
+                   </>        
+                    
+                } 
+
                 <br/><hr/><br/>
 
            </>
 } ;
 
-export default React.memo( Bath_Form , () => true ) ;
+
+
+// export default React.memo( Bath_Form , () => true ) ;
+ export default Bath_Form ;

@@ -11,6 +11,8 @@ interface IBeautician {
     Current_Beautician    : string ;  // 目前處理美容師姓名
     Current_Pet           : any ;     // 美容師目前所點選寵物
 
+    Current_Pet_Is_Done   : boolean ; // 目前寵物已處理完畢
+
 }
 
 const initState = {
@@ -35,6 +37,8 @@ const initState = {
 
                              } ,  // 所點選寵物
 
+    Current_Pet_Is_Done    : false
+
 } ;
 
 
@@ -51,6 +55,11 @@ const reducer_Beautician = ( state : IBeautician = initState , action : any ) =>
 
         // # 設定 _ 資料庫中，某服務單，已有的點選時間紀錄
         case  "SET_EXISTING_TIME_RECORDS" : return { ...state , Existing_Time_Records : action.Existing_Time_Records } ;
+
+
+        // # 設定 _ 所點選 : 寵物 --> 已處理完畢
+        case  "SET_CURRENT_PET_IS_DONE" : return { ...state , Current_Pet_Is_Done : action.Current_Pet_Is_Done } ;
+
 
         default : return state ;
 

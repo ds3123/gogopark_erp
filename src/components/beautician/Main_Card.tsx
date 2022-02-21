@@ -8,8 +8,7 @@ import Bath_Time_Records from "components/beautician/main_components/Bath_Time_R
 { /* 右側 : 主要面板  */ }
 const Main_Card = () => {
 
-
-
+  
    return <div className="card p_10" style={{ height : "auto" }} > <br/>
 
             { /* ------------- 寵物基本資訊 --------------- */ }

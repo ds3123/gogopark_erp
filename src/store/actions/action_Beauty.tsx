@@ -10,11 +10,11 @@ export const set_Beauty_Price = ( price : number | string ) => {
 
     return ( dispatch : Dispatch ) => {
 
-        dispatch({
-            type  : "SET_BEAUTY_PRICE" ,
-            price : price
-        }) ;
+                dispatch({
+                    type  : "SET_BEAUTY_PRICE" ,
+                    price : price
+                }) ;
 
-    } ;
+           } ;
 
 } ;

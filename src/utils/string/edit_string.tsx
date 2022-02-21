@@ -6,10 +6,13 @@ import React from "react" ;
 
 
 // 擷取 _ 長字串 ( ... )
-export const string_Short = ( str : string ) : string => {
+export const string_Short = ( str : string , length? : number ) : string => {
 
-    if(  str.length > 3 )  return str.slice(0,3) +'...' ;
+    if( !length && str.length > 3 )  return str.slice(0,3) +'...' ;
 
-    return str ;
+    if( length ) return str.length > length ? str.slice(0,length) +'...' : str
+
+    return str
+
 
 };

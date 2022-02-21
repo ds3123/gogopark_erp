@@ -1,10 +1,10 @@
 
-import React, { FC , useEffect , useState} from "react"
+import { FC , useEffect , useState } from "react"
 import { get_Interval_Dates, get_Week_Day , get_InUse_Days ,  get_Date_Type , get_Date_Cal } from "utils/time/date";
 import { ILodge , room_Type } from 'utils/Interface_Type'
 import { ILodge_Data } from "utils/Interface_Type";
 import moment from  "moment";
-
+import { useSelector } from "react-redux"
 
 
 // 房間 ( 房型 / 房號 )
@@ -57,18 +57,51 @@ const national_Holidays_Setting = [
 
 
 
-{ /* @ 住宿查詢、 */ }
-const Lodge_Query : FC<ILodge> = ({  lodgeType ,lodgeNumber , lodgeCheckIn_Date , lodgeCheckOut_Date , lodgeData } ) => {
+const lodgeData : ILodge_Data[] = [
 
-    const [ lodge_Numbers , set_Lodge_Numbers ]               = useState<string[]>( [] ) ; // 房型變動時，取得設定 : 所有房號
+    {
+        title       : 'A01 ( 大房 ) - 招財 ( 秋田犬 )' ,
+        startDate   : new Date(2022 ,1 , 1 ) ,
+        endDate     : new Date(2022 ,1 , 3 ) ,
+        lodgeType   : '大房' ,
+        lodgeNumber : 'A01'
+    } ,
+
+    {
+        title       : 'A02 ( 大房 ) - DDD ( 獒犬 )' ,
+        startDate   : new Date(2022 ,1 , 5 ) ,
+        endDate     : new Date(2022 ,1 , 6 ) ,
+        lodgeType   : '大房' ,
+        lodgeNumber : 'A02'
+    } ,
+
+] ;
+
+
+
+{ /* @ 住宿查詢、 */ }
+const Lodge_Query : FC<ILodge> = () => {
+    
+   
+    // const lodgeData      = useSelector( ( state : any ) => state.Lodge.lodge_Reservation_Data ) ;  // 已住房資料
+   
+    // # 目前欄位所選擇 :
+    const lodgeType      = useSelector( ( state : any ) => state.Lodge.current_Lodge_Type ) ;   // 房型 ( 下拉 )
+    const lodgeNumber    = useSelector( ( state : any ) => state.Lodge.current_Lodge_Number ) ; // 房號 ( 下拉 ) 
+
+    const check_In_Date  = useSelector( ( state : any ) => state.Lodge.lodge_Check_In_Date ) ;  // 住房日期
+    const check_Out_Date = useSelector( ( state : any ) => state.Lodge.lodge_Check_Out_Date ) ; // 退房日期
+
+
+    const [ lodge_Numbers , set_Lodge_Numbers ]               = useState<string[]>( [] ) ;      // 房型變動時，取得設定 : 所有房號
 
     const [ currentNumber_InUse , set_CurrentNumber_InUse ]   = useState<any[]>([]) ; // 所選擇的房號 _ 已被使用天數
     const [ current_Available , set_Current_Available ]       = useState<any[]>([]) ; // 所選擇的房號 _ 可被使用天數
 
     // 調整 _ 狀態為 ' 已使用' 房間的資訊 :
-    const [ currentAdjust_Date , set_CurrentAdjust_Date ]     = useState('') ; // 日期
-    const [ currentAdjust_Number , set_CurrentAdjust_Number ] = useState('') ; // 房號
-    const [ currentAdjust_Price , set_CurrentAdjust_Price ]   = useState(0) ;  // 價格
+    const [ currentAdjust_Date , set_CurrentAdjust_Date ]     = useState( '' ) ; // 日期
+    const [ currentAdjust_Number , set_CurrentAdjust_Number ] = useState( '' ) ; // 房號
+    const [ currentAdjust_Price , set_CurrentAdjust_Price ]   = useState( 0 ) ;  // 價格
 
 
     // 點選 : 確認修改
@@ -135,7 +168,6 @@ const Lodge_Query : FC<ILodge> = ({  lodgeType ,lodgeNumber , lodgeCheckIn_Date 
 
     } ;
 
-
     // 將 lodge_Rooms，轉換為僅包含房號的陣列
     const get_Lodge_Numbers = ( lodge_Rooms : ILodge_Rooms[]) => {
 
@@ -185,20 +217,16 @@ const Lodge_Query : FC<ILodge> = ({  lodgeType ,lodgeNumber , lodgeCheckIn_Date 
 
 
     // 取得 _ 所選擇房號、日期區段下日期 : 已使用、可使用
-    useEffect(( ) => {
+    useEffect( ( ) => {
 
         // 取得、設定 : 所有房號
         set_Lodge_Numbers( get_Lodge_Numbers( lodge_Rooms ) ) ;
 
         // 所選擇時間區段，所包含日期
         // 須先減 1 天 ( 再檢查 get_Interval_Dates 2021.06.28 )
-        const _lodgeCheckIn_Date = moment( get_Date_Cal( lodgeCheckIn_Date , -1 ) ).format('YYYY-MM-DD') ;
-        const _lodgeCheckOut_Date = moment( get_Date_Cal( lodgeCheckOut_Date , -1 ) ).format('YYYY-MM-DD') ;
-
-        const selected_Days = get_Interval_Dates(  _lodgeCheckIn_Date  , _lodgeCheckOut_Date ) ;
-
-
-
+        const _lodgeCheckIn_Date  = moment( get_Date_Cal( check_In_Date , -1 ) ).format('YYYY-MM-DD') ;
+        const _lodgeCheckOut_Date = moment( get_Date_Cal( check_Out_Date , -1 ) ).format('YYYY-MM-DD') ;
+        const selected_Days       = get_Interval_Dates(  _lodgeCheckIn_Date  , _lodgeCheckOut_Date ) ;
 
         // 先清空
         set_CurrentNumber_InUse([] ) ;
@@ -207,15 +235,14 @@ const Lodge_Query : FC<ILodge> = ({  lodgeType ,lodgeNumber , lodgeCheckIn_Date 
         // -------------------------------------------------------------
 
         // * 設定房間資料( 房號、其使用日期 ) --> 已在使用過的紀錄中
-        if( lodgeData.length > 0 ){
+        if( lodgeData && lodgeData.length > 0 ){
 
             let num  = 0 ;
 
-            lodgeData.forEach( x => {
+            lodgeData.forEach( ( x : any ) => {
 
                 // 所選擇房號，已有被使用紀錄
                 if( lodgeNumber && x['lodgeNumber'] === lodgeNumber ){
-
 
                     num += 1 ;
 
@@ -223,8 +250,8 @@ const Lodge_Query : FC<ILodge> = ({  lodgeType ,lodgeNumber , lodgeCheckIn_Date 
                     const days_InUse = get_InUse_Days( x['startDate'] , x['endDate'] ) ;
 
                     // 篩選 :
-                    const days_Selected_InUse    = selected_Days.filter(x => ( days_InUse.indexOf( x ) !== -1 ) ) ; // 已使用天數
-                    const days_Selected_Avaiable = selected_Days.filter(x => ( days_InUse.indexOf( x ) === -1 ) ) ; // 可使用天數
+                    const days_Selected_InUse    = selected_Days.filter( x => ( days_InUse.indexOf( x ) !== -1 ) ) ; // 已使用天數
+                    const days_Selected_Avaiable = selected_Days.filter( x => ( days_InUse.indexOf( x ) === -1 ) ) ; // 可使用天數
 
                     // 轉換 : 物件陣列
                     const arr_InUse    = days_Selected_InUse.map( x => ( { date : x , number : lodgeNumber , price : get_LodgeType_Price( x , lodgeType as room_Type , lodge_Price ) , isAvaiable : false } ) ) ;
@@ -244,13 +271,15 @@ const Lodge_Query : FC<ILodge> = ({  lodgeType ,lodgeNumber , lodgeCheckIn_Date 
                 set_Current_Available( arr_Avaiable ) ;  // 可使用天數
             }
 
+        
         }
 
-    } ,[ lodgeCheckIn_Date , lodgeCheckOut_Date , lodgeNumber ]) ;
+    } ,[ check_In_Date , check_Out_Date , lodgeNumber ]) ;
 
 
 
     return   <div className="columns is-multiline  is-mobile">
+
 
                <div className="column is-offset-1-desktop is-10-desktop">
 

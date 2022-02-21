@@ -5,6 +5,10 @@ import axios from "utils/axios";
 import moment from "moment";
 import {toast} from "react-toastify";
 
+import cookie from 'react-cookies'
+
+
+
 /*
 *    # 共 3 個階段 :
 *      1. 送交櫃台確認
@@ -26,18 +30,14 @@ const Customer_Confirm = ( ) => {
     // 目前所選擇的回覆訊息
     const [ current_Reply_Index , set_Current_Reply_Index ] = useState<number|string>( '' ) ;
 
-
     // 櫃台回覆內容
     const [ admin_Reply , set_Admin_Reply ] = useState( '') ;
-
 
     // 變動處理
     const handle_Change = ( reply : string ) => set_Admin_Reply( reply ) ;
 
-
     // 點選 _ 回覆美容師
     const click_Reply = ( index : number ) => set_Current_Reply_Index( index ) ;
-
 
 
     // 取得 _ 今日，所有美容師所發出的確認要求
@@ -45,20 +45,28 @@ const Customer_Confirm = ( ) => {
 
         const today = moment( new Date ).format('YYYY-MM-DD' ) ;
 
-        axios.get( `/customer_confirms/show_by_service_date/${ today }` ).then(res => {
+        if( today ){ 
 
-            if( res.data.length > 0 ){
+            axios.get( `/customer_confirms/show_by_service_date/${ today }` ).then( res => {
 
-                const in_Progress = res.data.filter( (x:any) => x['confirm_status'] === '櫃台確認中' ) ;
-                set_Customer_Confirm( in_Progress ) ;
+                if( res.data.length > 0 ){
 
-            }else{
+                    const in_Progress = res.data.filter( (x:any) => x['confirm_status'] === '櫃台確認中' ) ;
+                    set_Customer_Confirm( in_Progress ) ;
 
-                set_Customer_Confirm([] ) ;
+                }else{
 
-            }
+                    set_Customer_Confirm( [] ) ;
 
-        }) ;
+                }
+
+            }).catch( error => {
+
+                console.log( '函式 : get_Today_Beautician_Confirm_Requests，發生錯誤 ' ) ;
+        
+            });
+
+        }    
 
     } ;
 
@@ -106,9 +114,6 @@ const Customer_Confirm = ( ) => {
     } ;
 
 
-
-
-
     // 取得 _ 美容師請求訊息
     useEffect(() : any => {
 
@@ -119,6 +124,29 @@ const Customer_Confirm = ( ) => {
         return () => is_Mounted = false ;
 
     } ,[ customer_Confirm ] ) ;
+
+
+    // 設定 _ 目前櫃台人員
+    useEffect( ( ) : any => {
+
+
+
+        let is_Mounted = true ;
+
+
+        if( is_Mounted ){
+
+          // Cookie : 目前登入者資訊
+          const userInfo = cookie.load( 'userInfo' ) ;
+          set_Current_Admin( userInfo['employee_name'] ? userInfo['employee_name'] : userInfo['account'] ) ;
+
+        }
+
+        return () => is_Mounted = false ;
+
+
+
+    } , []) ;
 
 
        return <>

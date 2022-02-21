@@ -1,4 +1,4 @@
-import { IInfo , ICustomer , ICustomer_Individual , ICustomer_Relative , IPet } from "utils/Interface_Type" ;
+import { IInfo , ICustomer_Individual  , IPet } from "utils/Interface_Type" ;
 import moment from "moment" ;
 
 

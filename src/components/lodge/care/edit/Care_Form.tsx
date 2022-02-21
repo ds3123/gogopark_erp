@@ -1,4 +1,3 @@
-
 import React, {FC, useEffect, useState} from "react"
 import {Edit_Form_Type} from "utils/Interface_Type";
 import {useDispatch} from "react-redux";
@@ -8,9 +7,6 @@ import Time_Picker from "templates/form/Time_Picker";
 import { get_H_M , get_Cal_Hour_Time } from "utils/time/time"
 import moment from "moment";
 import Qcode_Select_Options from "components/services/edit_components/Qcode_Select_Options";
-
-
-
 
 interface ICare extends Edit_Form_Type {
 
@@ -128,15 +124,17 @@ const Care_Form : FC<ICare> = ({ register  , control , setValue , errors , curre
    } ;
 
    // 預先設定 : 安親類型、時間
-   useEffect(( ) : any => {
+   useEffect( ( ) : any => {
 
 
      // 【 新增 】 :
 
+    
+
      const startTime = moment( new Date() ).format('YYYY-MM-DD HH:mm') ;  // 目前時間
 
-     handle_Care_Type('一般安親' ) ;
-     handle_Care_Hour(4 ) ;
+     handle_Care_Type( '一般安親' ) ;
+     handle_Care_Hour( 4 ) ;
      setValue( 'care_Ordinary_Price' , 200 ) ;
 
      // 設定 _ 安親結束時間
@@ -156,12 +154,12 @@ const Care_Form : FC<ICare> = ({ register  , control , setValue , errors , curre
      set_Date_Time({ ...Date_Time ,
                               care_Expect_End_Time : serviceData['expect_end_time'] ? serviceData['expect_end_time'] : '' ,
                               care_End_Time        : serviceData['end_time']        ? serviceData['end_time'] : ''
-                         }) ;
+                   }) ;
 
 
 
 
-   } ,[ ] ) ;
+   } , [ ] ) ;
 
 
    const way  = { fontSize : "11pt" , top : "-5px" , fontWeight : "bold" } ;
@@ -219,7 +217,6 @@ const Care_Form : FC<ICare> = ({ register  , control , setValue , errors , curre
 
                              <div className="select is-small relative">
                                  <select {...register("way_Arrive")} style={way}>
-                                     <option value="請選擇"> 請選擇 </option>
                                      <option value="主人送來"> 主人送來</option>
                                      <option value="接送員接來"> 接送員接來</option>
                                      <option value="住宿轉來"> 住宿轉來</option>
@@ -244,7 +241,6 @@ const Care_Form : FC<ICare> = ({ register  , control , setValue , errors , curre
 
                          <div className="select is-small relative">
                              <select {...register("way_Leave")} style={way}>
-                                 <option value="請選擇"> 請選擇 </option>
                                  <option value="主人接走"> 主人接走</option>
                                  <option value="接送員接送"> 接送員接送</option>
                                  <option value="轉回住宿"> 轉回住宿</option>
@@ -435,13 +431,15 @@ const Care_Form : FC<ICare> = ({ register  , control , setValue , errors , curre
 
                        安親日期 : &nbsp;
 
+                        {/*<Date_Picker control={control} name="service_Date" default_Date={ new Date }/>*/}
+
                         { /* for 新增 */ }
                         { editType === '編輯' ||
 
-                            <Date_Picker control={control}
-                                         name="care_Start_Date"
-                                         default_Date={new Date}
-                                         handle_OnChange={(value: any) => handle_Date(value, 'care_Start_Date')}/>
+                            <Date_Picker control         = { control }
+                                         name            = "care_Start_Date"
+                                         default_Date    = { new Date }
+                                         handle_OnChange = {(value: any) => handle_Date(value, 'care_Start_Date')}/>
 
                         }
 

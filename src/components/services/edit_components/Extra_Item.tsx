@@ -6,6 +6,7 @@ import {useRead_Service_Prices} from "hooks/ajax_crud/useAjax_Read";
 import { set_Extra_Item_Fee } from "store/actions/action_Extra_Service_Fee"
 import {useDispatch} from "react-redux";
 import useSection_Folding from "hooks/layout/useSection_Folding";
+import axios from "utils/axios";
 
 
 
@@ -23,13 +24,22 @@ const Extra_Item : FC< IExtra_Item >  = ( { register , editType, serviceData } )
 
     const dispatch = useDispatch() ;
 
-    const { is_folding , Folding_Bt }               = useSection_Folding( false ) ;  // 收折區塊
+    const { is_folding , Folding_Bt }               = useSection_Folding( !editType ? true : false ) ;  // 收折區塊
+
+
+    // 讀取 _ 所有服務價格
+    const all_Service_Prices                        = useRead_Service_Prices( ) ; 
 
     // 讀取 _ "加價項目" 所有價格
     const extra_Item_Prices                         = useRead_Service_Prices( '加價項目' ) ;
 
-    // 所點選的服務名稱
+
+    // 所點選的服務名稱 ( for 新增 )
     const [ services_Picked , set_Services_Picked ] = useState<string[]>( [] ) ;
+
+    // 所點選的服務名稱 ( for 編輯 )
+    const [ services_Data , set_Services_Data ]      = useState<any>( [] ) ;
+
 
     // 加價項目費用小計
     const [ price , set_Price ] = useState( 0 ) ;
@@ -61,6 +71,7 @@ const Extra_Item : FC< IExtra_Item >  = ( { register , editType, serviceData } )
     // 計算 : 加價項目小計價格
     useEffect(( ) => {
 
+
         let _price = 0 ;
 
         if( services_Picked.length > 0 ){
@@ -82,6 +93,36 @@ const Extra_Item : FC< IExtra_Item >  = ( { register , editType, serviceData } )
         dispatch( set_Extra_Item_Fee( _price ) ) ;
 
     } , [ services_Picked ] ) ;
+
+
+    // 取得 _ 新增資料時，所選擇的服務名稱 ( for【 編輯 】 )
+    useEffect( () => { 
+    
+        let service_Arr : any = []  
+
+        // 從所有價格資料，依照 id，篩選出所點選服務名稱
+        if( editType === '編輯' && serviceData.extra_service ){
+
+           const arr = serviceData.extra_service.split(',') ;
+
+           service_Arr = all_Service_Prices.filter( x => { 
+               
+             const str_Id = ( x['id'] as string ).toString() ; // 轉為字串
+
+             return arr.indexOf( str_Id ) !== -1
+        
+           } )
+
+        }
+
+        // 將物件轉為僅含 _ 服務名稱陣列
+        const _service_Arr = service_Arr.map( ( x : any ) => x['service_name'] ) ;
+    
+        set_Services_Data( _service_Arr ) ;
+
+
+    } , [ serviceData , all_Service_Prices ] ) ;
+    
 
 
   return <>
@@ -113,14 +154,13 @@ const Extra_Item : FC< IExtra_Item >  = ( { register , editType, serviceData } )
 
                   }
 
-
               </b>
 
               { /* 收折按鈕 */ }
               <b className="relative" style={{ right : "10px" }}> { Folding_Bt } </b>  <br/>
 
-              { /* 是否收折 */ }
-              { is_folding ||
+              { /* 新增 */ }
+              { ( !is_folding && editType === undefined ) &&
 
                   <>
 
@@ -129,7 +169,7 @@ const Extra_Item : FC< IExtra_Item >  = ( { register , editType, serviceData } )
                       <div className="columns is-multiline is-mobile relative" style={{left: "20px"}}>
 
                           {
-                              extra_Item_Prices.map((x, y) => {
+                              extra_Item_Prices.map( ( x , y ) => {
 
                                   return <div key={y} className="column is-2-desktop relative">
 
@@ -155,10 +195,31 @@ const Extra_Item : FC< IExtra_Item >  = ( { register , editType, serviceData } )
 
                       </div>
 
+                   
                   </>
 
               }
 
+              { /* 編輯 */ }
+              { ( !is_folding && editType === '編輯' ) &&
+
+                <>
+                    <br/>  
+                   
+                    <b className="tag is-large is-white" >
+
+                        &nbsp;&nbsp; 點選項目 :  
+                        <span className="fDblue"> &nbsp;
+                            {  services_Data.join(',') ?  services_Data.join(',') : '無' }
+                        </span>   
+
+                    </b>    
+
+                    <br/>
+
+                </> 
+
+              }
 
               <br/><hr/><br/>
 

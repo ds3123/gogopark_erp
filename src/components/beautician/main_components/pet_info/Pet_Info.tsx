@@ -16,14 +16,14 @@ const Pet_Info = () => {
   const extra_Service_Prices = useRead_Service_Prices( '加價項目' ) ;
 
   // 讀取 _ "加價美容" 所有價格
-  const extra_Beauty_Prices = useRead_Service_Prices( '加價美容' ) ;
+  const extra_Beauty_Prices  = useRead_Service_Prices( '加價美容' ) ;
 
   const [ serviceData , set_ServiceData ] = useState<any>({
-                                                                       basicItems    : [] , // 小美容項目
-                                                                       beautyItems   : [] , // 大美容項目
-                                                                       extraServices : [] , // 加價項目
-                                                                       extraBeauty   : [] , // 加價美容
-                                                                     }) ;
+                                                            basicItems    : [] , // 小美容項目
+                                                            beautyItems   : [] , // 大美容項目
+                                                            extraServices : [] , // 加價項目
+                                                            extraBeauty   : [] , // 加價美容
+                                                          }) ;
 
 
 
@@ -35,7 +35,7 @@ const Pet_Info = () => {
         let eServiceData = [] as any ;  // 加價項目   ( extraService )
         let eBeautyData  = [] as any ;  // 加價美容   ( extraBeauty )
 
-         // 小美容項目
+        // 小美容項目
         if( data['basic_data'] ){
             basicItems = data['basic_data'].split(',') ;
         }
@@ -82,7 +82,7 @@ const Pet_Info = () => {
                   <div className = "column is-12-desktop relative" >  <Pet_Info_Title />  </div>
 
                   { /* 到店時間、期望離店時間 */ }
-                  <div className = "column is-6-desktop relative" >
+                  <div className = "column is-12-desktop relative" >
                       <b className="tag is-medium is-white"> <i className="far fa-clock"></i> &nbsp;  到店時間 : </b>
                       <b> { data['actual_arrive'] } </b>  &nbsp; &nbsp;
                       <b className="tag is-medium is-white"> <i className="far fa-clock"></i> &nbsp;  期望離店時間 : </b>
@@ -90,10 +90,17 @@ const Pet_Info = () => {
                   </div>
 
                   { /* 自備物品 */ }
-                  <div className = "column is-6-desktop relative" >
+                  <div className = "column is-12-desktop relative" >
                       <b className="tag is-medium is-white"> <i className="fas fa-gavel"></i>  &nbsp; 自備物品 : </b>
-                      <b className="fDred"> { data['customer_object'] } </b>
+                      <b className="fDred"> 
+                       
+                         { data['customer_object'] }
+                         { data['customer_object_other'] ? ','+data['customer_object_other'] : '' }
+                      
+                      </b>
                   </div>
+
+                  
 
                   { /* 主人交代  */ }
                   <div className = "column is-6-desktop relative"  >

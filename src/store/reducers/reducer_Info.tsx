@@ -1,5 +1,4 @@
 
-import React from "react"
 import moment from "moment" ;
 
 
@@ -7,7 +6,7 @@ import moment from "moment" ;
 
 interface IInfo {
 
-   service_Status : string ;  // ( 服務性質 : 已到店、預約_今天、預約_未來  )
+   service_Status : string ;  // 服務狀態 : 已到店、預約_今天、預約_未來 
    service_Date   : string ;  // 到店(服務)日期 _ 預設 : 今日
 
    current_Q_Code : string ;  // 目前所選擇的 Q code

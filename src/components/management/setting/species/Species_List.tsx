@@ -131,13 +131,13 @@ const Service_List = ( ) => {
 
                     <thead>
                         <tr>
-                            <th className="relative">
+                            {/* <th className="relative">
                                 <b className="tag is-medium relative pointer"
                                    style={{ background:"rgb(150,0,0)" , color:"white" }}
                                    onClick = { ( ) => refresh_Data( species )  } >
                                    <i className="fas fa-stream"></i> &nbsp; 排 序
                                 </b>
-                            </th>
+                            </th> */}
                             <th> 名 稱 </th>
                             <th> 代 號 </th>
                             <th> 代 碼 </th>
@@ -156,7 +156,7 @@ const Service_List = ( ) => {
 
                               return <tr key={y} style={{ lineHeight : "40px" }}>
 
-                                        <td className='relative'>
+                                        {/* <td className='relative'>
                                             <b className="tag is-medium relative is-white" onClick={ () => click_Up(y) }>
                                                 <span className="absolute" style={{ top:"0px" , fontSize:"22pt" }}>
                                                     <i className="fas fa-sort-up pointer"   ></i>
@@ -167,7 +167,7 @@ const Service_List = ( ) => {
                                                    <i className="fas fa-sort-down" ></i>
                                                </span>
                                             </b>
-                                        </td>
+                                        </td> */}
                                         <td style={ left }>
                                             <b className="tag is-medium pointer" style={bt} onClick={ () => click_Species( x ) }>  { x['name'] }  </b>
                                         </td>

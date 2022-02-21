@@ -5,6 +5,9 @@ import Date_Picker from "templates/form/Date_Picker";
 import { Edit_Form_Type } from "utils/Interface_Type";
 import {get_Today} from "utils/time/date";
 import {get_RandomInt} from "utils/number/number";
+import axios from "utils/axios";
+import { set_Invalid_To_Employee } from "store/actions/action_Form_Validator"
+import { useDispatch } from "react-redux";
 
 
 
@@ -31,6 +34,9 @@ interface IEmployee extends Edit_Form_Type {
 const Employee_Form : FC< IEmployee > = ( { register  , errors , setValue , current , control , editType , employeeData } ) => {
 
 
+    const dispatch = useDispatch();
+
+
     // 帳戶類別
     const [ accountType , set_AccountType ]   = useState('' ) ;       // 管理帳號、測試帳號、工作人員
 
@@ -46,6 +52,15 @@ const Employee_Form : FC< IEmployee > = ( { register  , errors , setValue , curr
     // 品牌所屬分店
     const [ brandShop , set_BrandShop ]       = useState( dataBrand[0]['shop'] ) ;
 
+    // 帳號是否重複
+    const [ is_Account_Duplicate , set_is_Account_Duplicate ] = useState( false ) ;
+
+    // 帳號名稱
+    const [ account_Value , set_Account_Value ] = useState( '' ) ;
+
+
+
+
     // -----------------------------------
 
     // 取得 _ 員工類別
@@ -58,11 +73,43 @@ const Employee_Form : FC< IEmployee > = ( { register  , errors , setValue , curr
     const get_Brand_Type    = ( type : string ) => { set_BrandType( type ) } ;
 
 
+    // 帳號填寫變動 : 查詢是否帳號重複
+    const handle_Accout_Change = ( value : string ) => {
+    
+        if( value ){
+            axios.get( `/employees/show_employee_with_account/${ value }` ).then( res => { 
+
+                if( res.data.length > 0  ){
+
+                  set_Account_Value( value ) ;
+                  set_is_Account_Duplicate( true ) ;
+                  dispatch( set_Invalid_To_Employee( true ) ) ;
+
+                }else{
+
+                  set_Account_Value( "" ) ;
+                  set_is_Account_Duplicate( false ) ; 
+                  dispatch( set_Invalid_To_Employee( false ) ) ; 
+
+                }
+
+
+            })   
+        } 
+
+        if( !value ){
+            set_is_Account_Duplicate( false ) ;
+            dispatch( set_Invalid_To_Employee( false ) ) ; 
+        }
+    
+    } ;
+
+
     // -------------------------------------
 
 
     // 依據 _ 薪資類別，設定 _ 職位類別
-    useEffect(( ) => {
+    useEffect( ( ) => {
 
         set_PositionType(salaryType === '正職' ? [ '櫃台' , '美容' , '接送' ] : [ '計時櫃台' , '計時美容' , '計時接送' , '計時人員' ] ) ;
 
@@ -70,7 +117,7 @@ const Employee_Form : FC< IEmployee > = ( { register  , errors , setValue , curr
 
 
     // 依據 _ 所屬品牌，設定 _ 所屬店別
-    useEffect(( ) => {
+    useEffect( ( ) => {
 
         if( brandType ){
 
@@ -84,7 +131,7 @@ const Employee_Form : FC< IEmployee > = ( { register  , errors , setValue , curr
 
 
     // 設定 _ 隨機寵物編號 ( '新增'時，才設定 )
-    useEffect(( ) => {
+    useEffect( ( ) => {
 
         if( current ){
             const randomId = `E_${ get_Today() }_${ get_RandomInt(1000 ) }` ;
@@ -119,9 +166,17 @@ const Employee_Form : FC< IEmployee > = ( { register  , errors , setValue , curr
     return <>
                 <br/>
 
-                <div className="columns is-multiline is-mobile">
 
+                < div className="columns is-multiline is-mobile">
 
+                        
+                    { is_Account_Duplicate &&
+
+                        <div className="column is-offset-2 is-10-desktop"> 
+                        <b className="tag is-medium is-danger"> <i className="fas fa-exclamation"></i> &nbsp; 系統已有該帳號 : " { account_Value } "，請選用其他帳號名稱。 </b>
+                        </div>
+
+                    }
 
                     { /* 帳號類別 */ }
                     <div className="column is-2-desktop required">
@@ -146,7 +201,11 @@ const Employee_Form : FC< IEmployee > = ( { register  , errors , setValue , curr
                     </div>
 
                     { /* 帳號 */ }
-                    <Input type="text" name="employee_Account" label="帳 號" register={register} error={ errors.employee_Account } icon="fas fa-user-circle" asterisk={ true } columns="2" />
+                    <Input type    ="text" name="employee_Account" label="帳 號" register={register} error={ errors.employee_Account } 
+                          icon     = "fas fa-user-circle"          asterisk={ true } columns="2" 
+                          onChange = { ( e : any ) => handle_Accout_Change( e.target.value )  }  style = { is_Account_Duplicate ? { border:"1px solid red" } : {} }
+                          
+                          />
 
                     { /* 密碼 */ }
                     <Input type="text" name="employee_Password" label="密 碼" register={register} error={ errors.employee_Password } icon="fas fa-key" asterisk={ true } columns="2" />

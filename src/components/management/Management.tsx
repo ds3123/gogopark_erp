@@ -1,15 +1,11 @@
 
-import React, { useEffect , useState } from "react" ;
-
+import { useEffect , useState } from "react" ;
 import useMulti_NavOptions from "hooks/layout/useMulti_NavOptions";
 
 // 各頁面元件
 import Daily_Report from "components/management/finance/Daily_Report";
-import Cash_Report from "components/management/finance/Cash_Report";
-import Online_Pay from "components/management/finance/Online_Pay";
 
 import Species_Price_List from "components/management/price/Species_Price_List";
-
 import Service_Price from "components/management/price/service_type/Service_Price";
 import Basic_Price from "components/management/price/service_type/Basic_Price";
 import Bath_Price from "components/management/price/service_type/Bath_Price";
@@ -18,20 +14,23 @@ import Care_Price from "components/management/price/service_type/Care_Price";
 import Lodge_Price from "components/management/price/service_type/Lodge_Price";
 import Extra_Item_Price from "components/management/price/service_type/Extra_Item_Price";
 import Extra_Beauty_Price from "components/management/price/service_type/Extra_Beauty_Price";
-
 import Employees from "components/management/employee/Employees";
 import Species_List from "components/management/setting/species/Species_List";
-
 import Archive_List from "components/management/data/archive/Archive_List";
-
+import Error_List from "components/management/data/error/Error_List";
+import Plan_Data_List from "./data/plan_data/Plan_Data_List";
+import Plan_Expire_List from "./data/plan_expire/Plan_Expire_List";
+import Plans from "components/plan/Plans"
+import Plan_Return_List from "components/management/data/plan_return/Plan_Return_List";
+import Delete_Service_List from "components/management/data/delete/Delete_Service_List";
 import cookie from 'react-cookies'     // 匯入 cookie
+
 
 
 /* @ 管理頁面  */
 const Management = () => {
 
-
-    // 取的 : 第 2、3 層選項相關資訊
+    // 取得 : 第 2、3 層選項相關資訊
     const { Second_Nav , Third_Nav , currentSecond , currentThird , click_Second , click_Third } = useMulti_NavOptions();
 
     // 顯示 _ 頁面元件
@@ -39,16 +38,10 @@ const Management = () => {
 
         switch( title ) {
 
-            // # 第二層
-            case '員工管理' : return <Employees/>    ;
-
-            // # 第三層
-            // * 財務管理
+            // # 財務管理
             case '日報表'   : return <Daily_Report/> ;
-            case '現金帳'   : return <Cash_Report/>  ;
-            case '線上支付' : return <Online_Pay/>   ;
-
-            // * 價格管理
+          
+            // # 價格管理
             case '品種價格' : return <Species_Price_List/> ;
             // case '服務價格' : return <Service_Price/>      ; break ;  // 所有服務價格
 
@@ -61,10 +54,20 @@ const Management = () => {
             case '加價項目' : return <Extra_Item_Price/>  ;
             case '加價美容' : return <Extra_Beauty_Price/>  ;
 
-            // * 封存資料
-            case '封存資料' : return <Archive_List />
+            // # 員工管理
+            case '員工管理' : return <Employees/> ;
 
-            // * 系統設定
+            // # 資料管理
+            case '服務異常' : return <Error_List /> ;
+            case '銷單資料' : return <Delete_Service_List /> ;
+            case '封存資料' : return <Archive_List /> ;
+
+            case '方案資料' : return <Plan_Data_List /> ;
+            // case '方案逾期' : return <Plan_Expire_List /> ;
+            case '方案逾期' : return <Plans /> ;
+            case '方案退費' : return <Plan_Return_List /> ;
+
+            // # 系統設定
             case '寵物品種' : return <Species_List />  ;
 
             default : return null ;
@@ -73,8 +76,8 @@ const Management = () => {
 
     } ;
 
-    // 【 新增】 資料後，藉由 cookie，重導向至相對應的區塊頁面
-    useEffect(( ) : any => {
+    // 【 新增 】 資料後，藉由 cookie，重導向至相對應的區塊頁面
+    useEffect( () : any => {
 
        // @ Cookie
        const redirect = cookie.load('after_Created_Redirect') ;
@@ -129,15 +132,20 @@ const Management = () => {
             click_Third('加價美容') ;
         }
 
-
-       // # 員工管理
-       if( redirect && redirect === '員工管理' ){
+        // # 員工管理
+        if( redirect && redirect === '員工管理' ){
             click_Second('員工管理' ) ;
         }
 
 
-       // # 系統設定 :
+       // # 資料管理
+       // * 服務異常
+       if( redirect && redirect === '資料管理_服務異常' ){
+           click_Second( '資料管理' ) ;
+       }
 
+
+       // # 系統設定 :
        // * 寵物品種
        if( redirect && redirect === '系統設定_寵物品種' ){
             click_Second('系統設定' ) ;
@@ -146,17 +154,17 @@ const Management = () => {
 
        // --------------------------------------------------------------
 
-       // 暫時、預先點選
+       // # 暫時、預先點選
        if( !redirect ){
-         // click_Second('價格管理' ) ;
-         // click_Third('封存資料' ) ;
+         click_Second( '財務管理' ) ;
+         click_Third( '日報表' ) ;
        }
 
-    } ,[] ) ;
+    } , [] ) ;
 
 
     // 【 更新 】 資料後，藉由 cookie，重導向至相對應的區塊頁面
-    useEffect(( ) => {
+    useEffect( () => {
 
        // @ Cookie
 
@@ -167,12 +175,9 @@ const Management = () => {
 
            click_Second('價格管理' ) ;
 
-           if( update_Price === '價格管理_品種價格' ){
-               click_Third('基礎') ;
-               click_Third('品種價格') ;
-           }
+           if( update_Price === '價格管理_品種價格' ) click_Third('品種價格') ;
 
-           if( update_Price === '價格管理_基礎' )
+           if( update_Price === '價格管理_基礎' )     click_Third('基礎') ;
            if( update_Price === '價格管理_洗澡' )     click_Third('洗澡') ;
            if( update_Price === '價格管理_美容' )     click_Third('美容') ;
            if( update_Price === '價格管理_安親' )     click_Third('安親') ;
@@ -182,7 +187,53 @@ const Management = () => {
 
        }
 
-    } ,[] ) ;
+       // # 更新 _ 資料管理
+
+        // * 服務異常
+        const update_Data = cookie.load('after_Updated_Data') ;
+
+        if( update_Data && update_Data === '資料管理_服務異常' ) click_Second('資料管理' ) ;
+        
+        // * 銷單資料  
+        if( update_Data && update_Data === '資料管理_銷單資料' ){
+            click_Second('資料管理') ;
+            click_Third('銷單資料') ;
+        } 
+
+        // * 方案資料  
+        if( update_Data && update_Data === '資料管理_方案資料' ){
+            click_Second('資料管理') ;
+            click_Third('方案資料') ;
+        } 
+
+        // * 封存資料
+        const undo_Archive = cookie.load('after_Undo_Archive') ;
+
+        if( undo_Archive && ( undo_Archive === '客戶' || undo_Archive === '寵物' || undo_Archive === '洗美' ||　undo_Archive === '方案' || undo_Archive === '安親' || undo_Archive === '住宿'  ) ){
+
+          click_Second('資料管理') ;
+       　 click_Third('封存資料') ;
+
+    　　}
+
+
+    } , [] ) ;
+
+
+    // 【 刪除 】
+    useEffect( ( ) => {
+
+        // * 封存資料
+        const delete_Archive = cookie.load('after_Delete_Archive') ;
+
+        if( delete_Archive && ( delete_Archive === '客戶' || delete_Archive === '寵物' || delete_Archive === '洗美' ||　delete_Archive === '方案' || delete_Archive === '安親' || delete_Archive === '住宿'  ) ){
+
+            click_Second('資料管理') ;
+            click_Third('封存資料') ;
+
+        }
+
+    } , [] ) ;
 
 
     return <>

@@ -17,7 +17,6 @@ import {SidePanelContext} from "templates/panel/Side_Panel";
 /* @ 更新 : 方案 */
 const Update_Plan = ( ) => {
 
-
     const value = useContext( SidePanelContext ) ;  // 取得 context 值
     const data  = value.preLoadData ;               // 預先取得資料
 

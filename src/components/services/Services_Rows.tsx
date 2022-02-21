@@ -1,90 +1,74 @@
-import React, {useEffect, useState} from "react"
+import { useEffect, useState} from "react"
 import useServiceType from "hooks/layout/useServiceType";
 import usePet_Button from "hooks/layout/usePet_Button";
 import {set_Side_Panel} from "store/actions/action_Global_Layout";
-import Service_History from "./Service_History";
 import {useDispatch} from "react-redux";
-
 import Update_Service from "components/services/edit/Update_Service";
-import Update_Customer from "components/customers/edit/Update_Customer";
 import {useLocation} from "react-router";
 import {useHistory} from "react-router-dom";
 import axios from "utils/axios";
 import {toast} from "react-toastify";
 import cookie from "react-cookies";
-
-
-
-
+import moment from "moment";
+import { click_Show_Edit_Customer } from "store/actions/action_Customer"
 
 
 const Services_Rows = ( props : any ) => {
 
     const { data } = props ;
     const customer = data['customer'] ;
-
-    //console.log( data )
-
-
     const url      = useLocation().pathname;
     const history  = useHistory() ;
 
-    try{
-
-        customer.customer_relation = [ data['customer_relative'] ] ; // 配合 <Update_Customer />，關係人屬性名稱，改為 'customer_relation'
-
-    }catch(e){
-
-        console.log( '客戶關係人發生錯誤' )
-
-    }
-
+    // 今日
+    const today    = moment( new Date() ).format('YYYY-MM-DD' ) ;
+    
 
     const [ pet , set_Pet ] = useState<any>( {} ) ;
     const dispatch          = useDispatch() ;
 
-    // 服務 ( 基礎、洗澡、美容 ) : 基本費用、加價項目費用、加價美容費用、使用方案( Ex. 包月洗澡、美容 )費用、接送費
+    // 服務 ( 基礎、洗澡、美容 ) : 基本費用、個體調整、加價項目費用、加價美容費用、使用方案( Ex. 包月洗澡、美容 )費用、接送費
     const [ price , set_Price ] = useState({
-                                                         service      : 0 ,  // 基本費用
+                                              service      : 0 ,  // 基本費用
 
-                                                         extra_Item   : 0 ,  // 加價項目費用
-                                                         extra_Beauty : 0 ,  // 加價美容費用
+                                              self_adjust  : 0 ,  // 個體調整
 
-                                                         plan_Price   : 0 ,  // 使用方案( Ex. 包月洗澡、美容 )費用
+                                              extra_Item   : 0 ,  // 加價項目
+                                              extra_Beauty : 0 ,  // 加價美容
+                                              
+                                              pickup       : 0 ,  // 接送費 
 
-                                                         pickup       : 0 ,
-                                                      } ) ;
+                                              plan_Price   : 0 ,  // 使用方案( Ex. 包月洗澡、美容 )費用
+                                           }) ;
 
+                                           
     // 服務單欄位 _ 顏色、Icon
-    const { color , icon }  = useServiceType( data[ 'service_type' ] , false , 'medium' );
+    const { color , icon } = useServiceType( data[ 'service_type' ] , false , 'medium' ) ;
 
     // * 寵物按鈕
-    const petButton = usePet_Button([ pet ] ) ;
-
+    const petButton        = usePet_Button( [ pet ] ) ;
 
     // 點選 _ 服務單
-    const click_Service  = () => dispatch( set_Side_Panel(true , <Update_Service /> , { service_Type : data['service_type'] ,  preLoadData : data } as { service_Type : string } ) ) ;
+    const click_Service    = () => dispatch( set_Side_Panel( true , <Update_Service /> , { service_Type : data['service_type'] ,  preLoadData : data } as { service_Type : string } ) ) ;
 
     // 點選 _ 客戶
-    const click_Customer = () => dispatch( set_Side_Panel(true , <Update_Customer /> , { preLoadData : customer } ) ) ;
-
+    const click_Customer   = ( cus_Id : string ) => dispatch( click_Show_Edit_Customer( cus_Id , customer ) ) ;
 
     // 取得個服務單資料表 id
-    const get_Service_Id = ( data : any ) => {
+    const get_Service_Id   = ( data : any ) => {
 
-        let url        = '' ; // 服務單路徑
-        let id = '' ; // 服務單 id
+        let url = '' ;  // 服務單路徑
+        let id  = '' ;  // 服務單 id
 
-        if( data['service_type'] === '基礎' ) { id = data['basic_id'] ;  url = '/basics' } ;
-        if( data['service_type'] === '洗澡' ) { id = data['bath_id'] ;   url = '/bathes' } ;
-        if( data['service_type'] === '美容' ) { id = data['beauty_id'] ; url = '/beauties' } ;
+        if( data['service_type'] === '基礎' ){ id = data['basic_id'] ;  url = '/basics'   } ;
+        if( data['service_type'] === '洗澡' ){ id = data['bath_id'] ;   url = '/bathes'   } ;
+        if( data['service_type'] === '美容' ){ id = data['beauty_id'] ; url = '/beauties' } ;
 
         return { url , id } ;
 
     } ;
 
-
-    // ------------------------------------------
+    // ----------------------------------------------------------
 
     // 點選 _ 封存資料
     const click_Archive = ( data : any ) => {
@@ -93,10 +77,10 @@ const Services_Rows = ( props : any ) => {
 
         axios.put( `${ url }/${ id }` , { is_archive : 1 } ).then( res => {
 
-            toast(`🦄 資料已封存`, { position : "top-left", autoClose : 1500 , hideProgressBar : false });
+            toast( `🦄 資料已封存`, { position : "top-left", autoClose : 1500 , hideProgressBar : false });
 
-            history.push("/wrongpath");  // 錯誤路徑
-            history.push("/services");  // 正確路徑
+            history.push("/wrongpath") ;  // 錯誤路徑
+            history.push("/services") ;   // 正確路徑
 
         }) ;
 
@@ -104,7 +88,7 @@ const Services_Rows = ( props : any ) => {
     } ;
 
     // 點選 _ 復原封存資料
-    const click_Undo_Archive = ( data : any  ) => {
+    const click_Undo_Archive = ( data : any ) => {
 
         const { url , id } = get_Service_Id( data ) ;
 
@@ -112,34 +96,32 @@ const Services_Rows = ( props : any ) => {
 
             toast(`🦄 資料已復原封存`, { position : "top-left", autoClose : 1500 , hideProgressBar : false });
 
-
-            // 設定 cookie ( for 前往 : 價格管理 > 服務價格 / 5 秒後銷毀 )
-            cookie.save( 'after_Edit_Archive' , '洗美'  ,  { path : '/' , maxAge : 5 } ) ;
+            // 設定 cookie ( for 前往 : 資料管理 > 封存資料 > 洗美 / 5 秒後銷毀 )
+            cookie.save( 'after_Undo_Archive' , '洗美' , { path : '/' , maxAge : 5 } ) ;
 
             history.push("/wrongpath");  // 錯誤路徑
-            history.push("/management");  // 正確路徑
+            history.push("/management"); // 正確路徑
 
         }) ;
 
     } ;
 
     // 點選 _ 刪除資料
-    const click_Delete = ( data : any  ) => {
+    const click_Delete = ( data : any ) => {
 
         const { url , id } = get_Service_Id( data ) ;
 
         axios.delete( `${ url }/${ id }` ).then( res => {
 
-            toast(`🦄 資料已刪除`, { position : "top-left", autoClose : 1500 , hideProgressBar : false });
+            toast( `🦄 資料已刪除`, { position : "top-left", autoClose : 1500 , hideProgressBar : false });
 
-            // 設定 cookie ( for 前往 : 價格管理 > 服務價格 / 5 秒後銷毀 )
-            cookie.save( 'after_Edit_Archive' , '洗美'  ,  { path : '/' , maxAge : 5 } ) ;
+            // 設定 cookie ( for 前往 : 資料管理 > 封存資料 > 洗美 / 5 秒後銷毀 )
+            cookie.save('after_Delete_Archive' , '洗美' , { path : '/' , maxAge : 5 } ) ;
 
-            history.push("/wrongpath");  // 錯誤路徑
+            history.push("/wrongpath");   // 錯誤路徑
             history.push("/management");  // 正確路徑
 
         }) ;
-
 
     } ;
 
@@ -152,125 +134,195 @@ const Services_Rows = ( props : any ) => {
           if( data['service_type'] === '基礎' ){
 
               set_Price({ ...price ,
-                                   service : data['basic_fee'] ,
-                                   pickup  : data['pickup_fee']
-                              })
+                                   service     : data['basic_fee'] ,
+                                   self_adjust : data['self_adjust_amount'] ,
+                                   pickup      : data['pickup_fee']
+                        })
 
           }
 
           if( data['service_type'] === '洗澡' ){
 
-              const plan_Price = data['plan'] ? data['plan']['service_price'] : 0 ;
-
               set_Price({ ...price ,
                                    service      : data['bath_fee'] ,
+
+                                   self_adjust  : data['self_adjust_amount'] ,
+                           
                                    extra_Item   : data['extra_service_fee'] ,
                                    extra_Beauty : data['extra_beauty_fee'] ,
-                                   plan_Price   : data['bath_month_fee'] ? data['bath_month_fee'] : 0 ,
-                                   pickup       : data['pickup_fee']
-                              })
+
+                                   pickup       : data['pickup_fee'] ,
+
+                                   plan_Price   : data['bath_month_fee'] ? data['bath_month_fee'] : 0 
+                        })
 
           }
 
           if( data['service_type'] === '美容' ){
 
               set_Price({ ...price ,
-                                   service    : data['beauty_fee'] ,
-                                   extra_Item : data['extra_service_fee'] ,
-                                   plan_Price : data['beauty_month_fee'] ? data['beauty_month_fee'] : 0 ,
-                                   pickup     : data['pickup_fee']
-                              })
+                                   service     : data['beauty_fee'] ,
+
+                                   self_adjust : data['self_adjust_amount'] ,
+
+                                   extra_Item  : data['extra_service_fee'] ,
+
+                                   pickup      : data['pickup_fee'] ,
+
+                                   plan_Price  : data['beauty_month_fee'] ? data['beauty_month_fee'] : 0 
+                        })
 
           }
 
-    } , [ data ]  ) ;
+    } , [ data ] ) ;
+
 
     const t_L = { textAlign : "left" } as const ;
+    const tag = { top : "-7px", left : "5px" , color : "red" } ;
 
-   return <tr style = { { lineHeight : "40px" } } >
+    
+    return <tr style = { ( data[ 'service_date' ] && data[ 'service_date' ].slice(0,10) === today ) ? { background:"rgb(160,160,160,.2)" }  : { lineHeight : "40px" } } >
 
-             <td>
+             { /* 服務類別 */ } 
+             <td className="relative">
+
+                 { /* 異常標示 */ }
+                 <b className="absolute" style={ tag }>
+                     { data['is_error'] === 1 &&  <i className="fas fa-exclamation-triangle"></i> }
+                 </b>
+
+                 { /* 銷單標示 */ }
+                 <b className="absolute" style={ tag }>
+                     { data['is_delete'] === 1 &&  <i className="fas fa-trash-alt"></i> }
+                 </b>
+
+                 { /* 是否付費標示 */ }
+                 <b className="absolute f_14" style={{ top:"17px", left:"8px" , color:"red" }}>
+                     { data['amount_payable'] !== data['amount_paid']  &&  <i className="fas fa-dollar-sign"></i> }
+                 </b>
+
+                 { /* 申請退費標示  */ }
+                 <b className="absolute f_9" style={{top:"-10px", left:"-25px" , color:"red"}}>
+                     { ( data['is_return'] === 1 && data['return_status'] ) && <span> { data['return_status'] }  </span> }
+                 </b>
+
                  <b className = { color+" pointer" } onClick = { click_Service } >
                      <i className = { icon } ></i> &nbsp; { data[ 'service_type' ] } &nbsp; Q{ data['q_code'] }
                  </b>
+
              </td>
-             <td style = { t_L } >  { data['pet'] ? petButton : "" }      </td>
+             
+             { /* 寵物資訊 */ }
+             <td style = { t_L } >  { data['pet'] ? petButton : "" }  </td>
+             
+             { /* 客戶姓名 */ }
              <td>
-                 <b className="tag is-medium pointer" onClick = { click_Customer } >
+                 <b className="tag is-medium pointer" onClick = { () => click_Customer( customer.id ) } >
                     { data['customer'] ? data['customer']['name'] : '' }
                  </b>
              </td>
-             <td> { data[ 'payment_method' ] }  </td>
-             <td> { data[ 'payment_type' ] }    </td>
+            
+             { /* 服務說明 */ } 
+             <td className="f_10" style = { t_L } >
+
+                 { !data['plan'] && 
+                       <> <b className="f_12">現金支付</b> : { data[ 'payment_type' ] }</> 
+                 }
+
+                 { /* 屬於某方案  */ }
+                 { data['plan'] && <> <b className="f_12">方案</b> : { data['plan'][ 'service_note' ] }</>   }
+
+             </td>
+             
+             { /* @ ---------- 價格欄位 _ START ---------- */ }
+
+             { /* 服務價格 */ }
              <td>
                  <span className="fDblue">
 
-                     { /*
+                     {
+                       /*
                            付款方式 :
                             * 現金                -> 依品種，該項服務價格 price['service']
-                            * 包月洗澡 / 包月美容  -> 方案價格            data['plan']['service_price']
-                       */ }
-
-
-                     {
-                         (
-                           ( data['service_type'] === '洗澡' || data['service_type'] === '美容' )  &&
-                           ( data[ 'payment_method' ] === '包月洗澡' || data[ 'payment_method' ] === '包月美容' )
-                          ) ?
-                               price['plan_Price'] :
-                               price['service']
+                            * 包月洗澡 / 包月美容  -> 方案價格            price['plan_Price']
+                       */
                      }
+
+                     { data['plan'] ? price['plan_Price'] : price['service'] }
 
                  </span>
              </td>
-             <td> { price['extra_Item'] }                                 </td>
-             <td> { price['extra_Beauty'] }                               </td>
-             <td> { price['pickup'] ? price['pickup'] : 0  }              </td>
+             
+             { /* 個體調整 */ }
+             <td> { data['self_adjust_amount'] ? data['self_adjust_amount'] : 0 }  </td>
+            
+             { /* 加價項目 */ }
+             <td> { price['extra_Item'] }                     </td>
+            
+             { /* 加價美容 */ }
+             <td> { price['extra_Beauty'] }                   </td>
+             
+             { /* 接送費 */ }        
+             <td> { price['pickup'] ? price['pickup'] : 0  }  </td>
+ 
+             { /* 應收 */ }    
              <td>
+
                   <span className="fDred">
 
-                      {
+                      { /*
 
-                          (
-                              ( data['service_type'] === '洗澡' || data['service_type'] === '美容' )  &&
-                              ( data[ 'payment_method' ] === '包月洗澡' || data[ 'payment_method' ] === '包月美容' )
-                          ) ?
-                              price['plan_Price'] + price['extra_Item'] + price['extra_Beauty'] + price['pickup'] :
-                              price['service'] + price['extra_Item'] + price['extra_Beauty'] + price['pickup']
+                           2021.08.26
+                           * 新增基礎下，若無填寫金額，會有錯誤訊息
+                           * 再確認或更新以下 "小計" 金額的加總方式
 
-                      }
-                  </span>
+                        */ }
+
+                       { data['plan']  ? '包月' : data[ 'amount_payable' ] }
+
+                  </span> 
+
              </td>
-             <td> { data[ 'service_date' ].slice(5,10) }                   </td>
+
+             { /* 實收 */ }
+             <td> 
+                  <span className="fDred"> 
+                     { data['plan'] ? '包 月' : data['amount_paid'] }  
+                  </span> 
+             </td>
+
+             { /* @ ---------- 價格欄位 _ END ---------- */ }
+
+
+             { /* 來店日期 */ }
+             <td> { data[ 'service_date' ] ? data[ 'service_date' ].slice(5,10) : '' } </td>
 
              { /* 洗美頁面 : 封存 */ }
              { url === '/services' && <td>
-                                           <b className="tag is-medium pointer" onClick={ () => click_Archive( data ) }>
+                                           <b className="tag is-medium pointer" onClick={ () => { if( window.confirm("確認要 : 封存此服務資料 ?") )  click_Archive( data ) } }>
                                                <i className="fas fa-download"></i>
                                            </b>
                                       </td> }
 
-               { /* 封存資料頁面 : 復原封存、刪除 */ }
-               { url === '/management' &&
+             { /* 封存資料頁面 : 復原封存、刪除 */ }
+             { url === '/management' &&
 
-                   <>
+                <>
+                    <td>
+                        <b className="tag is-medium pointer pointer" onClick={ () => click_Undo_Archive( data ) } >
+                            <i className="fas fa-undo-alt"></i>
+                        </b>
+                    </td>
+                    <td>
+                        <b className="tag is-medium pointer pointer" onClick={ () => { if( window.confirm('確認要刪除此筆資料') ) click_Delete( data )  }  }>
+                            <i className="fas fa-trash-alt"></i>
+                        </b>
+                    </td>
+                </>
 
-                       <td>
-                           <b className="tag is-medium pointer pointer" onClick={ () => click_Undo_Archive( data ) } >
-                               <i className="fas fa-undo-alt"></i>
-                           </b>
-                       </td>
+             }
 
-                       <td>
-                           <b className="tag is-medium pointer pointer" onClick={ () => { if( window.confirm('確認要刪除此筆資料') ) click_Delete( data )  }  }>
-                               <i className="fas fa-trash-alt"></i>
-                           </b>
-                       </td>
-                   </>
-
-               }
-
-          </tr>
+           </tr>
 
 } ;
 

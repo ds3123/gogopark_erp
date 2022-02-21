@@ -50,3 +50,18 @@ export const set_Current_Pet = ( pet : any ) => {
 
 } ;
 
+
+// # 設定 _ 所點選 : 寵物 --> 已處理完畢
+export const set_Current_Pet_Is_Done = ( bool : boolean ) => {
+
+    return ( dispatch : Dispatch ) => {
+
+                dispatch({
+                    type                : "SET_CURRENT_PET_IS_DONE" ,
+                    Current_Pet_Is_Done : bool
+                }) ;
+
+           } ;
+
+} ;
+

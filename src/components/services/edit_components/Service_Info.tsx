@@ -26,7 +26,7 @@ import { useForm , Controller } from "react-hook-form";
 *  @ 資料狀態 ( shop_status ) 共有 7 種 ( 服務_類型的 "已到店 "，與到店_類型的 "到店等候中"，相同 ) ~
 *
 *     # 服務 _ 類型 ( service_Status ， 3 種 ) : 已到店、預約_今天、預約_未來
-*     # 到店 _ 類型 ( shop_Status ,     4 種 ) : 到店等候中、到店美容中、洗完等候中、已回家( 房 )
+*     # 到店 _ 類型 ( shop_Status ,     5 種 ) : 尚未到店、到店等候中、到店美容中、洗完等候中、已回家( 房 )
 *
 */
 
@@ -39,34 +39,35 @@ interface IInfo extends Edit_Form_Type {
 
 
 /* 服務單( 基礎、洗澡、美容 ) _ 基本資訊 */
-const Service_Info : FC<IInfo> = ({ register , setValue , errors , control , current , editType, serviceData  }) => {
+const Service_Info : FC<IInfo> = ({ register , setValue , errors , control , current , editType, serviceData  }) => { 
 
+    const dispatch     = useDispatch() ;
+    const today        = moment( new Date ).format('YYYY-MM-DD' ) ;                  // 今日
+    const service_Date = useSelector( ( state : any ) => state.Info.service_Date ) ; // 到店日期( 預設 : 今日 )
 
+    // # 服務狀態
+    const [ serviceStatus , set_serviceStatus ] = useState({
+                                                              is_Arrived_Today    : true ,  // 當日已到店
+                                                              is_Appointed_Today  : false , // 預約 _ 今天
+                                                              is_Appointed_Future : false   // 預約 _ 未來
+                                                           }) ;
 
-   const dispatch                              = useDispatch() ;
-   const today                                 = moment( new Date ).format('YYYY-MM-DD' ) ;                   // 今日
-   const service_Date                          = useSelector( ( state : any ) => state.Info.service_Date ) ; // 到店日期( 預設 : 今日 )
-
-   // # 服務狀態
-   const [ serviceStatus , set_serviceStatus ] = useState({
-                                                                       is_Arrived_Today    : false ,   // 當日已到店
-                                                                       is_Appointed_Today  : false ,  // 預約 _ 今天
-                                                                       is_Appointed_Future : false    // 預約 _ 未來
-                                                                     }) ;
-
-
-    const { is_folding , Folding_Bt }          = useSection_Folding(false) ;  // 收折區塊
+    const { is_folding , Folding_Bt }           = useSection_Folding(false) ;  // 收折區塊
 
 
     // 點選 _ 預約今天
-    const appoint_Today = () => set_serviceStatus({ ...serviceStatus , is_Arrived_Today : false , is_Appointed_Today : true }) ;
+    const click_Appoint_Today = () => set_serviceStatus({ ...serviceStatus , is_Arrived_Today : false , is_Appointed_Today : true }) ;
 
     // 點選 _ 已到店
-    const arrive_Shop   = () => set_serviceStatus({ ...serviceStatus , is_Arrived_Today : true , is_Appointed_Today : false }) ;
+    const click_Arrive_Shop   = () => set_serviceStatus({ ...serviceStatus , is_Arrived_Today : true , is_Appointed_Today : false }) ;
 
     // -----------------
 
-    useEffect(() => {
+    useEffect( () => {
+
+         
+
+        //【 新增 】
 
         // 預約 _ 未來
         if( editType !== '編輯' && service_Date !== today ){
@@ -78,30 +79,33 @@ const Service_Info : FC<IInfo> = ({ register , setValue , errors , control , cur
         // 是否選擇 : 過去日期 ( 缺 _ 強制設回今天 2021.06.13 )
         if( editType !== '編輯' && today > service_Date ){
 
-            //setValue( 'service_Date' , new Date ) ; // 設回今天
+            setValue( 'service_Date' , new Date ) ; // 設回今天
             alert('不能選擇 : 過去日期') ;
+            
         }
 
-    } ,[ service_Date ] ) ;
+        //【 編輯 】 
+
+
+    } , [ service_Date ] ) ;
 
 
     // 設定 _ 服務性質 ( service_Status : 已到店、預約_今天、預約_未來 。供提交表單時，由 Redux 取得，動態加入該欄位 )
-    useEffect( ( ) => {
+    useEffect( () => {
 
-      if( serviceStatus['is_Arrived_Today'] )    dispatch( set_Info_Column( 'service_Status' , '已到店') ) ;
-      if( serviceStatus['is_Appointed_Today'] )  dispatch( set_Info_Column( 'service_Status' , '預約_今天') ) ;
-      if( serviceStatus['is_Appointed_Future'] ) dispatch( set_Info_Column( 'service_Status' , '預約_未來') ) ;
+      if( serviceStatus['is_Arrived_Today'] )    dispatch( set_Info_Column( 'service_Status' , '已到店' )    ) ;
+      if( serviceStatus['is_Appointed_Today'] )  dispatch( set_Info_Column( 'service_Status' , '預約_今天' ) ) ;
+      if( serviceStatus['is_Appointed_Future'] ) dispatch( set_Info_Column( 'service_Status' , '預約_未來' ) ) ;
 
     } , [ serviceStatus ] ) ;
 
 
-    const way   = { fontSize : "11pt" , top : "-5px" , fontWeight : "bold" } ;
+    const way   = { fontSize : "11pt" , top : "-2px" , fontWeight : "bold" } ;
     const green = { color : "rgb(30,180,30)" } ;
     const blue  = { color : "rgb(30,30,180)" } ;
 
+   
     return <>
-
-              <br/>
 
               { /* 標題 */ }
               <label className="label relative" style={{ fontSize : "1.3em" }} >
@@ -129,14 +133,14 @@ const Service_Info : FC<IInfo> = ({ register , setValue , errors , control , cur
                                     { serviceStatus['is_Arrived_Today'] &&
                                         <>
                                             <b style={green}> 已到店 &nbsp; </b>
-                                            <b className="tag is-medium pointer" onClick={appoint_Today}> 預約 _ 今天 </b>
+                                            <b className="tag is-medium pointer" onClick={click_Appoint_Today}> 預約 _ 今天 </b>
                                         </>
                                     }
 
                                     { serviceStatus['is_Appointed_Today'] &&
                                         <>
                                             <b style={green}> 預約 _ 今天 &nbsp; </b>
-                                            <b className="tag is-medium pointer" onClick={arrive_Shop}> 已到店 </b>
+                                            <b className="tag is-medium pointer" onClick={click_Arrive_Shop}> 已到店 </b>
                                         </>
                                     }
 
@@ -150,10 +154,32 @@ const Service_Info : FC<IInfo> = ({ register , setValue , errors , control , cur
 
                             }
 
-                            { /* for 新增  */ }
-                            { ( editType === '編輯' && serviceData.service_date === today ) && <b className="fDred"> 今 日  </b> }
-                            { ( editType === '編輯' && serviceData.service_date !== today ) && <b className="fDred"> 預 約  </b> }
+                            { /* for 編輯 */ }
+                            { editType === '編輯' && 
+                             
+                                <>
 
+                                    <b className="fDred m_Right_30"> 
+                                       { serviceData['service_status'] === '已到店' ? '到 店' : '預 約' }
+                                    </b>  
+                                   
+                                    { /* 調整 _ 到店狀態 */ }  
+                                    <div className="select is-small relative is-link">
+
+                                        <select {...register("appointment_Status")} style={way}>
+                                            <option value="尚未到店">   尚未到店   </option>
+                                            <option value="到店等候中"> 到店等候中 </option>
+                                            <option value="到店美容中"> 到店美容中 </option>
+                                            <option value="洗完等候中"> 洗完等候中 </option>
+                                            <option value="已回家( 房 )"> 已回家( 房 ) </option>
+                                        </select>
+
+                                    </div>
+
+                                </>      
+                                   
+                            }
+                           
                         </div>
 
                     </div>
@@ -187,18 +213,26 @@ const Service_Info : FC<IInfo> = ({ register , setValue , errors , control , cur
                     </div>
 
                     { /* 預計到店時間 */}
-                    { ( serviceStatus['is_Appointed_Today'] || serviceStatus['is_Appointed_Future'] ) &&
+                    { (
+                        serviceStatus['is_Appointed_Today']   || 
+                        serviceStatus['is_Appointed_Future']  || 
+                        ( editType && !serviceStatus['is_Arrived_Today'] ) ||  
+                        ( editType && serviceData['service_status'] === '預約_今天' ) ||
+                        ( editType && serviceData['service_status'] === '預約_未來' ) 
+
+                      ) &&
 
                         <div className="column is-4-desktop relative">
 
                             <div className="tag is-large is-white">
-                                <span> <span style={{color: "rgb(230,100,0)"}}>預計</span>到店 : </span> &nbsp;
+
+                                <span> <span style={{color: "rgb(230,100,0)"}}> 預計</span>到店 : </span> &nbsp;
 
                                 { /* for 新增 */ }
-                                { editType === '編輯' ||  <Time_Picker name="expected_Arrive" control={control} /> }
+                                <Time_Picker name="expected_Arrive" control={control} /> 
 
                                 { /* for 編輯 */ }
-                                { editType === '編輯' && <b style={ blue }> { serviceData.expected_arrive } </b>  }
+                                {/* { editType === '編輯' && <b style={ blue }> { serviceData.expected_arrive } </b>  } */}
 
                             </div>
 
@@ -207,18 +241,22 @@ const Service_Info : FC<IInfo> = ({ register , setValue , errors , control , cur
                     }
 
                     { /* 實際到店時間 */}
-                    <div className="column is-4-desktop relative">
-                        <div className="tag is-large is-white">
-                            <span> 實際到店 : </span> &nbsp;
+                    { ( serviceStatus['is_Arrived_Today'] || editType  ) && 
 
-                            { /* for 新增 */ }
-                            { editType === '編輯' || <Time_Picker name="actual_Arrive" control={control} /> }
+                        <div className="column is-4-desktop relative">
+                            <div className="tag is-large is-white">
+                                <span> 實際到店 : </span> &nbsp;
 
-                            { /* for 編輯 */ }
-                            { editType === '編輯' && <b style={ blue }> { serviceData.actual_arrive } </b>  }
+                                { /* for 新增 */ }
+                                <Time_Picker name="actual_Arrive" control={control} /> 
 
+                                { /* for 編輯 */ }
+                                {/* { editType === '編輯' && <b style={ blue }> { serviceData.actual_arrive } </b>  } */}
+
+                            </div>
                         </div>
-                    </div>
+
+                    }
 
                     { /* 到店方式 */}
                     <div className="column is-4-desktop">
@@ -228,20 +266,16 @@ const Service_Info : FC<IInfo> = ({ register , setValue , errors , control , cur
                             <span> 到店方式 : </span> &nbsp;
 
                             { /* for 新增 */ }
-                            { editType === '編輯' ||
-
-                                <div className="select is-small relative">
-                                    <select {...register("way_Arrive")} style={way}>
-                                        <option value="主人送來"> 主人送來</option>
-                                        <option value="接送員接來"> 接送員接來</option>
-                                        <option value="住宿轉來"> 住宿轉來</option>
-                                    </select>
-                                </div>
-
-                            }
+                            <div className="select is-small relative">
+                                <select {...register("way_Arrive")} style={way}>
+                                    <option value="主人送來"> 主人送來     </option>
+                                    <option value="接送員接來"> 接送員接來 </option>
+                                    <option value="住宿轉來"> 住宿轉來     </option>
+                                </select>
+                            </div>
 
                             { /* for 編輯 */ }
-                            { editType === '編輯' && <b style={ blue } > { serviceData.way_arrive } </b>  }
+                            {/* { editType === '編輯' && <b style={ blue } > { serviceData.way_arrive } </b>  } */}
 
                         </div>
 
@@ -255,20 +289,16 @@ const Service_Info : FC<IInfo> = ({ register , setValue , errors , control , cur
                             <span> 離店方式 : </span> &nbsp;
 
                             { /* for 新增 */ }
-                            { editType === '編輯' ||
-
-                                <div className="select is-small relative">
-                                    <select {...register("way_Leave")} style={way}>
-                                        <option value="主人接走"> 主人接走</option>
-                                        <option value="接送員接送"> 接送員接送</option>
-                                        <option value="轉回住宿"> 轉回住宿</option>
-                                    </select>
-                                </div>
-
-                            }
+                            <div className="select is-small relative">
+                                <select {...register("way_Leave")} style={way}>
+                                  <option value="主人接走">   主人接走   </option>
+                                  <option value="接送員接送"> 接送員接送 </option>
+                                  <option value="轉回住宿">   轉回住宿   </option>
+                                </select>
+                            </div>
 
                             { /* for 編輯 */ }
-                            { editType === '編輯' && <b style={ blue } > { serviceData.way_leave } </b>  }
+                            {/* { editType === '編輯' && <b style={ blue } > { serviceData.way_leave } </b>  } */}
 
                         </div>
 
@@ -282,10 +312,10 @@ const Service_Info : FC<IInfo> = ({ register , setValue , errors , control , cur
                             <span> 期望離店 : </span> &nbsp;
 
                             { /* for 新增 */ }
-                            { editType === '編輯' || <Time_Picker name="expected_Leave" control={control} /> }
+                            <Time_Picker name="expected_Leave" control={control} /> 
 
                             { /* for 編輯 */ }
-                            { editType === '編輯' && <b style={ blue } > { serviceData.expected_leave } </b>  }
+                            {/* { editType === '編輯' && <b style={ blue } > { serviceData.expected_leave } </b>  } */}
 
                         </div>
 

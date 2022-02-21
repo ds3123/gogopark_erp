@@ -3,14 +3,14 @@ import React from "react" ;
 /* @ 定義 _ 全局 Interface、Type */
 
 // 限制 : 到店狀態 _ 類型
-export type Shop_Status    = '到店等候中' | '到店美容中' | '洗完等候中' | '已回家( 房 )' ;
+export type Shop_Status    = '尚未到店' | '到店等候中' | '到店美容中' | '洗完等候中' | '已回家( 房 )' ;
 
 // 限制 : 服務狀態 _ 類型
 export type Service_Status = '已到店' | '預約_今天' | '預約_未來' ;
 
 
 // 限制 : 主要服務 _ 類型
-export type Service_Type = '基礎' | '洗澡' | '美容' | '安親' | '一般安親' | '住宿_提早抵達' | '住宿_延後帶走' | '住宿' ;
+export type Service_Type = '基礎' | '洗澡' | '美容' | '安親' | '一般安親' | '住宿_提早抵達' | '住宿_延後帶走' | '住宿' | '方案' ;
 
 // 限制 : 主要服務 _ 類型 ( for API )
 export type Service_Type_Api = 'basics' | 'bathes' | 'beauties' ;
@@ -21,13 +21,15 @@ export interface Edit_Form_Type {
 
     register? : any ;
     setValue? : any ;
+    watch?    : any ;
     control?  : any ;
     errors?   : any ;
     isDirty?  : boolean ;
     isValid?  : boolean ;
     current?  : string ;
 
-    pet_Species_id? : any ; // 寵物資料表( pet_species ) id ( for 編輯 _ 寵物資料 )
+    pet_Serial?     : string ; // 寵物編號                     ( for 編輯 _ 寵物資料 )    
+    pet_Species_id? : any ;    // 寵物資料表( pet_species ) id ( for 編輯 _ 寵物資料 )
 
 }
 
@@ -37,7 +39,7 @@ export interface Edit_Form_Type {
 
 // 所有服務共用 ?? ( for 新增 _ 服務單 Create_Data_Container.tsx --> 再確認 2021.07.21 )
 // 服務單表單欄位( Create_Service / Update_Service )
-export interface IService {
+export interface IService extends ICustomer_Relative {
 
     // # 基本資料 ( Service_Info )
     shop_Q_Code     : string ; // 到店當天處理碼 ( Q )
@@ -45,10 +47,14 @@ export interface IService {
     service_Type    : string ; // 服務類型(基礎、洗澡、美容)
     shop_Status     : string ; // 到店狀態 ( 到店等候中' | '到店美容中' | '洗完等候中' | '已回家( 房 )' )
 
+    appointment_Status : string ; // 預約狀態 ( '尚未到店' | '到店等候中' )
 
     expected_Arrive : string ; // 預計 _ 到店時間 ( 預約 )
     expected_Leave  : string ; // 預計 _ 離店時間 ( 預約 )
     actual_Arrive   : string ; // 實際 _ 到店時間
+
+    // # 客戶
+    customer_Id     : string ;
 
 
     // # 客戶交代、物品 ( Customer_Note ) -------------------------------------------------
@@ -85,6 +91,7 @@ export interface IService {
 
     // # 住宿單資料 ( Lodge_Form )
     lodge_Room_Type     : string ;
+    lodge_Room_Number   : string ;
 
     lodge_CheckIn_Date  : any ;
     lodge_CheckIn_Time  : string ;
@@ -92,9 +99,9 @@ export interface IService {
     lodge_CheckOut_Date : any ;
     lodge_CheckOut_Time : string ;
 
-
     // # 接送費用
     pickup_Fee          : number ;
+
 
     // # 服務明細 ( Summary_Fee )
 
@@ -103,14 +110,11 @@ export interface IService {
     admin_User     : string ; // 櫃台行政人員
     admin_Note     : string ; // 櫃台行政人員 _ 備註
 
-
     // # 美容師相關
 
     beauty_User    : string ; // 經手美容師
     beauty_Note    : string ; // 美容師 _ 備註
     beauty_Star    : string ; // 美容師 _ 評分
-
-
 
     // # 到店、離店方式 ( Ex. 主人送來、接走 )
     way_Arrive      : string ;
@@ -120,18 +124,24 @@ export interface IService {
     wait_Time       : string ;
     wait_Way        : string ;
 
+}
 
 
+// 服務異常處理紀錄
+export interface IServiceError {
 
-
+    return_Amount     : number ;  // 退費金額
+    handle_Error_Note : string ;  
 
 }
 
 
-// 服務單 _ 基礎資訊
+// 基礎資訊
 export interface IInfo {
 
-    service_Status  : Service_Status ;  // 服務狀態 _ 類型 : 已到店、預約_今天、預約_未來
+    service_Status  : Service_Status ;  // 服務狀態 ( 已到店、預約_今天、預約_未來 )
+    shop_status     : Shop_Status ;     // 到店狀態 ( 尚未到店、到店等候中、到店美容中 ... )
+
     service_Date    : string ;          // 到店服務日期
     shop_Q_Code     : string ;          // 到店當天處理碼 ( Q )
 
@@ -145,8 +155,61 @@ export interface IInfo {
 }
 
 
-// 客戶表單欄位( Create_Customer / Update_Customer )
-export interface ICustomer {
+// 客戶 ( 關係人 ) 表單欄位( Create_Customer / Update_Customer )
+export interface ICustomer_Relative {
+
+
+    // 目前僅限制 5 個關係人，再觀察 ( 2021.11.17 )
+
+    customer_Relative_Name_1      : string ;
+    customer_Relative_Type_1      : string ;
+    customer_Relative_Family_1    : string ;
+    customer_Relative_Cellphone_1 : string ;
+    customer_Relative_Telephone_1 : string ;
+    customer_Relative_Sex_1       : string ;  
+    customer_Relative_Id_1        : string ;  
+    customer_Relative_Address_1   : string ;
+
+    customer_Relative_Name_2      : string ;
+    customer_Relative_Type_2      : string ;
+    customer_Relative_Family_2    : string ;
+    customer_Relative_Cellphone_2 : string ;
+    customer_Relative_Telephone_2 : string ;
+    customer_Relative_Sex_2       : string ;  
+    customer_Relative_Id_2        : string ;  
+    customer_Relative_Address_2   : string ;
+
+    customer_Relative_Name_3      : string ;
+    customer_Relative_Type_3      : string ;
+    customer_Relative_Family_3    : string ;
+    customer_Relative_Cellphone_3 : string ;
+    customer_Relative_Telephone_3 : string ;
+    customer_Relative_Sex_3       : string ;  
+    customer_Relative_Id_3        : string ;  
+    customer_Relative_Address_3   : string ;
+
+    customer_Relative_Name_4      : string ;
+    customer_Relative_Type_4      : string ;
+    customer_Relative_Family_4    : string ;
+    customer_Relative_Cellphone_4 : string ;
+    customer_Relative_Telephone_4 : string ;
+    customer_Relative_Sex_4       : string ;  
+    customer_Relative_Id_4        : string ;  
+    customer_Relative_Address_4   : string ;
+
+    customer_Relative_Name_5      : string ;
+    customer_Relative_Type_5      : string ;
+    customer_Relative_Family_5    : string ;
+    customer_Relative_Cellphone_5 : string ;
+    customer_Relative_Telephone_5 : string ;
+    customer_Relative_Sex_5       : string ;  
+    customer_Relative_Id_5        : string ;  
+    customer_Relative_Address_5   : string ;
+
+}
+
+// 客戶 ( 個人 ) 表單欄位( Create_Customer / Update_Customer )
+export interface ICustomer_Individual {
 
     customer_Id                 : string ;
     customer_Name               : string ;
@@ -155,28 +218,32 @@ export interface ICustomer {
     customer_Line               : string ;
     customer_Email              : string ;
     customer_Address            : string ;
-
-    customer_Relative_Name      : string ;
-    customer_Relative_Type      : string ;
-    customer_Relative_Family    : string ;
-    customer_Relative_Cellphone : string ;
-    customer_Relative_Telephone : string ;
+    customer_Sex                : string ;
+    customer_P_Note             : string ;
 
 }
+
+
+// 客戶 ( 個人 + 關係人 ) 表單欄位( Create_Customer / Update_Customer )
+export interface ICustomer extends ICustomer_Individual , ICustomer_Relative {
+
+}
+
 
 // 寵物表單欄位( Create_Pet / Update_Pet )
 export interface IPet {
 
-    // # 寵物資料
+    // # 寵物資料 ( 8 )
     pet_Serial         : string ;
     pet_Name           : string ;
     pet_Species        : string ;
     pet_Sex            : string ;
     pet_Color          : string ;
     pet_Weight         : string ;
+    pet_Size           : string ;
     pet_Age            : string ;
 
-    // * 調查資料 ( 單選 )
+    // * 調查資料 ( 單選 8)
     injection          : string ;
     flea               : string ;
     ligate             : string ;
@@ -186,23 +253,61 @@ export interface IPet {
     drug               : string ;
     bite               : string ;
 
-    // * 調查資料 ( 複選 : 轉為陣列 )
+    // * 調查資料 ( 複選 : 轉為陣列 4 )
     health             : string [] ;
     feed               : string [] ;
     toilet             : string [] ;
     ownerProvide       : string [] ;
 
+    // * 備註 ( 1 )
     pet_Note           : string ;
 
 }
 
 
+// # 服務單 ( 基礎、洗澡、美容.. ) 共同欄位 ---------------------------
+
+
+
+
+
+
+
+// ---------------------------
+
+// @ 基礎單
+export interface IBasic extends IInfo , ICustomer , IPet {
+
+
+
+
+}
+
+
+// @ 洗澡單
+export interface IBath extends IInfo , ICustomer , IPet {
+
+
+
+
+
+}
+
+
+// @ 美容單
+export interface IBeauty extends IInfo , ICustomer , IPet {
+
+
+
+
+
+}
 
 
 
 // ******** 住宿 ********
 
-export interface ILodge {
+export interface ILodge{
 
     lodgeData          : any[] ;  // 住宿資料
 
@@ -316,12 +421,38 @@ export interface IEmployee {
     relative_TelPhone_3        : string ;
     relative_Address_3         : string ;
 
-
 }
 
 
 
 
+// 方案資料
+export interface IPlan {
+
+    plan_Type_Name         : string ;
+    plan_Type_Bath_Num     : number ;
+    plan_Type_Beauty_Num   : number ;
+    plan_Type_Price        : number ;
+    plan_Type_Period       : number ;
+    plan_Type_Note         : string ;
+  
+}
+
+
+export interface ICustom_Plan {
+
+    plan_Price_Method    : string ;
+
+    plan_Type_Name       : string ;
+
+    plan_Type_Bath_Num   : number | string ;
+    plan_Type_Beauty_Num : number | string ;
+    plan_Type_Period     : number ;
+    plan_Type_Price      : number | string ;
+
+    plan_Type_Note       : string ;
+
+}
 
 
 

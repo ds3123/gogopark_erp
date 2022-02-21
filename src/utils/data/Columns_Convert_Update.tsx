@@ -31,6 +31,8 @@ const get_Common_Obj = ( data : any ) : any => {
               customer_object_other : data['customer_Object_Other'] ,                                    // 自備物品 ( 其他 )
               customer_note         : data['customer_Note'] ? data['customer_Note'].join(',') : '' ,     // 主人交代 ( 可複選選項 )
               admin_customer_note   : data['admin_Customer_Note'] ,  
+             
+              amount_paid           : data['amount_Paid'] ? data['amount_Paid'] : 0         // 已付金額    
 
            }
 

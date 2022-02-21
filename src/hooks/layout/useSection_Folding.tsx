@@ -1,12 +1,12 @@
 
 
-import React, {useEffect, useState} from "react"
+import { useEffect , useState } from "react"
 
 /*
-    @ 收折 / 展開 _ 區塊資訊
+    @ 收折 / 展開 _ 區塊資訊 :
       * 回傳 :
-       ~ 是否展開狀態 ( Boolean )
-       ~ 點選元件     ( JSXElement )
+        ~ 是否展開狀態 ( Boolean )
+        ~ 點選元件    ( JSXElement )
 
  */
 const useSection_Folding = ( defaultFolding? : boolean ) => {
@@ -14,7 +14,7 @@ const useSection_Folding = ( defaultFolding? : boolean ) => {
     const [ is_folding , set_Is_Folding ] = useState<any>( defaultFolding ?  true : false );
 
 
-    useEffect(( ) => {
+    useEffect( () => {
 
         set_Is_Folding( defaultFolding )
 

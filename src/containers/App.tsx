@@ -20,7 +20,6 @@ function App(){
   // 利用 Children API，組合 : <Container/> 與 各個路徑下的頁面元件
   const make_Component = ( element : JSX.Element ) => ( <Container> { element } </Container> ) ;
 
-
   return <BrowserRouter>
 
             <Switch>
@@ -48,11 +47,6 @@ function App(){
 
                 { /* 管理區 */ }
                 <Route path="/management" component = { () => make_Component( <Management /> ) } />
-
-
-
-
-
 
             </Switch>
 

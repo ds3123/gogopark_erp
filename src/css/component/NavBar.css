@@ -1,0 +1,21 @@
+/* Error: Undefined mixin.
+ *    ,
+ * 23 | /     @include pc-width {
+ * 24 | | 
+ * 25 | |       top:0px;
+ * 26 | |       left: 2%;
+ * 27 | | 
+ * 28 | \     }
+ *    '
+ *   navbar.scss 23:5  root stylesheet */
+
+body::before {
+  font-family: "Source Code Pro", "SF Mono", Monaco, Inconsolata, "Fira Mono",
+      "Droid Sans Mono", monospace, monospace;
+  white-space: pre;
+  display: block;
+  padding: 1em;
+  margin-bottom: 1em;
+  border-bottom: 2px solid black;
+  content: "Error: Undefined mixin.\a    \2577 \a 23 \2502  \250c      @include pc-width {\a 24 \2502  \2502  \a 25 \2502  \2502        top:0px;\a 26 \2502  \2502        left: 2%;\a 27 \2502  \2502  \a 28 \2502  \2514      }\a    \2575 \a   navbar.scss 23:5  root stylesheet";
+}

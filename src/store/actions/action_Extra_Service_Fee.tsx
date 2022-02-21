@@ -3,6 +3,20 @@ import React from "react" ;
 import { Dispatch } from "redux";
 
 
+// # 設定 _ 各項服務自行增減費用
+export const set_Self_Adjust_Amount = ( amount : number | string ) => {
+
+    return ( dispatch : Dispatch ) => {
+
+                dispatch({
+                                  type   : "SET_SELF_ADJUST_AMOUNT" ,
+                                  amount : amount
+                                }) ;
+
+            } ;
+
+} ;
+
 
 // # 設定 _ 加價項目費用
 export const set_Extra_Item_Fee = ( price : number | string ) => {

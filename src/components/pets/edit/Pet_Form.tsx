@@ -1,314 +1,227 @@
-import React, {FC, useEffect, useState} from "react"
+import { FC , useEffect , useState } from "react"
 
 import { Edit_Form_Type } from "utils/Interface_Type"
 import { Input } from "templates/form/Input";
 import { useRead_Sort_Species } from "hooks/ajax_crud/useAjax_Read";
-import { get_Today } from "utils/time/date";
-import { get_RandomInt } from "utils/number/number";
 
 import useSection_Folding from "hooks/layout/useSection_Folding" ;
-import axios from "utils/axios" ;
 
 // Redux
 import { useDispatch , useSelector } from "react-redux";
-import { set_IsExisting_Pet , set_Current_Species_Select_Id } from "store/actions/action_Pet" ;
-import { set_Bath_Price } from "store/actions/action_Bath"
-import { set_Beauty_Price } from "store/actions/action_Beauty"
-import { set_Current_Create_Service_Type } from "store/actions/action_Service"
+import { set_IsExisting_Pet , 
+         set_Current_Species_Select_Id , 
+         set_Current_Pet_Size , 
+         get_Current_Pet_Species_Num ,
+         set_Pet_Serial_Input ,
+         get_Pet_Service_Records , 
+         set_Current_Pet
+        } from "store/actions/action_Pet" ;
 
-import Pet_Service_Price from "components/pets/edit/info/Pet_Service_Price"
+import { set_Is_Show_Section_Services } from "store/actions/action_Global_Layout"
 import Customer_Pets from "components/pets/edit/info/Customer_Pets";
+import Pet_Services_Records from "components/pets/edit/info/Pet_Services_Records";
+import { useVerify_Required_Columns_Pet } from "hooks/layout/useVerify_Columns" 
+import { Service_Type } from "utils/Interface_Type"
+import { set_Pet_Service_Records } from "store/actions/action_Pet"
 
+
+type serviceType = '基礎' | '洗澡' | '美容' | '安親' | '住宿'
 
 
 { /* 寵物表單欄位  */}
-const Pet_Form : FC< Edit_Form_Type > = ( { register , setValue , errors , current, pet_Species_id } ) => {
+const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors , current  , pet_Species_id , pet_Serial } ) => {
 
-   const dispatch   = useDispatch() ;
-
-   // 取得 _ 所有寵物品種資料
-   const petSpecies = useRead_Sort_Species() ;
-
-   // 收折區塊
-   const { is_folding , Folding_Bt } = useSection_Folding( false ) ;
-
-   // 客戶單，目前所填入客戶的所有寵物
-   const current_Customer_Pets = useSelector(( state:any ) => state.Customer.Current_Customer_Pets ) ;
-
-   // 資料庫( 資料表 bath ) _ 該客戶有 : 洗澡單紀錄 ( for 判斷是否為 "初次洗澡" )
-   const Has_Bath_Records      = useSelector(( state:any ) => state.Customer.Has_Bath_Records ) ;
-
-   // 資料庫( 資料表 beauty ) _ 該客戶有 : 美容單紀錄
-   const Has_Beauty_Records    = useSelector(( state:any ) => state.Customer.Has_Beauty_Records ) ;
+    const dispatch = useDispatch() ;
 
 
-   //-------------------------------------------
+    // 是否顯示 : 詳細選項
+    const [ is_Detial , set_Is_Detial ] = useState( current ? false : true ) ;
 
-    // 目前所選擇品種 _ species 資料表的 id
-    const [ current_Species_Id , set_Current_Species_Id ] = useState( "" ) ;
+    // 寵物序號
+    const [ pet_Num , set_Pet_Num ] = useState( '' ) ;
 
-    // 目前所選擇品種 _ service_prices 資料表的服務價格
-    const [ current_Species_Prices , set_Current_Species_Prices ] = useState({
-                                                                                          first_Bath    : 0 , // 初次洗澡
-                                                                                          single_Bath   : 0 , // 單次洗澡
-                                                                                          month_Bath    : 0 , // 包月洗澡
-                                                                                          single_Beauty : 0 , // 單次美容
-                                                                                          month_Beauty  : 0 , // 包月美容
-                                                                                        }) ;
+    // 寵物品種名稱
+    const [ pet_Species_Name , set_Pet_Species_Name ] = useState( '' ) ;
 
-    // 目前服務類別
-    const [ current_Service , set_Current_Service ] = useState({
-                                                                            is_First_Bath    : false ,
-                                                                            is_Single_Bath   : false ,
-                                                                            is_Single_Beauty : false ,
-                                                                          }) ;
+    // # 監看 _ 必填欄位
+    useVerify_Required_Columns_Pet( watch ) ;
 
+    // 目前 資料表中( pet ) 已有某 "寵物品種" 數量
+    const current_Pet_Species_Num = useSelector( ( state : any ) => state.Pet.current_Pet_Species_Num ) ;
 
-    // 取得 _ 所選擇品種，相對應的各種服務價格
-    const get_Current_Species_Prices = ( species_Id : string ) => {
+    // 取得 _ 所有寵物品種資料
+    const petSpecies = useRead_Sort_Species() ;
 
-        axios.get( `/service_prices/show_specie_id_prices/${ species_Id }` ).then( res => {
+    // 收折區塊
+    const { is_folding , Folding_Bt } = useSection_Folding( false ) ;
 
-            const _data = res.data ;
+    // 客戶單，目前所填入客戶的所有寵物
+    const current_Customer_Pets = useSelector( ( state : any ) => state.Customer.Current_Customer_Pets ) ;
 
-            let priceArr : any = {
-                                    first_Bath    : 0 ,
-                                    single_Bath   : 0 ,
-                                    month_Bath    : 0 ,
-                                    single_Beauty : 0 ,
-                                    month_Beauty  : 0
-                                 } ;
+    // 變動處理 _ "品種" 下拉選單 
+    const get_Species_Id = ( species_Id : string ) => { 
+  
+       // 設定 _ 寵物品種 : 序號、名稱 
+       const mPet = petSpecies.filter( x => x['id'] === parseInt( species_Id ) )[0] as any ;  // 篩選出該寵物 
+       
+       if( mPet ){
+         set_Pet_Num( mPet['serial'] ) ;                                                         
+         set_Pet_Species_Name( mPet['name'] ) ;
+       }else{
+         set_Pet_Num( '' ) ; 
+       }
 
-            // 有資料
-            if( _data.length > 0 ){
+       // 先清空特定寵物的服務紀錄 ( 避免殘留，影響 Pet_Services_Records.tsx 中的 service_Records  )
+       dispatch( set_Pet_Service_Records( [] ) ) ;
+       
+       // 設定 _ 目前下拉選擇的品種 Id ( store )
+       dispatch( set_Current_Species_Select_Id( species_Id ) ) ;  
 
-                _data.forEach( ( x : any ) => {
-
-                    const sName  = x['service_name'] ;
-                    const sPrice = x['service_price'] ;
-
-                    if( sName === '初次洗澡優惠價格' ) priceArr['first_Bath']    = sPrice ;
-                    if( sName === '單次洗澡價格' )     priceArr['single_Bath']   = sPrice ;
-                    if( sName === '包月洗澡價格' )     priceArr['month_Bath']    = sPrice ;
-                    if( sName === '單次美容價格' )     priceArr['single_Beauty'] = sPrice ;
-                    if( sName === '包月美容價格' )     priceArr['month_Beauty']  = sPrice ;
-
-                }) ;
-
-                // # 設定 State
-                set_Current_Species_Prices({ ...current_Species_Prices ,
-                                                    first_Bath    : priceArr['first_Bath'] ,
-                                                    single_Bath   : priceArr['single_Bath'] ,
-                                                    month_Bath    : priceArr['month_Bath'] ,
-                                                    single_Beauty : priceArr['single_Beauty'] ,
-                                                    month_Beauty  : priceArr['month_Beauty'] ,
-                                                 }) ;
-
-                return false
-
-            }
-
-            // 沒有資料 ( 回復預設值 )
-            set_Current_Species_Prices({ ...current_Species_Prices ,
-                                                first_Bath    : 0 ,
-                                                single_Bath   : 0 ,
-                                                month_Bath    : 0 ,
-                                                single_Beauty : 0 ,
-                                                month_Beauty  : 0 ,
-            }) ;
+    } 
+        
+    // 變動處理 _ "體型" 下拉選單
+    const get_Pet_Size = ( size : string ) => dispatch( set_Current_Pet_Size( size ) ) ;
 
 
-        })
+    // 帶入 _ 寵物欄位舊資料
+    const fill_Pet_Columns = ( pet : any ) => {
+        
+        // * 取得 _ 該寵物 pet_species 資料表資料 ( 為取得品種 id )
+        const _pet   = petSpecies.filter( x => x['name'] === pet['species'] )[0] ; 
+        const config = { shouldValidate : true , shouldDirty : true } ;
+
+        // 基本資料
+        setValue( "pet_Serial"   , pet['serial']  , config ) ;
+        setValue( "pet_Name"     , pet['name']    , config ) ;
+
+        setValue( "pet_Species"  , _pet ? _pet['id'] : '' , config ) ;
+
+        setValue( "pet_Sex"      , pet['sex']     , config ) ;
+        setValue( "pet_Color"    , pet['color']   , config ) ;
+        setValue( "pet_Weight"   , pet['weight']  , config ) ;
+        setValue( "pet_Age"      , pet['age']     , config ) ;
+        setValue( "pet_Size"     , pet['size'] ? pet['size'] : '請選擇' , config ) ;
+
+        // 調查資料 ( 單選 )
+        setValue( "injection" , pet['injection'] , config ) ;
+        setValue( "flea"      , pet['flea']      , config ) ;
+        setValue( "ligate"    , pet['ligate']    , config ) ;
+        setValue( "chip"      , pet['chip']      , config ) ;
+        setValue( "infection" , pet['infection'] , config ) ;
+        setValue( "together"  , pet['together']  , config ) ;
+        setValue( "drug"      , pet['drug']      , config ) ;
+        setValue( "bite"      , pet['bite']      , config ) ;
+
+        // 調查資料 ( 複選 : 轉為陣列 ) 
+        setValue( "health"       , pet['health']       ? pet['health'].split(',')       : [] , config ) ;
+        setValue( "feed"         , pet['feed']         ? pet['feed'].split(',')         : [] , config ) ;
+        setValue( "toilet"       , pet['toilet']       ? pet['toilet'].split(',')       : [] , config ) ;
+        setValue( "ownerProvide" , pet['ownerProvide'] ? pet['ownerProvide'].split(',') : [] , config ) ;
+
+        // 備註
+        setValue( "pet_Note" , pet['note'] , config ) ;
 
 
-
-    } ;
-
-    // 變動處理 _ 品種下拉選單
-    const get_Species_Id = ( species_Id : string ) => {
+    } ;  
 
 
-        dispatch( set_Current_Species_Select_Id( species_Id ) ) ;  // Redux ( for Summary_Fee 付款方式為包月洗澡、美容時，設定所選擇品種  )
-        set_Current_Species_Id( species_Id ) ;                     // State
+    // 點選 _ 寵物按鈕
+    const click_Pet_Button = ( pet : any ) => {
+    
+        // * 取得 _ 該寵物 pet_species 資料表資料 ( 為取得品種 id )
+        const _pet   = petSpecies.filter( x => x['name'] === pet['species'] )[0] ;
+        const pet_Id = _pet ? _pet['id'] : '' ;
+        
+        // 帶入 _ 寵物欄位舊資料
+        fill_Pet_Columns( pet ) ;
 
-        if( species_Id === '請選擇' ) return false ;
+        // 查詢 _ 該寵物特定服務的紀錄
+        dispatch( get_Pet_Service_Records( current as serviceType , pet['serial'] , pet_Id ) ) ;
 
-        // 取得 _ 所選擇品種，相對應的各種服務價格
-        get_Current_Species_Prices( species_Id ) ;
+        // 設定 : 目前所點選 : 寵物
+        dispatch( set_Current_Pet( pet ) ) ;
 
-    } ;
+        // 設定 : 資料庫，有 _ 該寵物
+        dispatch( set_IsExisting_Pet( true ) ) ;
 
-    // 點選 _ 帶入舊寵物資料
-    const set_Pet_Data = ( pet : any ) => {
+        // for Summary_Fee 付款方式為 "包月洗澡"、"包月美容" 時，設定 _ 所選擇品種 ( 資料表 id )
+        dispatch( set_Current_Species_Select_Id( pet_Id ) ) ;
 
-          // * 取得 _ 該寵物 pet_species 資料表資料 ( 為取得品種 id )
-          const _pet = petSpecies.filter( x => x['name'] === pet['species'] )[0] ;
-
-          try{
-
-              // 設定 store : 資料庫，有 _ 該寵物
-              dispatch( set_IsExisting_Pet( true ) ) ;
-
-              // for Summary_Fee 付款方式為 "包月洗澡"、"包月美容" 時，設定 _ 所選擇品種 ( 資料表 id )
-              dispatch( set_Current_Species_Select_Id( _pet['id'] ) ) ;
-
-              // # 帶入資料時，設定提示 : 初次洗澡 / 單次洗澡 / 單次美容
-
-              // 初次洗澡
-              const is_First_Bath    = current === '洗澡' && !Has_Bath_Records && ( _pet['id'] && _pet['id'] !== '請選擇' ) as boolean ;
-
-              // 單次洗澡
-              const is_Single_Bath   = current === '洗澡' && Has_Bath_Records && ( _pet['id'] && _pet['id'] !== '請選擇' ) as boolean ;
-
-              // 單次美容
-              const is_Single_Beauty = current === '美容' && ( _pet['id'] && _pet['id'] !== '請選擇' ) as boolean ;
-
-              set_Current_Service({ ...current_Service ,
-                                             is_First_Bath    : is_First_Bath ,
-                                             is_Single_Bath   : is_Single_Bath ,
-                                             is_Single_Beauty : is_Single_Beauty
-                                        }) ;
-
-              // 取得 _ 所選擇品種，相對應的各種服務價格
-              get_Current_Species_Prices( _pet['id'] ) ;
-
-
-              // ----------------------------------------------------------------
-
-              // 基本資料
-              setValue( "pet_Serial"   , pet['serial']  , { shouldValidate: true } ) ;
-              setValue( "pet_Name"     , pet['name']    , { shouldValidate: true } ) ;
-
-              setValue( "pet_Species"  , _pet['id'] , { shouldValidate: true } ) ;
-
-              setValue( "pet_Sex"      , pet['sex']     , { shouldValidate: true } ) ;
-              setValue( "pet_Color"    , pet['color']   , { shouldValidate: true } ) ;
-              setValue( "pet_Weight"   , pet['weight']  , { shouldValidate: true } ) ;
-              setValue( "pet_Age"      , pet['age']     , { shouldValidate: true } ) ;
-
-              // 調查資料 ( 單選 )
-              setValue( "injection" , pet['injection'] , { shouldValidate: true } ) ;
-              setValue( "flea"      , pet['flea']      , { shouldValidate: true } ) ;
-              setValue( "ligate"    , pet['ligate']    , { shouldValidate: true } ) ;
-              setValue( "chip"      , pet['chip']      , { shouldValidate: true } ) ;
-              setValue( "infection" , pet['infection'] , { shouldValidate: true } ) ;
-              setValue( "together"  , pet['together']  , { shouldValidate: true } ) ;
-              setValue( "drug"      , pet['drug']      , { shouldValidate: true } ) ;
-              setValue( "bite"      , pet['bite']      , { shouldValidate: true } ) ;
-
-              // 調查資料 ( 複選 : 轉為陣列 )
-              setValue( "health"       , pet['health'] ? pet['health'].split(',') : []             , { shouldValidate: true } ) ;
-              setValue( "feed"         , pet['feed'] ? pet['feed'].split(',') : []                 , { shouldValidate: true } ) ;
-              setValue( "toilet"       , pet['toilet'] ? pet['toilet'].split(',') : []             , { shouldValidate: true } ) ;
-              setValue( "ownerProvide" , pet['ownerProvide'] ? pet['ownerProvide'].split(',') : [] , { shouldValidate: true } ) ;
-
-              // 備註
-              setValue( "pet_Note" , pet['note'] , { shouldValidate: true } ) ;
-
-
-          }catch(error){
-
-              console.log( "寵物品種資料，發生錯誤" )
-
-          }
+        // 設定 _ 顯示 : 服務整體區塊 ( 新增表單 )
+        dispatch( set_Is_Show_Section_Services( true ) ) ;    
 
     } ;
 
 
-    // 設定 _ 隨機寵物編號 ( '新增'時，才設定 )
-    useEffect(( ) => {
+    // 點選 _ 顯示詳細選項
+    const click_Detail_Mode = ( bool : boolean ) => set_Is_Detial( !bool )
+  
 
-        if( current ){
-            const randomId = `P_${ get_Today() }_${ get_RandomInt(1000) }` ;
-            dispatch( set_IsExisting_Pet( false ) ) ;    // 設定 store : 資料庫，沒有 _ 該寵物
-            setValue( "pet_Serial" , randomId  ) ;            // 設定 input 欄位值
+    // 設定 _ 寵物編號 ( for【 新增 】 )
+    useEffect( () => {
+
+        if( current && pet_Num ){
+
+           // 設定 store : 資料庫，沒有 _ 該寵物
+           dispatch( set_IsExisting_Pet( false ) ) ; 
+
+           // 設定 _ 寵物編號 
+           dispatch( set_Pet_Serial_Input( pet_Num , current_Pet_Species_Num , setValue ) ) ;
+
         }
 
-    } , [] ) ;
+        // 新增狀態，且下拉品種為 "請選擇" --> 清空寵物編號
+        if( current && !pet_Num ) setValue( "pet_Serial" , "" ) ;
+        
+
+    } , [ pet_Num , current_Pet_Species_Num ] ) ;
 
 
-    // 設定 _ 目前服務類別
-    useEffect(() => {
+    useEffect( () => { 
+    
+      if( pet_Species_Name ){
 
-      // # 設定 _ 目前服務類別 : 所屬性質 ( 初次洗澡、單次洗澡、單次美容 )
+         dispatch( get_Current_Pet_Species_Num( pet_Species_Name ) )
 
-      // 初次洗澡
-      const is_First_Bath    = current === '洗澡' && !Has_Bath_Records && ( current_Species_Id && current_Species_Id !== '請選擇' ) as boolean  ;
+      }  
 
-      // 單次洗澡
-      const is_Single_Bath   = current === '洗澡' && Has_Bath_Records && ( current_Species_Id && current_Species_Id !== '請選擇' ) as boolean ;
+    } , [ pet_Species_Name ] ) ;
 
-      // 單次美容 ( 條件再檢查 2021.07.24 )
-      const is_Single_Beauty = current === '美容' && ( current_Species_Id && current_Species_Id !== '請選擇' )  as boolean  ;
+    /*
+         # 【 編輯 】設定 : " 品種 " 下拉選項( Ajax 取得 )
+           * 因 Pet_Form 載入時，Ajax 資料尚未取得( 若以 React Hook Form 的 defaultValues，無法成功設定 _ 預設值 )
+           * 需取得資料後，再以 setValue() 單獨設定預設值
+    */
+    useEffect( () => {
 
-      set_Current_Service({ ...current_Service ,
+       if( !current && pet_Species_id ){
 
-                                    is_First_Bath    : is_First_Bath ,
-                                    is_Single_Bath   : is_Single_Bath ,
-                                    is_Single_Beauty : is_Single_Beauty ,
+           // 延後 300 ms 設定 _ 品種預設值
+           setTimeout( () => {
 
-                                }) ;
+             setValue( 'pet_Species' , pet_Species_id ,  { shouldValidate : true }  ) ;
 
-    } ,[ current , current_Species_Id , Has_Bath_Records ] ) ;
+           } , 300 ) ;
 
-
-    // # 設定 _ 價格 ( for 洗澡 / 美容標題列、結算價格 )
-    useEffect(( ) => {
-
-        // 初始還原
-        dispatch( set_Bath_Price( 0 ) ) ;
-        dispatch( set_Beauty_Price( 0 ) ) ;
-        dispatch( set_Current_Create_Service_Type('' ) ) ;
-
-        // 初次洗澡
-        if( current_Service['is_First_Bath'] ){
-            dispatch( set_Bath_Price( current_Species_Prices['first_Bath'] ) ) ;
-            dispatch( set_Current_Create_Service_Type( '初次洗澡優惠' ) ) ;
-        }
-
-        // 單次洗澡
-        if( current_Service['is_Single_Bath'] ){
-            dispatch( set_Bath_Price( current_Species_Prices['single_Bath'] ) ) ;
-            dispatch( set_Current_Create_Service_Type( '單次洗澡' ) ) ;
-        }
-
-        // 單次美容
-        if( current_Service['is_Single_Beauty'] ){
-            dispatch( set_Beauty_Price( current_Species_Prices['single_Beauty'] ) ) ;
-            dispatch( set_Current_Create_Service_Type( '單次美容' ) ) ;
-        }
-
-    } ,[ current_Service , current_Species_Prices ] ) ;
-
-    //
-    useEffect(( ) => {
-
-       /*
-          # for 編輯 _ 寵物 時，設定 : " 品種 " 下拉選項( Ajax 取得 )
-            * 因 Pet_Form 載入時，Ajax 資料尚未取得( 若以 React Hook Form 的 defaultValues，無法成功設定 _ 預設值 )
-            * 需取得資料後，再以 setValue() 單獨設定預設值
-       */
-
-       if( !current && pet_Species_id )  setValue('pet_Species' , pet_Species_id ) ;
+       }
 
     } , [ pet_Species_id ] ) ;
 
 
    return <>
-
+               
                { /* 寵物基本資料 */ }
                <label className="label relative" style={{ fontSize : "1.3em" }}>
 
                    <i className="fas fa-dog"></i> &nbsp; 寵物資料
 
-                   { Folding_Bt } { /* 收折鈕 */ }
+                   { Folding_Bt } { /* 收折鈕 */ } &nbsp; &nbsp;
 
-                   { /* # 目前服務狀態 ( 初次洗澡 | 單次洗澡 | 單次美容 ) ，相對應 : 服務價格  */ }
-                   <Pet_Service_Price current_Service={ current_Service } current_Species_Prices={ current_Species_Prices } />
+                   { /* 寵物服務紀錄 */ }  
+                   <Pet_Services_Records current = { current as Service_Type } />  
 
                    { /* 客戶所有寵物 */ }
-                   <Customer_Pets current={ current} current_Customer_Pets={ current_Customer_Pets } set_Pet_Data={ set_Pet_Data } />
-
+                   <Customer_Pets current={ current } current_Customer_Pets={ current_Customer_Pets } click_Pet_Button = { click_Pet_Button } />
 
                </label> <br/>
 
@@ -318,17 +231,6 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , setValue , errors , curre
                    <>
 
                        <div className="columns is-multiline  is-mobile">
-
-                           { /* 編號 */ }
-                           <div className=  'column is-3-desktop'  >
-
-                               <p className="relative"> 編號  </p>
-                               <div className="control has-icons-left" >
-                                   <span className="icon is-small is-left"> <i className="fas fa-list-ol"></i> </span>
-                                   <input  className="input" type='text' { ...register( 'pet_Serial' ) }    />
-                               </div>
-
-                           </div>
 
                            { /* 名字 */ }
                            <Input type="text" name="pet_Name" label="名 字" register={register} error={errors.pet_Name}
@@ -343,29 +245,52 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , setValue , errors , curre
 
                                    <div className="select">
 
-                                       <select {...register("pet_Species")} onChange={ e => get_Species_Id(e.target.value)}>
-                                           <option value="請選擇">請選擇</option>
+                                       <select { ...register("pet_Species") } onChange={ e => get_Species_Id( e.target.value  ) } >
+
+                                           <option value="請選擇"> 請選擇 </option>
                                            {
-                                               petSpecies.map((x, y) => {
+                                               petSpecies.map( ( x , y ) => <option value = { x['id'] } key = { y } >
+                                                                               { x['serial'] } _ { x['name'] }  { x['character'] ? `( ${ x['character'] } )` : '' }
+                                                                            </option> 
 
-                                                   return <option value = { x['id'] }
-                                                                  key   = { y } >
-                                                                  { x['serial'] } _ { x['name'] }  { x['character'] ? `( ${ x['character'] } )` : '' }
-                                                          </option> ;
-
-                                               })
+                                                             )
                                            }
+
                                        </select>
+
                                    </div>
 
                                    <div className="icon is-small is-left"> <i className="fas fa-cat"></i> </div>
 
                                </div>
 
-                           </div>
+                            </div>
+
+
+                            { /* 編號 */ }
+                            <div className=  'column is-4-desktop required'  >
+
+                               <p className="relative"> 編號 ( 由左側 <b>品種</b> 下拉選項自動產生 )  </p>
+
+                               { current &&
+
+                                    <div className="control has-icons-left" >
+                                        <span className="icon is-small is-left"> <i className="fas fa-list-ol"></i> </span>
+                                        <input className="input" type='text' { ...register( 'pet_Serial' ) } />
+                                    </div>
+
+                               }
+
+                                { !current &&
+
+                                      <b className="fDblue f_13 relative" style={{ top:"3px" }}> { pet_Serial } </b>
+
+                                }
+
+                            </div>
 
                            { /* 性別  */ }
-                           <div className="column is-3-desktop">
+                           <div className="column is-2-desktop">
 
                                <p> 性 別 &nbsp; <b style={{color: "red"}}> {errors.pet_Sex?.message} </b></p>
 
@@ -388,12 +313,41 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , setValue , errors , curre
 
                            </div>
 
-                           <Input type="text" name="pet_Color" label="毛 色" register={register} error={errors.pet_Color}
+
+                           <Input type="text"   name="pet_Color"  label="毛 色"      register={register} error={errors.pet_Color}
                                   icon="fas fa-eye-dropper" asterisk={false} columns="3" />
-                           <Input type="text" name="pet_Weight" label="體 重 (kg)" register={register} error={errors.pet_Weight}
-                                  icon="fas fa-weight" asterisk={false} columns="3" />
-                           <Input type="text" name="pet_Age" label="年 紀 (歲)" register={register} error={errors.pet_Age}
-                                  icon="fas fa-pager" asterisk={false} columns="3" />
+
+                           <Input type="number" name="pet_Age"    label="年 紀 (歲)" register={register} error={errors.pet_Age}
+                                  icon="fas fa-pager"       asterisk={false} columns="3" />
+
+                           <Input type="number" name="pet_Weight" label="體 重 (kg)" register={register} error={errors.pet_Weight}
+                                  icon="fas fa-weight"      asterisk={false} columns="3" />
+
+
+                           { /* 體型 */ }
+                           <div className="column is-3-desktop required">
+
+                               <p> 體 型 &nbsp; <b style={{color: "red"}}> {errors.pet_Size?.message} </b></p>
+
+                               <div className="control has-icons-left">
+
+                                   <div className="select">
+
+                                       <select {...register("pet_Size")} onChange = { ( e ) => get_Pet_Size( e.target.value ) }>
+                                           <option value="請選擇"> 請選擇                   </option>
+                                           <option value="小型犬"> 小型犬 ( 3 kg 以下 )     </option>
+                                           <option value="中型犬"> 中型犬 ( 3-10 kg )       </option>
+                                           <option value="大型犬"> 大型犬 ( 11-15 kg )      </option>
+                                           <option value="特大型犬"> 特大型犬 ( 16 kg 以上 ) </option>
+                                       </select>
+
+                                   </div>
+
+                                   <div className="icon is-small is-left"> <i className="fas fa-expand"></i> </div>
+
+                               </div>
+
+                            </div>
 
                        </div>
 
@@ -402,119 +356,152 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , setValue , errors , curre
                        { /* Radio 單選 */}
                        <div className="columns is-multiline  is-mobile">
 
-                           <div className="column is-6-desktop">
-                               <b> 每年預防注射 : </b> &nbsp;
-                               <input type="radio" value="有"     {...register("injection")} /> 有    &nbsp; &nbsp;
-                               <input type="radio" value="無"     {...register("injection")} /> 無    &nbsp; &nbsp;
-                               <input type="radio" value="不確定" {...register("injection")} /> 不確定
-                           </div>
+                           <div className="column is-11-desktop required">
 
-                           <div className="column is-6-desktop">
-                               <b> 滴除蚤 : </b> &nbsp;
-                               <input type="radio" value="有"     {...register("flea")} /> 有    &nbsp; &nbsp;
-                               <input type="radio" value="無"     {...register("flea")} /> 無    &nbsp; &nbsp;
-                               <input type="radio" value="代送獸醫除蚤" {...register("flea")} /> 代送獸醫除蚤 &nbsp; &nbsp;
-                               <input type="radio" value="不確定" {...register("flea")} /> 不確定
-                           </div>
-
-                           <div className="column is-6-desktop">
-                               <b> 結 紮 : </b> &nbsp;
-                               <input type="radio" value="有"     {...register("ligate")} /> 有     &nbsp; &nbsp;
-                               <input type="radio" value="無"     {...register("ligate")} /> 無     &nbsp; &nbsp;
-                               <input type="radio" value="發情中" {...register("ligate")} /> 發情中 &nbsp; &nbsp;
-                               <input type="radio" value="不確定" {...register("ligate")} /> 不確定
-                           </div>
-
-                           <div className="column is-6-desktop">
-                               <b> 晶 片 : </b> &nbsp;
-                               <input type="radio" value="有"     {...register("chip")} /> 有    &nbsp; &nbsp;
-                               <input type="radio" value="無"     {...register("chip")} /> 無    &nbsp; &nbsp;
-                               <input type="radio" value="不確定" {...register("chip")} /> 不確定
-                           </div>
-
-                           <div className="column is-6-desktop">
-                               <b> 傳染病 : </b> &nbsp;
-                               <input type="radio" value="有"     {...register("infection")} /> 有    &nbsp; &nbsp;
-                               <input type="radio" value="無"     {...register("infection")} /> 無    &nbsp; &nbsp;
-                               <input type="radio" value="不確定" {...register("infection")} /> 不確定
-                           </div>
-
-                           <div className="column is-6-desktop">
-                               <b> 與其他狗共處 : </b> &nbsp;
-                               <input type="radio" value="可"     {...register("together")} /> 可    &nbsp; &nbsp;
-                               <input type="radio" value="否"     {...register("together")} /> 否    &nbsp; &nbsp;
-                               <input type="radio" value="不確定" {...register("together")} /> 不確定
-                           </div>
-
-                           <div className="column is-6-desktop">
-                               <b> 服藥中 : </b> &nbsp;
-                               <input type="radio" value="是"     {...register("drug")} /> 是    &nbsp; &nbsp;
-                               <input type="radio" value="否"     {...register("drug")} /> 否    &nbsp; &nbsp;
-                               <input type="radio" value="不確定" {...register("drug")} /> 不確定
-                           </div>
-
-                           <div className="column is-6-desktop">
-                               <b> 咬 人 : </b> &nbsp;
+                               <b className="fDred relative">
+                                   <b className="fRed absolute" style={{ top:"-25px" }}> {errors.bite?.message} </b>
+                                   是否會咬人 :
+                               </b> &nbsp;
                                <input type="radio" value="會"     {...register("bite")} /> 會    &nbsp; &nbsp;
                                <input type="radio" value="不會"   {...register("bite")} /> 不會  &nbsp; &nbsp;
                                <input type="radio" value="不一定" {...register("bite")} /> 不一定，須小心  &nbsp; &nbsp;
                                <input type="radio" value="不確定" {...register("bite")} /> 不確定
+
+                                
+
+                           </div>
+
+                           <div className="column is-1-desktop ">
+
+                           <b className="f_18 relative pointer" style={{  top:"-5px" }} onClick={ () => click_Detail_Mode( is_Detial ) }>
+                                { is_Detial  && <i className="fas fa-toggle-on"></i>   }
+                                { !is_Detial && <i className="fas fa-toggle-off"></i>  }
+                            </b>   
+                           
+                           
                            </div>
 
                        </div>
 
-                       <b style={{color: "rgb(0,0,150)"}}> * 以下選項可複選 --- </b>
 
-                       { /* Checkbox 複選、備註 */}
-                       <div className="columns is-multiline is-mobile">
+                       { is_Detial &&
+                       
+                            <>
+                                    
+                                    <div className="columns is-multiline  is-mobile">
 
-                           <div className="column is-6-desktop">
-                               <b> 健 康 : </b> &nbsp;
-                               <input type="checkbox" value="良好" {...register("health")} /> 良好 &nbsp; &nbsp;
-                               <input type="checkbox" value="關節" {...register("health")} /> 關節 &nbsp; &nbsp;
-                               <input type="checkbox" value="皮膚" {...register("health")} /> 皮膚 &nbsp; &nbsp;
-                               <input type="checkbox" value="過敏" {...register("health")} /> 過敏 &nbsp; &nbsp;
-                               <input type="checkbox" value="其他" {...register("health")} /> 其他 &nbsp; &nbsp;
-                           </div>
+                                        <div className="column is-6-desktop">
+                                            <b> 每年預防注射 : </b> &nbsp;
+                                            <input type="radio" value="有"     {...register("injection")} /> 有    &nbsp; &nbsp;
+                                            <input type="radio" value="無"     {...register("injection")} /> 無    &nbsp; &nbsp;
+                                            <input type="radio" value="不確定" {...register("injection")} /> 不確定
+                                        </div>
 
-                           <div className="column is-6-desktop">
-                               <b> 餵食方式 : </b> &nbsp;
-                               <input type="checkbox" value="飼料" {...register("feed")} /> 飼料 &nbsp; &nbsp;
-                               <input type="checkbox" value="罐頭" {...register("feed")} /> 罐頭 &nbsp; &nbsp;
-                               <input type="checkbox" value="鮮食" {...register("feed")} /> 鮮食 &nbsp; &nbsp;
-                               <input type="checkbox" value="其他" {...register("feed")} /> 其他 &nbsp; &nbsp;
-                           </div>
+                                        <div className="column is-6-desktop">
+                                            <b> 滴除蚤 : </b> &nbsp;
+                                            <input type="radio" value="有"     {...register("flea")} /> 有    &nbsp; &nbsp;
+                                            <input type="radio" value="無"     {...register("flea")} /> 無    &nbsp; &nbsp;
+                                            <input type="radio" value="代送獸醫除蚤" {...register("flea")} /> 代送獸醫除蚤 &nbsp; &nbsp;
+                                            <input type="radio" value="不確定" {...register("flea")} /> 不確定
+                                        </div>
 
-                           <div className="column is-6-desktop">
-                               <b> 如廁方式 : </b> &nbsp;
-                               <input type="checkbox" value="戶外" {...register("toilet")} /> 戶外 &nbsp; &nbsp;
-                               <input type="checkbox" value="室內" {...register("toilet")} /> 室內 &nbsp; &nbsp;
-                               <input type="checkbox" value="尿布" {...register("toilet")} /> 尿布 &nbsp; &nbsp;
-                               <input type="checkbox" value="其他" {...register("toilet")} /> 其他 &nbsp; &nbsp;
-                           </div>
+                                        <div className="column is-6-desktop">
+                                            <b> 結 紮 : </b> &nbsp;
+                                            <input type="radio" value="有"     {...register("ligate")} /> 有     &nbsp; &nbsp;
+                                            <input type="radio" value="無"     {...register("ligate")} /> 無     &nbsp; &nbsp;
+                                            <input type="radio" value="發情中" {...register("ligate")} /> 發情中 &nbsp; &nbsp;
+                                            <input type="radio" value="不確定" {...register("ligate")} /> 不確定
+                                        </div>
 
-                           <div className="column is-12-desktop">
-                               <b> 飼主提供 : </b> &nbsp;
-                               <input type="checkbox" value="飼料" {...register("ownerProvide")} /> 飼料 &nbsp; &nbsp;
-                               <input type="checkbox" value="罐頭" {...register("ownerProvide")} /> 罐頭 &nbsp; &nbsp;
-                               <input type="checkbox" value="零食" {...register("ownerProvide")} /> 零食 &nbsp; &nbsp;
-                               <input type="checkbox" value="睡墊" {...register("ownerProvide")} /> 睡墊 &nbsp; &nbsp;
-                               <input type="checkbox" value="項圈" {...register("ownerProvide")} /> 項圈 &nbsp; &nbsp;
-                               <input type="checkbox" value="胸背" {...register("ownerProvide")} /> 胸背 &nbsp; &nbsp;
-                               <input type="checkbox" value="牽繩" {...register("ownerProvide")} /> 牽繩 &nbsp; &nbsp;
-                               <input type="checkbox" value="提籃" {...register("ownerProvide")} /> 提籃 &nbsp; &nbsp;
-                               <input type="checkbox" value="玩具" {...register("ownerProvide")} /> 玩具 &nbsp; &nbsp;
-                               <input type="checkbox" value="其他" {...register("ownerProvide")} /> 其他 &nbsp; &nbsp;
-                           </div>
+                                        <div className="column is-6-desktop">
+                                            <b> 晶 片 : </b> &nbsp;
+                                            <input type="radio" value="有"     {...register("chip")} /> 有    &nbsp; &nbsp;
+                                            <input type="radio" value="無"     {...register("chip")} /> 無    &nbsp; &nbsp;
+                                            <input type="radio" value="不確定" {...register("chip")} /> 不確定
+                                        </div>
 
-                           <div className="column is-12-desktop">
+                                        <div className="column is-6-desktop">
+                                            <b> 傳染病 : </b> &nbsp;
+                                            <input type="radio" value="有"     {...register("infection")} /> 有    &nbsp; &nbsp;
+                                            <input type="radio" value="無"     {...register("infection")} /> 無    &nbsp; &nbsp;
+                                            <input type="radio" value="不確定" {...register("infection")} /> 不確定
+                                        </div>
 
-                               <textarea className="textarea" {...register("pet_Note")} placeholder="備註事項"
-                                         style={{color: "rgb(0,0,180)", fontWeight: "bold"}}/>
+                                        <div className="column is-6-desktop">
+                                            <b> 與其他狗共處 : </b> &nbsp;
+                                            <input type="radio" value="可"     {...register("together")} /> 可    &nbsp; &nbsp;
+                                            <input type="radio" value="否"     {...register("together")} /> 否    &nbsp; &nbsp;
+                                            <input type="radio" value="不確定" {...register("together")} /> 不確定
+                                        </div>
 
-                           </div>
+                                        <div className="column is-6-desktop">
+                                            <b> 服藥中 : </b> &nbsp;
+                                            <input type="radio" value="是"     {...register("drug")} /> 是    &nbsp; &nbsp;
+                                            <input type="radio" value="否"     {...register("drug")} /> 否    &nbsp; &nbsp;
+                                            <input type="radio" value="不確定" {...register("drug")} /> 不確定
+                                        </div>
 
-                       </div>
+                                    </div>
+
+                                    <b style={{color: "rgb(0,0,150)"}} > * 以下選項可複選 --- </b>
+
+                                    { /* Checkbox 複選、備註 */}
+                                    <div className="columns is-multiline is-mobile">
+
+                                        <div className="column is-6-desktop">
+                                            <b> 健 康 : </b> &nbsp;
+                                            <input type="checkbox" value="良好" {...register("health")} /> 良好 &nbsp; &nbsp;
+                                            <input type="checkbox" value="關節" {...register("health")} /> 關節 &nbsp; &nbsp;
+                                            <input type="checkbox" value="皮膚" {...register("health")} /> 皮膚 &nbsp; &nbsp;
+                                            <input type="checkbox" value="過敏" {...register("health")} /> 過敏 &nbsp; &nbsp;
+                                            <input type="checkbox" value="其他" {...register("health")} /> 其他 &nbsp; &nbsp;
+                                        </div>
+
+                                        <div className="column is-6-desktop">
+                                            <b> 餵食方式 : </b> &nbsp;
+                                            <input type="checkbox" value="飼料" {...register("feed")} /> 飼料 &nbsp; &nbsp;
+                                            <input type="checkbox" value="罐頭" {...register("feed")} /> 罐頭 &nbsp; &nbsp;
+                                            <input type="checkbox" value="鮮食" {...register("feed")} /> 鮮食 &nbsp; &nbsp;
+                                            <input type="checkbox" value="其他" {...register("feed")} /> 其他 &nbsp; &nbsp;
+                                        </div>
+
+                                        <div className="column is-6-desktop">
+                                            <b> 如廁方式 : </b> &nbsp;
+                                            <input type="checkbox" value="戶外" {...register("toilet")} /> 戶外 &nbsp; &nbsp;
+                                            <input type="checkbox" value="室內" {...register("toilet")} /> 室內 &nbsp; &nbsp;
+                                            <input type="checkbox" value="尿布" {...register("toilet")} /> 尿布 &nbsp; &nbsp;
+                                            <input type="checkbox" value="其他" {...register("toilet")} /> 其他 &nbsp; &nbsp;
+                                        </div>
+
+                                        <div className="column is-12-desktop">
+                                            <b> 飼主提供 : </b> &nbsp;
+                                            <input type="checkbox" value="飼料" {...register("ownerProvide")} /> 飼料 &nbsp; &nbsp;
+                                            <input type="checkbox" value="罐頭" {...register("ownerProvide")} /> 罐頭 &nbsp; &nbsp;
+                                            <input type="checkbox" value="零食" {...register("ownerProvide")} /> 零食 &nbsp; &nbsp;
+                                            <input type="checkbox" value="睡墊" {...register("ownerProvide")} /> 睡墊 &nbsp; &nbsp;
+                                            <input type="checkbox" value="項圈" {...register("ownerProvide")} /> 項圈 &nbsp; &nbsp;
+                                            <input type="checkbox" value="胸背" {...register("ownerProvide")} /> 胸背 &nbsp; &nbsp;
+                                            <input type="checkbox" value="牽繩" {...register("ownerProvide")} /> 牽繩 &nbsp; &nbsp;
+                                            <input type="checkbox" value="提籃" {...register("ownerProvide")} /> 提籃 &nbsp; &nbsp;
+                                            <input type="checkbox" value="玩具" {...register("ownerProvide")} /> 玩具 &nbsp; &nbsp;
+                                            <input type="checkbox" value="其他" {...register("ownerProvide")} /> 其他 &nbsp; &nbsp;
+                                        </div>
+
+                                        <div className="column is-12-desktop">
+
+                                            <textarea className="textarea" {...register("pet_Note")} placeholder="備註事項"
+                                                        style={{color: "rgb(0,0,180)", fontWeight: "bold"}}/>
+
+                                        </div>
+
+                                    </div>
+
+                            </>  
+                       
+                       }   
+
+                        
+
 
                        <br/>
 

@@ -49,7 +49,7 @@ const Date_Picker:FC<DType> = ( { control , name, default_Date , handle_OnChange
 
         // 設定 store ( 到店服務日期，以調整 _ 服務性質 )
         const p_Date = moment( value ).format('YYYY-MM-DD' ) as any ;    // 所選擇日期
-        if( name === "service_Date" ) dispatch( set_Info_Column( "service_Date" , p_Date ) ) ;
+        if( name === "service_Date" || name === "care_Start_Date" ) dispatch( set_Info_Column( "service_Date" , p_Date ) ) ;
 
     } ,[ value ] ) ;
 

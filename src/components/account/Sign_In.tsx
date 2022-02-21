@@ -1,5 +1,5 @@
 
-import React, {useState} from 'react';
+import {useState} from 'react';
 
 // Material UI
 import TextField from '@material-ui/core/TextField';
@@ -20,6 +20,9 @@ import { toast } from "react-toastify";
 import { useForm , SubmitHandler , Controller } from "react-hook-form" ;
 import {yupResolver} from "@hookform/resolvers/yup";
 import * as yup from "yup"
+
+
+
 import {useRead_Employees} from "hooks/ajax_crud/useAjax_Read";
 import {useDispatch} from "react-redux";
 
@@ -48,7 +51,6 @@ const useStyles = makeStyles((theme) => ({
 const Sign_In = () => {
 
     const history     = useHistory();
-    const dispatch    = useDispatch();
     const accountData = useRead_Employees() ;  // 取得 _ 帳戶資料
 
     const [ is_Account_Error , set_Is_Account_Error ] = useState( false ) ; // 帳號或密碼錯誤
@@ -112,9 +114,7 @@ const Sign_In = () => {
 
     return <Container component="main" maxWidth="xs">
 
-              <br/><br/><br/><br/><br/>
-
-              <img src={ logo } width='350px' style={ lS }/>
+              <img src={ logo } className="m_Top_150" width='350px' style={ lS }/>
 
               { /* 錯誤提示 */ }
               { is_Account_Error &&

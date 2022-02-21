@@ -1,19 +1,19 @@
 
-import React , { FC } from "react"
-import {useDispatch} from "react-redux";
-import {set_Side_Panel} from "store/actions/action_Global_Layout";
-import Update_Price  from "components/prices/edit/Update_Price" ;
-import {useDelete_Service_Price} from "hooks/ajax_crud/useAjax_Delete";
+import { FC } from "react"
+import { useDispatch } from "react-redux";
+import { set_Side_Panel } from "store/actions/action_Global_Layout";
+import Update_Price from "components/prices/edit/Update_Price" ;
+import { useDelete_Service_Price } from "hooks/ajax_crud/useAjax_Delete";
 
 
-/* 各項服務( 基礎、洗澡、美容 ) _ 清單範本 */
-const Service_Price_List : FC< { data : any[] } > = ({ data} ) => {
 
-  const dispatch = useDispatch() ;
+/* @ 各項服務 ( 基礎、洗澡、美容 ) _ 清單範本 */
+const Service_Price_List : FC< { data : any[] } > = ( { data } ) => {
 
+  const dispatch      = useDispatch() ;
 
   // 點選 _ 服務名稱
-  const click_Service = ( service : string ) => dispatch( set_Side_Panel(true , <Update_Price /> , { preLoadData : service , source_Create_Way : '個別項目' } ) ) ;
+  const click_Service = ( service : string ) => dispatch( set_Side_Panel( true , <Update_Price /> , { preLoadData : service , source_Create_Way : '個別項目' } ) ) ;
 
   // 刪除函式
   const delete_Service_Price = useDelete_Service_Price() ;
@@ -25,17 +25,20 @@ const Service_Price_List : FC< { data : any[] } > = ({ data} ) => {
   const left = { textAlign  : 'left' } as const ;
   const bt   = { background : 'white' , boxShadow : '0px 0px 4px 1px rgba(100,100,100,.1)' }  as const ;
 
-  return <table className="table is-fullwidth is-hoverable" style={{marginBottom:"150px"}}>
+
+  return <>
+            
+           <table className="table is-fullwidth is-hoverable" style={{marginBottom:"150px"}}>
 
               <thead>
                   <tr>
-                      <th> 服務類別 </th>
-                      <th> 項目名稱 </th>
-                      <th> 指定方案 </th>
-                      <th> 指定品種 </th>
-                      <th> 項目價格 </th>
-                      <th> 備 註    </th>
-                      <th> 刪 除    </th>
+                    <th> 服務類別 </th>
+                    <th> 項目名稱 </th>
+                    <th> 指定方案 </th>
+                    <th> 指定品種 </th>
+                    <th> 項目價格 </th>
+                    <th> 備 註    </th>
+                    <th> 刪 除    </th>
                   </tr>
               </thead>
 
@@ -67,9 +70,10 @@ const Service_Price_List : FC< { data : any[] } > = ({ data} ) => {
 
               </tbody>
 
-        </table>
+           </table>
 
-
+         </>
+         
 } ;
 
 export default Service_Price_List ;

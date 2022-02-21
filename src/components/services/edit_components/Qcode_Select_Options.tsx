@@ -29,19 +29,19 @@ const Qcode_Select_Options : FC<Edit_Form_Type> = ( { register } )  => {
     const dispatch = useDispatch();
 
     // 特定日期 ( 日期由 Redux 取得 )，所有服務，已被使用的 Q 碼
-    const Qcodes_Used_By_Date                     = useRead_Qcode_Service_Date() as string[] ;
+    const Qcodes_Used_By_Date                   = useRead_Qcode_Service_Date() as string[] ;
 
     // 可供使用的 Q_code
-    let [ available_Qcode , set_Ava_Q ]           = useState<any[]>([]);
+    let [ available_Qcode , set_Ava_Q ]         = useState<any[]>([] );
 
     // 目前所選擇 Qcode
-    const [ current_Qcode , set_Current_Qcode ]  = useState('' ) ;
+    const [ current_Qcode , set_Current_Qcode ] = useState('' ) ;
 
 
     // 變動處理
     const handle_Change = ( qCode : string ) => {
 
-        set_Current_Qcode( qCode )
+        set_Current_Qcode( qCode ) ;
         dispatch( set_Current_Q_Code( qCode ) );
 
     } ;
@@ -49,7 +49,7 @@ const Qcode_Select_Options : FC<Edit_Form_Type> = ( { register } )  => {
     useEffect(( ) => {
 
         // 取得 : 當天 /  目前可供使用 Q 碼
-        const avaiable_Q_Arr = default_Q_arr.filter( ( x  ) => {  return Qcodes_Used_By_Date.indexOf( x ) === -1 ; } ) ;
+        const avaiable_Q_Arr = default_Q_arr.filter(x => Qcodes_Used_By_Date.indexOf( x ) === -1 ) ;
 
         set_Ava_Q( avaiable_Q_Arr ) ;
 

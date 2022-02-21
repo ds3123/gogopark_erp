@@ -1,6 +1,5 @@
 
 import React from "react" ;
-import {Link} from "react-router-dom";
 import logo  from 'imgs/logo.png';
 
 
@@ -9,7 +8,6 @@ const Logo = () => {
 
 
    const lS = { position : "relative" , top:"15px" , width:"300px" , height : "100px"  } as const ;
-
 
   return <div className="navbar-brand" style={{ marginRight:"80px" }}>
 

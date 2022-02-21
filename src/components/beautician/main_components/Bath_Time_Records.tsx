@@ -283,7 +283,7 @@ const Bath_Time_Records = () => {
 
    return  <div className="columns is-multiline is-mobile relative" style={{ top : "10px" }} >
 
-               <span className="absolute" style={{top:"-60px",left:"30px"}}> 資料表 ID : { current_Service_Id } </span>
+               {/*<span className="absolute" style={{top:"-60px",left:"30px"}}> 資料表 ID : { current_Service_Id } </span>*/}
 
                { /* 前置作業 */ }
                <div className="column is-2-desktop relative" style = { t_Center } >

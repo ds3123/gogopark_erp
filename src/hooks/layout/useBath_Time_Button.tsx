@@ -95,7 +95,7 @@ const useBath_Time_Button = ( tag : string , required? : boolean ) => {
             set_User( is_Exist['beautician'] ) ;
             set_Time( is_Exist['button_time'] ) ;
         }else{
-            set_User( '') ;
+            set_User( '' ) ;
             set_Time( '00 : 00' ) ;
         }
 

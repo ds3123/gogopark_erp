@@ -36,6 +36,13 @@ export const get_Date_Cal = ( date : string , num : number )=>{
 
 } ;
 
+// 取的 : 距離特定日期，還有幾日
+export const get_Rest_of_Date = ( date : string ) => {
+
+
+
+} ;
+
 
 // 取得今天西元完整日期( Ex. 2020514 )
 export const get_Today = () =>{
@@ -76,6 +83,11 @@ export const get_Week_Day = ( date : string ) => {
 export const get_Interval_Dates = (  start : string , end : string ) =>{
 
     let arr = [];
+
+    // 驗證
+    if( !start ) return [] ;
+    if( !end ) return [] ;
+
 
     // 設為 any[] --> 2021.05.27 再確認是否可確定型別
     let ab = start.split("-") as any[] ;
@@ -163,7 +175,7 @@ export const get_Date_Type = ( date : string , holiday : { title : string , date
 };
 
 
-// 針對 DatePicker套件 : 取得 _ 某房號，使用期間，所包含天數 ( 轉換格式 )
+// 針對 DatePicker 套件 : 取得 _ 某房號，使用期間，所包含天數 ( 轉換格式 )
 export const get_InUse_Days = ( startDate : any , endDate : any ) : string [] => {
 
     const _endDate  = get_Date_Cal( moment( endDate ).format('YYYY-MM-DD')  , -2) ;  // 先減去 1 天

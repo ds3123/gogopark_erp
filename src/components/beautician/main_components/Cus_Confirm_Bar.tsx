@@ -30,7 +30,7 @@ const Cus_Confirm_Bar = ()=>{
     // 取得、確定 _ 目前服務單，是否有請求確認紀錄
     const get_Customer_confirms = ( service_Type : string , service_Id : string  ) => {
 
-        axios.get( `/customer_confirms/show_by_service_type_id/${ service_Type }/${ service_Id }` ).then(res => {
+        axios.get( `/customer_confirms/show_by_service_type_id/${ service_Type }/${ service_Id }` ).then( res => {
 
             if( res.data.length > 0 ){
 
@@ -98,7 +98,7 @@ const Cus_Confirm_Bar = ()=>{
         if( service_Type === '洗澡' ){ service_Id = Current_Pet['bath_id'] ;   } ;
         if( service_Type === '美容' ){ service_Id = Current_Pet['beauty_id'] ; } ;
 
-        setInterval( ( ) => {
+        setInterval( () => {
 
             if( is_Mounted ) get_Customer_confirms( service_Type , service_Id ) ;
 

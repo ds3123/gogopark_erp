@@ -23,8 +23,6 @@ const Customer_Types_Query : FC< IQuery > = ( obj ) => {
     const { isQuerying , query_Result_Id , query_Result_CellPhone , set_Cus_Data } = obj ;
 
 
-
-
     const style = { width: "80%", height:"35px" ,left : "140px" , top:"0px" , overflowY:"hidden" } as const ;
     const tag   = "tag is-medium hover is-light" ;
 

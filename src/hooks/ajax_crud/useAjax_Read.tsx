@@ -1,4 +1,4 @@
-import React, { useState , useEffect , useCallback } from "react" ;
+import { useState , useEffect , useCallback } from "react" ;
 import axios from "utils/axios" ;
 import { Service_Type_Api } from 'utils/Interface_Type'
 import { useDispatch , useSelector } from "react-redux";
@@ -7,7 +7,6 @@ import { useDispatch , useSelector } from "react-redux";
 import { set_Index_isLoading } from "store/actions/action_Index";
 
 import { set_Current_Customer_Pets } from "store/actions/action_Customer";
-
 
 
 /* @ GET : 透過 Ajax _ 取得資料 */
@@ -74,15 +73,61 @@ export const useRead_Date_Services = ( date : string ) => {
     const [ data , set_Data ] = useState( [] ) ;
 
     // 取得資料
+    useEffect( () => {
+
+        axios.get( `/services/show_services/${ date }` ).then( res => { 
+            
+
+            // 排除住宿
+            // const data = res.data.filter( ( x:any ) => ( x['service_status'] !== '當日住宿' || x['service_status'] !== '預約住宿' ) ) ;
+
+        
+            set_Data( res.data ) ; 
+                
+        } ) ;
+
+    } , [ date ] ) ;
+
+    return data ;
+
+} ;
+
+// * 取得 : 特定日期 【 之後 】，所有服務 ( 包含 : 客人、客人關係人、寵物 )
+export const useRead_After_Date_Services = ( date : string ) => {
+
+    const [ data , set_Data ] = useState( [] ) ;
+
+    // 取得資料
     useEffect(() => {
 
-        axios.get( `/services/show_services/${ date }` ).then( res => { set_Data( res.data ) ; } );
+        axios.get( `/services/show_after_services/${ date }` ).then( res => { set_Data( res.data ) ; } );
 
     },[ date ]) ;
 
     return data ;
 
 } ;
+
+// * 取得 : 所有今日開始，所有【 預約 】資料
+export const useRead_Service_Reservations = ( date : string ) => {
+
+    const [ data , set_Data ] = useState( [] ) ;
+
+    // 取得資料
+    useEffect( () => {
+
+        axios.get( `/services/show_service_reservations/${ date }` ).then( res => { 
+        
+            set_Data( res.data ) ; 
+        
+        });
+
+    } , [ date ] ) ;
+
+    return data ;
+
+} ;
+
 
 // # 客戶 ----
 
@@ -131,6 +176,7 @@ export const useRead_Customer_By_Column = ( column : string , value : string | n
 
 } ;
 
+
 // * 取得 : 客戶寵物 ( 依客戶身分證字號 )
 export const useRead_Customer_Pets = ( cus_Id : string ) => {
 
@@ -151,6 +197,7 @@ export const useRead_Customer_Pets = ( cus_Id : string ) => {
    return cusPets ;
 
 } ;
+
 
 // # 寵物 ---
 
@@ -220,7 +267,7 @@ export const useRead_Species = ( ) => {
 
     useEffect(( ) => {
 
-        axios.get( '/pet_species/' ).then( res => { set_Species( res.data ) ; } );
+        axios.get( '/pet_species' ).then( res => { set_Species( res.data ) ; } );
 
     } , [] ) ;
 
@@ -246,18 +293,18 @@ export const useRead_Sort_Species = ( ) => {
 } ;
 
 
-
-
 // 所有品種，其資料 + 服務價格
 export const useRead_All_Species_With_Service_Prices = ( ) => {
 
     const [ species , set_Species ] = useState([]);
 
-    useEffect(( ) => {
+    useEffect( () => {
 
+        axios.get( '/pet_species/show_all_species_service_prices' ).then( res => { 
 
+           set_Species( res.data ) ; 
 
-        axios.get( '/pet_species/show_all_species_service_prices' ).then( res => { set_Species( res.data ) ; } );
+        }) ;
 
     } , [] ) ;
 
@@ -311,19 +358,41 @@ export const useRead_Type_Prices = ( serviceType : string ) => {
 
 } ;
 
-
 // 服務類型價格 ( 所有 or 特定服務類型 )
 export const useRead_Service_Prices = ( serviceType? : string ) => {
 
     const [ prices , set_Prices ] = useState([]);
 
-    useEffect(() => {
+    useEffect( () => {
+
+
 
       // 特定服務類型
-      if( serviceType ) axios.get( `/service_prices/show_type_prices/${ serviceType }` ).then( res => { set_Prices( res.data ) ; } );
+      if( serviceType ){
+
+        axios.get( `/service_prices/show_type_prices/${ serviceType }` ).then( res => { 
+            
+             set_Prices( res.data ) ; 
+            
+        }).catch( error => {
+
+           // console.error( error.response.data ) ;  
+
+        });
+
+
+      }
 
       // 所有服務類型
-      if( !serviceType ) axios.get( `/service_prices` ).then( res => { set_Prices( res.data ) ; } );
+      if( !serviceType ) axios.get( `/service_prices` ).then( res => { 
+          
+          set_Prices( res.data ) ; 
+        
+        }).catch( error => {
+
+           // console.error( error.response.data ) ;  
+
+        });
 
     } , [] ) ;
 
@@ -339,7 +408,15 @@ export const useRead_Employees = ( ) => {
 
     useEffect(() => {
 
-        axios.get( '/employees/' ).then( res => { set_Employees( res.data ) ; } );
+        axios.get( '/employees' ).then( res => { 
+             
+             set_Employees( res.data ) ; 
+            
+        }).catch( error => {
+    
+         // console.error( error.response.data ) ; // 顯示詳細錯誤訊息
+         
+        }) ;
 
     } , [] ) ;
 
@@ -370,7 +447,6 @@ export const useRead_Check_IsExist = ( ) => {
 
     const [ checkFunc , set_checkFunc ] = useState<any>( ()=>{} )
 
-
     const check_IsExist = ( api : string , colValue : string  ) => {
 
         axios.get( `${api}/${colValue}` ).then(res => {
@@ -384,5 +460,24 @@ export const useRead_Check_IsExist = ( ) => {
     } ;
 
     return checkFunc
+
+} ;
+
+
+
+// # 住宿
+
+// 所有住宿
+export const useRead_All_Lodges = ( ) => {
+
+    const [ lodges , set_Lodges ] = useState([]);
+
+    useEffect( () => {
+
+       axios.get( '/lodges/' ).then( res => { set_Lodges( res.data ) ; } );
+
+    } , [] ) ;
+
+    return lodges ;
 
 } ;

@@ -2,13 +2,14 @@
 import React , { useState , useEffect } from  "react" ;
 import { useForm , SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { schema_Customer } from "utils/validator/form_validator";
 import { get_H_M } from "utils/time/time"
 import {useDispatch, useSelector} from "react-redux";
 import {useUpdate_Data} from "hooks/ajax_crud/useAjax_Update";
 import {set_Side_Panel} from "store/actions/action_Global_Layout";
 import { useRating_Options } from "hooks/layout/useRating"
 import Pet_Info_Title from "components/beautician/main_components/pet_info/Pet_Info_Title"
+
+import { set_Current_Pet_Is_Done } from "store/actions/action_Beautician"
 
 
 
@@ -119,7 +120,6 @@ const Inform_Customer_Options = () => {
             // 美容師檢查項目
             const beautician_Report = is_All_Good ? '所有檢查項目皆正常' : check_Items.join(',') ;
 
-
             // 更新欄位
             const obj = {
 
@@ -140,7 +140,11 @@ const Inform_Customer_Options = () => {
         // 更改欄位
         update_Data( api , service_Id , obj , '/beautician' , null , '處理結果已提交櫃台'  ) ;
 
+        // 關掉 _ 右側滑動面板
         dispatch( set_Side_Panel(false , null ,{} ) ) ;
+
+        // 關掉 _ 右側寵物資訊主畫面
+        dispatch( set_Current_Pet_Is_Done( true ) );
 
 
     } ;

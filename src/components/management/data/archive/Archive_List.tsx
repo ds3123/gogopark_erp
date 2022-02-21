@@ -1,8 +1,11 @@
 
 import React, {useEffect, useState} from "react"
-import Customers from "components/management/data/archive/Customers"
-import Pets from "components/management/data/archive/Pets"
-import Services from "components/management/data/archive/Services"
+import Customers from "components/management/data/archive/components/Customers"
+import Pets from "components/management/data/archive/components/Pets"
+import Services from "components/management/data/archive/components/Services"
+import Lodge from "components/management/data/archive/components/Lodge"
+import Care from "components/management/data/archive/components/Care"
+
 
 import cookie from "react-cookies";
 
@@ -20,7 +23,7 @@ const Archive_List = ( ) => {
    const [ current_Tab , set_Current_Tab ]         = useState( tabs[0] ) ;
 
    // 目前點選標籤，相對應元件
-   const [ current_Element , set_Current_Element ] = useState< JSX.Element | null >( null )
+   const [ current_Element , set_Current_Element ] = useState< JSX.Element | null >( null ) ;
 
    // 點選 _ 標籤
    const click_Tab = ( tab : string ) => {
@@ -34,11 +37,27 @@ const Archive_List = ( ) => {
            case tabs[0] : set_Current_Element( <Customers /> ) ; break ;
            case tabs[1] : set_Current_Element( <Pets /> ) ; break ;
            case tabs[2] : set_Current_Element( <Services /> ) ; break ;
-           case tabs[3] : set_Current_Element( null ) ; break ;
-           case tabs[4] : set_Current_Element( null ) ; break ;
-           case tabs[5] : set_Current_Element( null ) ; break ;
+           case tabs[3] : set_Current_Element(  null ) ; break ;
+           case tabs[4] : set_Current_Element( <Lodge /> ) ; break ;
+           case tabs[5] : set_Current_Element( <Care /> ) ; break ;
 
        }
+
+   } ;
+
+   const get_Cookie_click_Tab = (  cookieName : string ) => {
+
+
+       // Cookie
+       const redirect = cookie.load( cookieName ) ;
+
+       // 點選 _ 相對應頁籤
+       if( redirect && redirect === '客戶' ) click_Tab( '客 戶' ) ;
+       if( redirect && redirect === '寵物' ) click_Tab( '寵 物' ) ;
+       if( redirect && redirect === '洗美' ) click_Tab( '洗 美' ) ;
+       if( redirect && redirect === '方案' ) click_Tab( '方 案' ) ;
+       if( redirect && redirect === '住宿' ) click_Tab( '住 宿' ) ;
+       if( redirect && redirect === '安親' ) click_Tab( '安 親' ) ;
 
    } ;
 
@@ -50,20 +69,19 @@ const Archive_List = ( ) => {
    } ,[] ) ;
 
 
-   // 設定 _ 回復封存、刪除資料後，更新頁面並自動點選相對應頁籤
+   // 設定 _ 【 回復封存 】接受 Cookie , 更新頁面並自動點選相對應頁籤
    useEffect(( ) => {
 
-       // Cookie
-       const redirect = cookie.load('after_Edit_Archive') ;
-
-       // 點選 _ 相對應頁籤
-       if( redirect && redirect === '寵物' ) click_Tab( '寵 物' ) ;
-       if( redirect && redirect === '洗美' ) click_Tab( '洗 美' ) ;
-
-       //click_Tab('洗 美')
+       get_Cookie_click_Tab( 'after_Undo_Archive' )
 
    } ,[] ) ;
 
+    // 設定 _ 【 刪除資料 】接受 Cookie , 更新頁面並自動點選相對應頁籤
+    useEffect(( ) => {
+
+       get_Cookie_click_Tab( 'after_Delete_Archive' )
+
+    } ,[] ) ;
 
 
   const bar = { width:"100%", top:"-15px" , padding:"0px" , justifyContent : "left"  } ;
@@ -73,6 +91,7 @@ const Archive_List = ( ) => {
             <b className="tag is-large relative is-white" style={ bar } >
 
               {
+
                   tabs.map( ( x , y ) => {
 
                      return <b key={ y } className = { `tag pointer is-medium ${ current_Tab === x ? 'is-primary' : 'is-white' } `   }
@@ -91,7 +110,6 @@ const Archive_List = ( ) => {
             </b>
 
             <br/><br/><br/>
-
 
             { current_Element }
 

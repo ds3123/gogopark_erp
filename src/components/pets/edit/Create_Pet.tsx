@@ -6,11 +6,12 @@ import Pet_Form from "components/pets/edit/Pet_Form";
 
 
 /* @ 新增 _ 寵物 */
-const Create_Pet : FC<Edit_Form_Type> = ({ register , setValue , errors , isDirty , isValid, current } ) => {
+const Create_Pet : FC<Edit_Form_Type> = ({ register , watch , setValue , errors , isDirty , isValid, current } ) => {
 
     const props = {
         register : register ,
         setValue : setValue ,
+        watch    : watch ,
         errors   : errors ,
         isDirty  : isDirty ,
         isValid  : isValid ,

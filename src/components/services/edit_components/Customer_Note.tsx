@@ -3,12 +3,18 @@ import { Edit_Form_Type } from "utils/Interface_Type"
 import useSection_Folding from "hooks/layout/useSection_Folding";
 
 
+interface ICustomer_Note extends Edit_Form_Type {
+
+    editType?    : string ;
+    serviceData? : any ;
+
+}
+
 
 { /*  自備物品、主人交代、櫃台備註  */ }
-const Customer_Note : FC<Edit_Form_Type> = ({ register , errors , isDirty , isValid } ) => {
+const Customer_Note : FC<ICustomer_Note> = ({ register , editType } ) => {
 
-   const { is_folding , Folding_Bt }          = useSection_Folding( false ) ;  // 收折區塊
-
+   const { is_folding , Folding_Bt }     = useSection_Folding( !editType ? true : false ) ;  // 收折區塊
 
    return <>
                <br/>
@@ -85,5 +91,5 @@ const Customer_Note : FC<Edit_Form_Type> = ({ register , errors , isDirty , isVa
 } ;
 
 
-export default React.memo( Customer_Note , () => true ) ;
+export default Customer_Note ;
 

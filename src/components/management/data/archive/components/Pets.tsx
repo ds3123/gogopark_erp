@@ -19,19 +19,20 @@ const Pets = ( ) => {
 
     return <>
 
-                <table className="table is-fullwidth is-hoverable relative" style={{width:"110%" , left:"-5%"}}>
+                <table className="table is-fullwidth is-hoverable relative" >
 
                     <thead>
                     <tr>
                         <th> 寵物資訊 </th>
                         <th style={{height:"10px",width:"100px"}}> 寵物編號 </th>
-                        <th> 消費歷史 </th>
+
                         <th> 主人姓名 </th>
                         <th> 主人手機 </th>
-                        <th style={{width:"100px"}}> <b className="fBlue">單次</b>洗澡 </th>
-                        <th style={{width:"100px"}}> <b className="fBlue">單次</b>美容 </th>
-                        <th style={{width:"100px"}}> <b className="fBlue">包月</b>洗澡 </th>
-                        <th style={{width:"100px"}}> <b className="fBlue">包月</b>美容 </th>
+                        {/*<th style={{width:"100px"}}> <b className="fBlue">單次</b>洗澡 </th>*/}
+                        {/*<th style={{width:"100px"}}> <b className="fBlue">單次</b>美容 </th>*/}
+                        {/*<th style={{width:"100px"}}> <b className="fBlue">包月</b>洗澡 </th>*/}
+                        {/*<th style={{width:"100px"}}> <b className="fBlue">包月</b>美容 </th>*/}
+                        <th> 消費歷史 </th>
                         <th> 復 原    </th>
                         <th> 刪 除     </th>
                     </tr>

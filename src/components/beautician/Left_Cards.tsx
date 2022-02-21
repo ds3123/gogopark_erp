@@ -2,11 +2,9 @@
 import React , { FC , useEffect , useState } from 'react' ;
 import useServiceType from 'hooks/layout/useServiceType'
 import {useUpdate_Data} from 'hooks/ajax_crud/useAjax_Update';
-import {set_Current_Pet } from 'store/actions/action_Beautician'
+import {set_Current_Pet , set_Current_Pet_Is_Done} from 'store/actions/action_Beautician'
 import {useDispatch, useSelector} from "react-redux";
 import { string_Short } from "utils/string/edit_string"
-
-
 
 
 interface ILeft {
@@ -17,18 +15,22 @@ interface ILeft {
 const Left_Cards : FC<ILeft>  = ( { pet_Arr } ) => {
 
 
+
     // 資料 _ 是否下載中 ( 與首頁使用同樣的 API )
     const Index_isLoading = useSelector( (state:any) => state.Index.Index_isLoading ) ;
 
     // 目前所點選寵物
     const data            = useSelector(( state : any ) => state.Beautician.Current_Pet ) ;
 
+    // 服務類型 ( 基礎、洗澡、> )
+    const service_type    = data ? data['service_type'] : '' ;
+
 
     // 目前所點選寵物資訊 : 服務類型、服務單 id
     const [ current , set_Current ] = useState({
-                                                            service_Type : '' ,
-                                                            service_Id   : ''
-                                                          }) ;
+                                                 service_Type : '' ,
+                                                 service_Id   : ''
+                                               }) ;
 
     // 點選 _ "到店等候中"資料並更改為"到店處理中"後，改變其樣式
     const [ in_Process , set_In_Process ] = useState<any>( null ) ;
@@ -36,16 +38,16 @@ const Left_Cards : FC<ILeft>  = ( { pet_Arr } ) => {
 
     // 計數 : 到店等候中、到店美容中
     const [ count , set_Count ] = useState({
-                                                         // 到店等候中
-                                                         wait_Basic      : 0 ,
-                                                         wait_Bath       : 0 ,
-                                                         wait_Beauty     : 0 ,
+                                             // 到店等候中
+                                             wait_Basic      : 0 ,
+                                             wait_Bath       : 0 ,
+                                             wait_Beauty     : 0 ,
 
-                                                         // 到店美容中
-                                                         progress_Basic  : 0 ,
-                                                         progress_Bath   : 0 ,
-                                                         progress_Beauty : 0 ,
-                                                      }) ;
+                                             // 到店美容中
+                                             progress_Basic  : 0 ,
+                                             progress_Bath   : 0 ,
+                                             progress_Beauty : 0 ,
+                                          }) ;
 
 
 
@@ -81,67 +83,71 @@ const Left_Cards : FC<ILeft>  = ( { pet_Arr } ) => {
         if( pet['shop_status'] === '到店等候中' ) update_Data( api , service_Id , { shop_status : '到店美容中' } , '/beautician' ) ;
 
 
-        // # 設定 _ Store
+        // # 顯示 _ 右側寵物資訊面版
         dispatch( set_Current_Pet( pet ) ) ;
+        dispatch( set_Current_Pet_Is_Done( false ) ) ;
+
 
     } ;
 
 
     // 設定 _ 目前所點選寵物資訊 : 服務類型、服務單 id
-    useEffect(( ) => {
+    useEffect( ( ) => {
 
-       if( data['service_type'] ){
+       if( service_type ){
 
            let service_Id = '' ;
 
-           if( data['service_type'] === '基礎' ){ service_Id = data['basic_id'] ;   } ;
-           if( data['service_type'] === '洗澡' ){ service_Id = data['bath_id'] ;    } ;
-           if( data['service_type'] === '美容' ){ service_Id = data['beauty_id'] ;  } ;
+           if( service_type === '基礎' ){ service_Id = data['basic_id'] ;   } ;
+           if( service_type === '洗澡' ){ service_Id = data['bath_id'] ;    } ;
+           if( service_type === '美容' ){ service_Id = data['beauty_id'] ;  } ;
 
            set_Current({  ...current ,
-                                service_Type : data['service_type'] ,
+                                service_Type : service_type ,
                                 service_Id   : service_Id ,
                              }) ;
 
        }
 
-    } ,[ data ] ) ;
+    } ,[ service_type ] ) ;
 
 
     // 計數 : 到店等候中、到店美容中
     useEffect(( ) => {
 
-       const wait_Basic       = pets_Wait.filter( x => x['service_type'] === '基礎' ).length ;
-       const wait_Bath        = pets_Wait.filter( x => x['service_type'] === '洗澡' ).length ;
-       const wait_Beauty      = pets_Wait.filter( x => x['service_type'] === '美容' ).length ;
+        const wait_Basic      = pets_Wait.filter( x => x['service_type'] === '基礎' ).length ;
+        const wait_Bath       = pets_Wait.filter( x => x['service_type'] === '洗澡' ).length ;
+        const wait_Beauty     = pets_Wait.filter( x => x['service_type'] === '美容' ).length ;
 
         const progress_Basic  = pets_Beauty.filter( x => x['service_type'] === '基礎' ).length ;
         const progress_Bath   = pets_Beauty.filter( x => x['service_type'] === '洗澡' ).length ;
         const progress_Beauty = pets_Beauty.filter( x => x['service_type'] === '美容' ).length ;
 
         set_Count({ ...count ,
-                                   wait_Basic      : wait_Basic ,
-                                   wait_Bath       : wait_Bath ,
-                                   wait_Beauty     : wait_Beauty ,
+                            wait_Basic      : wait_Basic ,
+                            wait_Bath       : wait_Bath ,
+                            wait_Beauty     : wait_Beauty ,
 
-                                   progress_Basic  : progress_Basic ,
-                                   progress_Bath   : progress_Bath ,
-                                   progress_Beauty : progress_Beauty ,
+                            progress_Basic  : progress_Basic ,
+                            progress_Bath   : progress_Bath ,
+                            progress_Beauty : progress_Beauty ,
                         })
 
     } , [ pet_Arr ]) ;
 
 
-    const status    = {
-        marginBottom   : "0px" ,
-        display        : "flex" ,
-        justifyContent : "center" ,
-        left           : "13px"
-    } ;
+    const status = {
+                      marginBottom   : "0px" ,
+                      display        : "flex" ,
+                      justifyContent : "center" ,
+                      left           : "13px"
+                   } ;
     const left_Card = { height : "40vh" , overflow : "auto" , left : "13px" } ;
     const rS        = { width:"100%", marginBottom : "10px" , position:"relative" ,  justifyContent : "left" } as any ;
 
+
    return <>
+       
                { /* 到店等候中  */ }
                <div className="tags has-addons relative" style={ status }>
                    <span className="tag is-medium is-link" >   到店等候中   </span>
@@ -154,7 +160,7 @@ const Left_Cards : FC<ILeft>  = ( { pet_Arr } ) => {
 
                <div className="card p_10 has-text-centered" style={ left_Card } >
 
-                  { Index_isLoading ||
+                  { 
 
                      pets_Wait.map( ( x , y ) => {
 
@@ -163,30 +169,22 @@ const Left_Cards : FC<ILeft>  = ( { pet_Arr } ) => {
                             const pet     = x['pet'] ;
                             const {color} = get_ServiceType( x['service_type'] , true ) ;  // 取得樣式
 
-                            return  <b className = { color } key = {y} style = {rS}  onClick = {() => click_Pet(x)} >
+                            return  <b className = { color } key = {y} style = {rS}  onClick = { () => click_Pet(x) } >
                                           Q{x['q_code']} &nbsp; { string_Short( pet['name'] ) } ( { string_Short( pet['species'] )  } )
                                           <b className = "tag is-rounded is-white absolute" style={{right: "10px"}}> {x['expected_leave']} </b>
                                     </b>
 
-                           }catch( e ){
+                        }catch( e ){
 
-                               console.log( `資料錯誤 : 「到店等候中」區塊 / 錯誤資料索引號 : ${ y }` )
+                            console.log( `資料錯誤 : 「到店等候中」區塊 / 錯誤資料索引號 : ${ y }` )
 
-                           }
+                        }
 
                      })
 
                   }
 
-                   { /* 下載圖示  */ }
-                   { Index_isLoading &&
-
-                       <div className="has-text-centered" >
-                           <br/><br/><br/><br/><br/><br/>
-                           <button className="button is-loading is-white"></button>
-                       </div>
-
-                   }
+                  
 
                </div>
 
@@ -202,7 +200,7 @@ const Left_Cards : FC<ILeft>  = ( { pet_Arr } ) => {
 
                <div className="card p_10" style={ left_Card } >
 
-                   { Index_isLoading ||
+                   { 
 
                        pets_Beauty.map( ( x , y ) => {
 
@@ -248,15 +246,7 @@ const Left_Cards : FC<ILeft>  = ( { pet_Arr } ) => {
 
                    }
 
-                   { /* 下載圖示  */ }
-                   { Index_isLoading &&
-
-                       <div className="has-text-centered" >
-                           <br/><br/><br/><br/><br/><br/>
-                           <button className="button is-loading is-white"></button>
-                       </div>
-
-                   }
+                  
 
                </div>
 

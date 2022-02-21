@@ -16,3 +16,17 @@ export const set_BasicSumPrice = ( price : number | string ) => {
                                       } ;
 
 } ;
+
+
+
+
+// 將基礎所有狀態，設回 _ 初始值
+export const set_Basic_States_To_Default = (  ) => {
+
+  return ( dispatch : Dispatch ) => { 
+
+           dispatch({ type : "SET_BASIC_STATES_TO_DEFAULT" }) ;
+
+         } ;
+
+} ;
