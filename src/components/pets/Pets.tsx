@@ -15,8 +15,6 @@ import Search_Type_Note from "templates/search/Search_Type_Note";
 
 
 
-
-
 // 可搜尋關鍵字類型
 const search_Types = [ "寵物名字" , "寵物品種" , "寵物編號" , "客戶姓名" , "客戶身分證字號" , "客戶手機號碼" ] ;
 
@@ -34,9 +32,9 @@ const filter_Data = ( source : any[] , searchKeyword : string ) => {
              const f_Mobile_Phone = x['customer'] ? x['customer']['mobile_phone'] : '' ;
              
              // # 設置 _ 多種查詢條件
-             let cus_Name   = x['customer']['name'].match(new RegExp(searchKeyword, 'gi'));         // 客戶_姓名
-             let cus_Id     = x['customer']['id'].match(new RegExp(searchKeyword, 'gi'));           // 客戶_身分證號
-             let cus_Mobile = x['customer']['mobile_phone'].match(new RegExp(searchKeyword, 'gi')); // 客戶_手機號碼
+             let cus_Name   = f_Cus_Name.match(new RegExp(searchKeyword, 'gi'));     // 客戶_姓名
+             let cus_Id     = f_Cus_Id.match(new RegExp(searchKeyword, 'gi'));       // 客戶_身分證號
+             let cus_Mobile = f_Mobile_Phone.match(new RegExp(searchKeyword, 'gi')); // 客戶_手機號碼
 
              let pet_Name    = x['name'].match(new RegExp(searchKeyword, 'gi'));                    // 寵物_名字
              let pet_Species = x['species'].match(new RegExp(searchKeyword, 'gi'));                 // 寵物_品種
