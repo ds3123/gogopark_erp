@@ -1,22 +1,33 @@
 
 module.exports = {
 
-  preset: 'ts-jest',
+  preset : 'ts-jest' ,
+  
+//  testEnvironment : "node" ,
+  testEnvironment : "jsdom" ,
+  
+  moduleDirectories : ['node_modules' , 'src']  ,   // 配合 : 絕對路徑的設定
 
-  testEnvironment: "jsdom",
+  // coverageDirectory : "coverage" , 
 
-  "setupFilesAfterEnv": [ "<rootDir>/jest-setup.ts" ] ,
+  // testRegex : "(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$" ,
 
-  transform: {
-    "^.+\\.svg$": "<rootDir>/svgTransform.js" // 新增 svgTransform.js : 處理 SVG 圖片
-  } ,
+  //testRegex : "(/__tests__/.*.*"
 
-  "moduleNameMapper": {
-    "\\.(css|less|scss)$": "identity-obj-proxy"  // 利用套件 identity-obj-proxy : 處理 _ css 或 less 或 scss 樣式
-  } ,
+  // "setupFilesAfterEnv": [ "<rootDir>/jest-setup.ts" ] ,
 
-  moduleDirectories: ['node_modules', 'src']     // 配合 : 絕對路徑的設定
+  // transform: {
+  //   "^.+\\.svg$": "<rootDir>/svgTransform.js" // 新增 svgTransform.js : 處理 SVG 圖片
+  // } ,
 
+  // "moduleNameMapper": {
+  //   "\\.(css|less|scss)$": "identity-obj-proxy"  // 利用套件 identity-obj-proxy : 處理 _ css 或 less 或 scss 樣式
+  // } ,
+
+  
+
+  
+  
 
 };
 

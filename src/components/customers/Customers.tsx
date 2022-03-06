@@ -1,6 +1,6 @@
 import { useState } from "react" ;
 
-// 分頁套件、呼叫邏輯
+// 分頁套件、呼叫邏輯｀
 import usePagination from "hooks/layout/usePagination";
 import Pagination from "utils/Pagination";
 
@@ -102,9 +102,7 @@ const Customers = () => {
                        pageOfItems.map( ( item : any , index ) => {
 
                           if( item === 3 ) return false ;  // 確認 3 怎麼從 Pagination 套件得出 2020.06.10
-
-                          console.log( 'sss' , item )                            
-
+                         
                           return <Customers_Rows key={ index } data={ item } /> ;
 
                        })

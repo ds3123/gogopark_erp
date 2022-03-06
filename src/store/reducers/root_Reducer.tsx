@@ -1,5 +1,4 @@
 
-import React from "react";
 import { combineReducers } from "redux" ;
 import reducer_Global_Layout  from "store/reducers/reducer_Global_Layout"
 import reducer_Global_Setting  from "store/reducers/reducer_Global_Setting"
@@ -23,9 +22,7 @@ import reducer_Plan from "store/reducers/reducer_Plan";
 import reducer_Care from "store/reducers/reducer_Care";
 import reducer_Management from "store/reducers/reducer_Management";
 import reducer_Form_Validator from "store/reducers/reducer_Form_Validator";
-
-
-
+import reducer_Test from "store/reducers/reducer_Test";
 
 
 const root_Reducer = combineReducers({
@@ -52,7 +49,6 @@ const root_Reducer = combineReducers({
                   
                          // @ 服務異常
                          "Error"      : reducer_Error ,               
-
 
 
                          // @ 美容師專區
@@ -82,6 +78,10 @@ const root_Reducer = combineReducers({
 
                          // @ 表單 ( 自訂驗證 )
                          "Form"       : reducer_Form_Validator ,
+
+
+                         // @ 測試練習 ( 2022.03.06 ) 
+                         "Test"       : reducer_Test
 
 
                      }) ;

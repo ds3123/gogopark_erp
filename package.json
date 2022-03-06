@@ -78,8 +78,10 @@
     ]
   },
   "devDependencies": {
+    "@testing-library/react-hooks": "^7.0.2",
     "identity-obj-proxy": "^3.0.0",
     "react-app-rewired": "^2.1.8",
+    "react-test-render": "^1.1.2",
     "sass": "^1.49.8",
     "ts-jest": "^26.5.6"
   }

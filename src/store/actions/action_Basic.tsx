@@ -1,6 +1,6 @@
 
-import React from "react" ;
 import { Dispatch } from "redux";
+
 
 
 // # 設定 _ 基礎 : 共計價格
