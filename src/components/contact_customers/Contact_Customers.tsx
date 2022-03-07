@@ -18,7 +18,7 @@ const data = [
 const Contact_Customers = ( ) => {
 
     // 取得 _ 分頁資料
-    const { pageOfItems , filteredItems , click_Pagination } = usePagination( "/plans/show_all_with_customer_species_records/" ) ;
+    const { pageOfItems , filteredItems , click_Pagination } = usePagination( "/plans/show_all_with_customer_species_records" ) ;
 
 
     return <>

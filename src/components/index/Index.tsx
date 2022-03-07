@@ -12,7 +12,6 @@ import User_Info from "./components/User_Info";
 
 const Index = () => {
 
-
     const dispatch = useDispatch() ;
 
     // 首頁詳細模式 ( 展開所有統計資料 )
@@ -68,7 +67,7 @@ const Index = () => {
 
                 { is_Detail_Mode &&  <Statistics_Rows /> }
 
-                <br/><br/><br/><br/>
+                <br/><br/><br/><br/> 
 
                 {/* 今日服務 _ 各階段狀態  */}
                 <div className="columns is-mobile is-multiline relative" style={{ width:"110%" , left:"-4%" }}>

@@ -117,7 +117,7 @@ const Lodge_Form_Period : FC< lForm > = ( { control  , setValue , editType , ser
 
                     </div>
 
-                    <div className="column is-1-desktop"> { is_Create && <span className="relative" style={{ top:"7px" }}> { '------>' } </span> } </div> 
+                    <div className="column is-1-desktop"> { is_Create && <span className="relative" style={{ top:"7px" }}> { '----->' } </span> } </div> 
 
                     <div className="column is-1-desktop relative required">
                         <b className="absolute" style={{top:"20px"}}> 退房時間 : </b>

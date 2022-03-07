@@ -9,7 +9,6 @@ const useCounter = ( initialCount : number , callbackFunciton : () => void ) => 
 
    const [ count , setCount ] = useState( initialCount ) ;
 
-
    const add = ( addend : number ) => setCount( count + addend ) ;  
        
 

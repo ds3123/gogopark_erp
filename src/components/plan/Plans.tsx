@@ -52,7 +52,7 @@ const Plans = ( ) => {
 
     // 取得 _ 分頁資料
     // const { pageOfItems , filteredItems , click_Pagination } = usePagination( "/services/show_with_cus_pet/" ) ;
-    const { pageOfItems , filteredItems , click_Pagination } = usePagination( "/plans/show_all_with_customer_species_records/" ) ;
+    const { pageOfItems , filteredItems , click_Pagination } = usePagination( "/plans/show_all_with_customer_species_records" ) ;
 
     
 

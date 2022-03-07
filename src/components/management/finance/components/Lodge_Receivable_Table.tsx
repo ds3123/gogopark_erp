@@ -47,8 +47,6 @@ const Lodge_Receivable_Table : FC< { data : any } > = ( { data } ) => {
                       
                       care_Lodage_Data.map( ( x : any , y : number )=> {
 
-                            console.log( 'hhhh' , x )   
-                        
                             return <tr key = { y }>
                                        <td> { x['service_status'] } </td> 
                                        <td className="td_Left"> { x['pet']['name'] } ( { x['pet']['species'] } )</td> 
