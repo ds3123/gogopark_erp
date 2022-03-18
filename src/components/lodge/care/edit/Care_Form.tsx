@@ -188,7 +188,7 @@ const Care_Form : FC<ICare> = ({ register  , control , setValue , errors , curre
                   <div className="column is-3-desktop">
 
                      { /* for 新增 */ }
-                     { editType === '編輯' || <Qcode_Select_Options register = { register } /> }
+                     { editType === '編輯' || <Qcode_Select_Options /> }
 
 
                      {/* for 編輯 */}

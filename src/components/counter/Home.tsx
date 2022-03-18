@@ -21,7 +21,8 @@ const Home = () => {
     return <>
               <h1> 首頁 </h1>
               <div>
-                   { JSON.stringify( useSelector( ( state:any ) => state.Test.user ) ) }    
+                    Danny
+                   {/* { JSON.stringify( useSelector( ( state:any ) => state.Test.user ) ) }     */}
               </div>   
            </>
 

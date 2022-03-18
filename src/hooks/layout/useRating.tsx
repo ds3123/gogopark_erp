@@ -50,7 +50,9 @@ export const useRating_Options = ( title : string , colName : string , register 
     if( setValue ) setValue( colName , "3" ) ;  // 預設值
 
 
-    return <div className="column is-12-desktop" >
+    return <>  
+     
+             <div className="column is-12-desktop" >
 
                 <i className="far fa-star"></i>&nbsp;<b className="tag is-medium is-white"> { title } : </b> &nbsp; &nbsp;
 
@@ -61,7 +63,11 @@ export const useRating_Options = ( title : string , colName : string , register 
                 <input type="radio" value = "4"    { ...register( colName ) } /> 4    &nbsp; &nbsp; &nbsp; &nbsp;
                 <input type="radio" value = "5"    { ...register( colName ) } /> 5
 
-           </div>
+            </div>
+            
+            <hr/>
+         
+          </>
 
 
 } ;

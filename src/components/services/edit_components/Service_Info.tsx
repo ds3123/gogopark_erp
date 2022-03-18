@@ -1,5 +1,5 @@
-import React, {FC, useEffect, useState} from "react" ;
-
+import { FC , useEffect , useState , useContext } from "react" ;
+import { ReachHookFormContext } from "containers/Create_Data_Container"
 import { Edit_Form_Type } from "utils/Interface_Type"
 import {useDispatch, useSelector} from "react-redux";
 import Qcode_Select_Options from "components/services/edit_components/Qcode_Select_Options";
@@ -14,9 +14,7 @@ import 'antd/dist/antd.css';
 import moment from "moment";
 
 // Redux
-import {set_Info_Column} from "store/actions/action_Info";
-
-import { useForm , Controller } from "react-hook-form";
+import { set_Info_Column } from "store/actions/action_Info";
 
 
 // 各表單驗證條件
@@ -30,20 +28,24 @@ import { useForm , Controller } from "react-hook-form";
 *
 */
 
-interface IInfo extends Edit_Form_Type {
 
+// for 編輯
+interface IInfo extends Edit_Form_Type {
     editType?    : string ;
     serviceData? : any ;
-
 }
 
 
 /* 服務單( 基礎、洗澡、美容 ) _ 基本資訊 */
-const Service_Info : FC<IInfo> = ({ register , setValue , errors , control , current , editType, serviceData  }) => { 
+const Service_Info : FC<IInfo> = ({ register , setValue , control , editType, serviceData  }) => { 
 
+    
     const dispatch     = useDispatch() ;
     const today        = moment( new Date ).format('YYYY-MM-DD' ) ;                  // 今日
     const service_Date = useSelector( ( state : any ) => state.Info.service_Date ) ; // 到店日期( 預設 : 今日 )
+
+    
+
 
     // # 服務狀態
     const [ serviceStatus , set_serviceStatus ] = useState({
@@ -103,7 +105,6 @@ const Service_Info : FC<IInfo> = ({ register , setValue , errors , control , cur
     const way   = { fontSize : "11pt" , top : "-2px" , fontWeight : "bold" } ;
     const green = { color : "rgb(30,180,30)" } ;
     const blue  = { color : "rgb(30,30,180)" } ;
-
    
     return <>
 
@@ -205,7 +206,7 @@ const Service_Info : FC<IInfo> = ({ register , setValue , errors , control , cur
                     <div className="column is-4-desktop">
 
                         { /* for 新增  */ }
-                        { editType === '編輯' || <Qcode_Select_Options register={register}/> }
+                        { editType === '編輯' || <Qcode_Select_Options /> }
 
                         { /* for 編輯 */ }
                         { editType === '編輯' &&  <div className="tag is-large is-white">   <> 到店處理碼 :&nbsp;<b style={ blue }> Q{ serviceData.q_code } </b>  </> &nbsp; </div> }

@@ -1,7 +1,6 @@
 
-import React, { useEffect , useState , FC } from "react" ;
+import { useEffect , useState , FC } from "react" ;
 import { useRead_Qcode_Service_Date } from "hooks/ajax_crud/useAjax_Read";
-import { Edit_Form_Type } from "utils/Interface_Type";
 
 // Redux
 import { useDispatch } from "react-redux";
@@ -23,8 +22,7 @@ for( let i = 1 as any ; i <= 60 ; i++ ){
 *
 */
 
-
-const Qcode_Select_Options : FC<Edit_Form_Type> = ( { register } )  => {
+const Qcode_Select_Options : FC = ( ) => {
 
     const dispatch = useDispatch();
 
@@ -46,7 +44,7 @@ const Qcode_Select_Options : FC<Edit_Form_Type> = ( { register } )  => {
 
     } ;
 
-    useEffect(( ) => {
+    useEffect( () => {
 
         // 取得 : 當天 /  目前可供使用 Q 碼
         const avaiable_Q_Arr = default_Q_arr.filter(x => Qcodes_Used_By_Date.indexOf( x ) === -1 ) ;

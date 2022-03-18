@@ -1,30 +1,18 @@
-import React, {FC, useContext, useState} from "react" ;
-import { Input } from "templates/form/Input"
-import { Edit_Form_Type  } from "utils/Interface_Type"
+import { FC , useContext } from "react" ;
+import { ReachHookFormContext } from "containers/Create_Data_Container" ;
 import Customer_Form from "components/customers/edit/Customer_Form";
 
 
-
-
 /* @ 新增 _  客戶 */
-const Create_Customer : FC<Edit_Form_Type> = ({ register , watch , setValue , errors , isDirty , isValid, current } ) => {
+const Create_Customer : FC = () => {
 
-
-      const props = {
-         register : register ,
-         watch    : watch ,
-         setValue : setValue ,
-         errors   : errors ,
-         isDirty  : isDirty ,
-         isValid  : isValid ,
-         current  : current
-      } ;
+      const props_RHF = useContext( ReachHookFormContext ) ;  // 取得 context 值 : React Hook Form 屬性  
 
       return <>
                { /* 客戶表單欄位  */ }
-               <Customer_Form  { ...props }  />
+               <Customer_Form  { ...props_RHF } />
 
-               <hr/><br/>
+               <br/>
 
              </>
 

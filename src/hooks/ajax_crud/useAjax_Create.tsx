@@ -1,4 +1,4 @@
-import {useState, useEffect, useCallback } from "react" ;
+
 import { useHistory } from "react-router-dom";
 
 import axios from "utils/axios" ;
@@ -38,7 +38,7 @@ const useCreate_Customer = ( history : any , dispatch : any ) => {
             axios.post( "/customers" , obj_Customer ).then( res => {
 
                 // 新增成功通知
-                if( msg ){ toast(`🦄 已新增 : ${ msg }`, { position: "top-left", autoClose: 1500 , hideProgressBar: false,}); }
+                if( msg ){ toast( `🦄 已新增 : ${ msg }` , { position: "top-left", autoClose : 1500 , hideProgressBar : false }); }
 
                 // 關掉右側面板
                 dispatch( set_Side_Panel( false , null , {} ) ) ;

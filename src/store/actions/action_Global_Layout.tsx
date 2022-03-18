@@ -49,9 +49,9 @@ export const set_Debug_Info = ( is_Open : boolean ) => {
     return ( dispatch : Dispatch ) => {
 
                 dispatch({
-                                    type    : "SET_DEBUG_INFO" ,
-                                    is_Open : is_Open ,
-                                }) ;
+                           type    : "SET_DEBUG_INFO" ,
+                           is_Open : is_Open ,
+                         }) ;
 
            } ;
 

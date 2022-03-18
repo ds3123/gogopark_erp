@@ -1,5 +1,5 @@
 
-import React , { createContext } from "react" ;
+import { createContext } from "react" ;
 import { useSelector , useDispatch } from "react-redux";
 
 // Styled Component
@@ -123,8 +123,10 @@ const Side_Panel = () => {
 
              { /* 遮罩 ( 點選 --> 關閉 */ }
              <Mask active = { active } onClick = { () => { close() } } >
+
                  <SidePanelContext.Provider value = { props } >
                  </SidePanelContext.Provider>
+                 
              </Mask>
 
              { /* 彈出面版 */ }

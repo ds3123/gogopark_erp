@@ -17,10 +17,10 @@ const Customer_Note : FC<ICustomer_Note> = ({ register , editType } ) => {
    const { is_folding , Folding_Bt }     = useSection_Folding( !editType ? true : false ) ;  // 收折區塊
 
    return <>
-               <br/>
+               <hr/> 
 
                { /* 標題 */ }
-               <label className="label relative" style={{ fontSize : "1.3em"  }} >
+               <label className="label relative m_Top_50"  >
 
                    <i className="fas fa-edit"></i> &nbsp; 客戶交代、物品 &nbsp;
 

@@ -1,32 +1,16 @@
 
-import React, {FC} from "react" ;
-import { Edit_Form_Type } from "utils/Interface_Type"
+import { FC , useContext } from "react" ;
+import { ReachHookFormContext } from "containers/Create_Data_Container"
 import Pet_Form from "components/pets/edit/Pet_Form";
 
 
-
 /* @ 新增 _ 寵物 */
-const Create_Pet : FC<Edit_Form_Type> = ({ register , watch , setValue , errors , isDirty , isValid, current } ) => {
+const Create_Pet : FC = () => {
 
-    const props = {
-        register : register ,
-        setValue : setValue ,
-        watch    : watch ,
-        errors   : errors ,
-        isDirty  : isDirty ,
-        isValid  : isValid ,
-        current  : current
-    } ;
+   const props_RHF = useContext( ReachHookFormContext ) ;  // 取得 context 值 : React Hook Form 屬性 
 
-   return <>
 
-             { /* 寵物表單欄位  */ }
-             <Pet_Form {...props}  />
-
-             <hr/>
-
-          </>
-
+   return <Pet_Form { ...props_RHF }  />  /* 寵物表單欄位  */ 
 
 } ;
 

@@ -45,6 +45,7 @@ import cookie from 'react-cookies'
 
 import { colCovert_Basic_UPDATE , colCovert_Bath_UPDATE , colCovert_Beauty_UPDATE } from "utils/data/Columns_Convert_Update"
 
+import { useMatch_Obj } from "containers/data_components/Condition_for_Currnet_Tab"
 
 
 type preLoad = {
@@ -207,8 +208,10 @@ const Update_Service = ( ) => {
 
     } , [] ) ;
 
+    // # 依照目前服務類型 ( service_Type，例如：基礎、洗澡、美容... )，判斷 _ 是否顯示
+    const is_Obj = useMatch_Obj( service_Type ) ;
 
-    const sign = { background:"red" , color:"white" , width:"100%" } ;
+    const sign   = { background:"red" , color:"white" , width:"100%" } ;
 
     return <form onSubmit = { handleSubmit( onSubmit ) } >
 
@@ -266,13 +269,14 @@ const Update_Service = ( ) => {
                 <hr/>
 
                 { /* 服務單基本資訊 : 服務性質、到店日期、處理碼 ... */ }
-                { ( service_Type === "基礎" || service_Type === "洗澡" || service_Type === "美容" ) && <Service_Info { ...props } /> }
+                { <Service_Info { ...props } /> }
+
 
                 { /* 自備物品、主人交代、櫃台備註  */ }
                 <Customer_Note { ...props } />
 
                 { /* 基礎單項目 */ }
-                { ( service_Type === "基礎" || service_Type === "洗澡" || service_Type === "美容" ) && <Basic_Form { ...props } /> }
+                <Basic_Form { ...props } /> 
 
                 { /* 洗澡單項目 */ }
                 { ( service_Type === "洗澡" || service_Type === "美容" ) && <Bath_Form { ...props } /> }
@@ -297,11 +301,11 @@ const Update_Service = ( ) => {
                 }
 
                 { /*  所有服務 : 自行調整費用金額  */ }
-                { ( service_Type === "基礎" || service_Type === "洗澡" || service_Type === "美容" || service_Type === "安親" || service_Type === "住宿" ) && <Self_Adjust_Amount { ...props } /> }
+                { is_Obj.is_Show_Self_Adjust_Amount && <Self_Adjust_Amount { ...props } /> }
 
 
                 { /* 接送費 */ }
-                { ( service_Type === "基礎" || service_Type === "洗澡" || service_Type === "美容" || service_Type === "安親" || service_Type === "住宿" ) && <Pickup_Fee { ...props } /> }
+                { is_Obj.is_Show_Pickup_Fee && <Pickup_Fee { ...props } /> }
 
                 { /* 櫃台人員評分 */ }
                 <div className="columns is-multiline is-mobile relative m_Left_5" >

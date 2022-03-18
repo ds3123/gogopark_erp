@@ -1,5 +1,5 @@
 
-import React , {FC} from "react" ;
+import { FC } from "react" ;
 
 type TI = {
     type     : string ;
@@ -7,7 +7,7 @@ type TI = {
     label    : string ;
     icon     : string ;
     register : any ;
-    error    : any ;
+    error?    : any ;
     asterisk : boolean ;
     columns  : string ;
     onChange? : any ;
@@ -17,11 +17,11 @@ type TI = {
     
 } ;
 
-export const Input : FC<TI> = ({ register,type,name,label,icon,error, asterisk, columns, min , max , onChange = () => {} , style , ...inputProps }) => {
+export const Input : FC<TI> = ({ register , type , name , label , icon , error , asterisk , columns, min , max , onChange = () => {} , style , ...inputProps }) => {
 
     return  <div className= { `column is-${columns}-desktop ${ ( asterisk ? "required" : "" ) }` }  >
 
-               <p className="relative" > { label } &nbsp; <b style={{color:"red"}} > { error?.message } </b>  </p>
+               <p className="relative" > { label } &nbsp; <b className="fRed"> { error?.message } </b>  </p>
 
                <div className="control has-icons-left" >
 

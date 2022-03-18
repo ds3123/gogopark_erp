@@ -1,11 +1,11 @@
 
-import { createContext , useState , FC , useEffect , useContext } from "react" ;
-import { SidePanelContext } from "templates/panel/Side_Panel";
+import { useState , FC , useEffect , useContext  } from "react" ;
+import { ReachHookFormContext } from "containers/Create_Data_Container"
 import { useDispatch , useSelector } from "react-redux";
 import { set_Current_Create_Tab } from "store/actions/action_Service"
 import { set_Side_Info } from "store/actions/action_Global_Layout"
 import { set_All_States_To_Default } from "store/actions/action_Global_Setting"
-import { set_Is_Show_Sections , set_Is_Show_Section_Services } from "store/actions/action_Global_Layout"
+import { set_Is_Show_Section_Services } from "store/actions/action_Global_Layout"
 import { set_Customer_Columns_Empty } from "store/actions/action_Customer"
 import moment from "moment";
 
@@ -37,20 +37,14 @@ const tabsArr : ITabs[] = [
     // { title : "品牌" , style : "pointer tag is-large is-primary"  , icon : "fas fa-store"  } ,
 ] ;
 
-interface IProps {
-    get_Current_Tab : ( a : string ) => void
-    setValue : any
-}
+const Edit_Form_Tabs : FC = ( ) => {
 
-
-const Edit_Form_Tabs : FC<IProps> = ( { get_Current_Tab , setValue  } ) => {
-
-    const dispatch = useDispatch();
-    const value    = useContext( SidePanelContext ) ;            // 取得 context 值
-    const today    = moment( new Date ).format('YYYY-MM-DD' ) ;  // 今日
+    const dispatch  = useDispatch();
+    const today     = moment( new Date ).format( 'YYYY-MM-DD' ) ; // 今日
+    const props_RHF = useContext( ReachHookFormContext ) ;        // 取得 context 值 : React Hook Form 屬性  
 
     // 分類標籤
-    const [ current , set_Current ] = useState( '' ) ;  // 目前點選標籤
+    const [ current , set_Current ] = useState( '' ) ;            // 目前點選標籤
 
 
     // 點選 _ 標籤
@@ -66,7 +60,7 @@ const Edit_Form_Tabs : FC<IProps> = ( { get_Current_Tab , setValue  } ) => {
         // dispatch( set_Is_Show_Sections( false ) ) ;   
 
         // 清空 _ 所有客戶欄位值
-        dispatch( set_Customer_Columns_Empty( setValue ) ) ; 
+        dispatch( set_Customer_Columns_Empty( props_RHF.setValue ) ) ; 
 
         // 方案時，直接顯示整體服務區塊 ( 因為沒有寵物區塊觸發 )
         if( title === '方案' ) dispatch( set_Is_Show_Section_Services( true ) ) ; 
@@ -79,46 +73,14 @@ const Edit_Form_Tabs : FC<IProps> = ( { get_Current_Tab , setValue  } ) => {
         dispatch( set_Side_Info(true ) ) ;             // 開啟左側資訊面板
 
 
-        // 回傳父元件
-        get_Current_Tab( title ) ;
-
     } ;
 
+    // 初始先點選第一個頁籤：客戶
     useEffect(()=>{
 
-        // 設定 current、回傳 _ 目前點選標籤
-        if( value.create_Data ){
-            set_Current( value.create_Data ) ;
-            get_Current_Tab( value.create_Data ) ;
-        }
-
-        if( value.customer_Id ){
-            set_Current( '客戶' ) ;
-            get_Current_Tab( '客戶' ) ;
-        }
-
-        if( value.pet_Serial ){
-            set_Current( prevState => '寵物' ) ;
-            get_Current_Tab( '寵物' ) ;
-        }
-
-        if( value.basic_id ){
-            set_Current('基礎') ;
-            get_Current_Tab('基礎' ) ;
-        }
-
-        if( value.bath_id ){
-            set_Current('洗澡') ;
-            get_Current_Tab('洗澡' ) ;
-        }
-
-        if( value.beauty_id ) {
-            set_Current('美容');
-            get_Current_Tab('美容' ) ;
-        }
-
-
-    } ,[ value ] ) ;
+        click_Tab( '客戶' )
+  
+    } , [ ] ) ;
 
 
     const IsExisting_Customer = useSelector(( state : any ) => state.Customer.IsExisting_Customer ) ;

@@ -1,5 +1,6 @@
 
-import { FC , useEffect , useState } from "react"
+import { FC , useEffect , useState , useContext } from "react"
+import { ReachHookFormContext } from "containers/Create_Data_Container"
 import { Input } from "templates/form/Input";
 import { Edit_Form_Type } from "utils/Interface_Type"
 import { useRead_Customer_By_Column } from "hooks/ajax_crud/useAjax_Read"
@@ -39,11 +40,22 @@ const fetch_Data = ( current_Tab : string | undefined , customer_Id : string , f
 }
 
 
+interface ICustomer_Form {
+
+    register  : any ;
+    watch     : any ;
+    setValue? : any ;
+    errors    : any ;
+
+    current?  : string ;
+
+}
+
+
 { /* 客戶表單欄位 */ }
-const Customer_Form : FC<Edit_Form_Type> = ( { register , watch , setValue , errors , current } ) => {
+const Customer_Form : FC< ICustomer_Form >= ( { register , watch , setValue , errors , current } ) => {
 
     const dispatch = useDispatch() ;
-
 
     // # for 觸控輸入數字 ---------------------------------------------------------------------------
 
@@ -230,8 +242,6 @@ const Customer_Form : FC<Edit_Form_Type> = ( { register , watch , setValue , err
 
                     <i className="fas fa-user"></i> &nbsp; 客戶資料
 
-                   
-
                     { Folding_Bt } { /* 收折鈕 */ }
 
                     { /* 過去服務紀錄、資料數 ( 基礎、洗澡、美容 )  */ }
@@ -258,6 +268,7 @@ const Customer_Form : FC<Edit_Form_Type> = ( { register , watch , setValue , err
                         <b className="tag is-light is-success absolute f_10 pointer" style={{ top:"8px",left:"180px" , zIndex:222 }} onClick={ set_Random_Id }>
                             自動產生
                         </b>
+
                         <Input type="text" name="customer_Id"        label="身分證字號" register={register} error={errors.customer_Id}        icon="fas fa-id-card-alt" asterisk={true} columns="3" onChange={ handle_Change} />
                         <Input type="text" name="customer_Name"      label="姓 名"      register={register} error={errors.customer_Name}      icon="fas fa-user" asterisk={true} columns="3" onChange={handle_Change} />
                         <Input type="text" name="customer_Cellphone" label="手機號碼"   register={register} error={errors.customer_Cellphone} icon="fas fa-mobile-alt" asterisk={true} columns="3" onChange={handle_Change} />
@@ -295,8 +306,6 @@ const Customer_Form : FC<Edit_Form_Type> = ( { register , watch , setValue , err
 
                      { /* 關係人欄位 */ }
                      <Customer_Relatives_Columns  current = { current } register = { register } setValue = { setValue }  />
-
-                     <br/>
 
                    </>
 

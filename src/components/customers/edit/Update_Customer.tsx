@@ -96,13 +96,6 @@ const Update_Customer  = ( ) => {
     };
 
 
-    const props = {
-        register : register ,
-        errors   : errors ,
-        watch    : watch ,  
-    }
-
-
     // 取得 _ 客戶關係人資料 ( Current_Customer_Relatives )
     useEffect( () => { 
     
@@ -110,18 +103,26 @@ const Update_Customer  = ( ) => {
     
     } , [ cus_Id ] ) ;
 
+    // 欲傳遞屬性
+    const props = {
+
+        register : register ,
+        watch    : watch ,
+        errors   : errors ,
+        isValid  : isValid ,
+       
+    }
+
 
     return <form onSubmit = { handleSubmit( onSubmit ) } >
 
              { /* 客戶表單欄位  */ }
-             <Customer_Form { ...props } />
-
-             <br/><br/><br/>
+             <Customer_Form  { ...props } />
 
              { /* 提交按鈕 */ }
-             <div className="has-text-centered" >
+             <div className="has-text-centered m_Top_30 m_Bottom_100" >
 
-                <button disabled={ !isValid } type="submit" className="button is-primary relative is-medium" style={{top: "-10px"}} >
+                <button disabled={ !isValid } type="submit" className="button is-primary relative is-medium"  >
                     提交表單
                 </button>
 

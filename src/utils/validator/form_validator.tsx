@@ -23,7 +23,7 @@ const phoneRegExp = /^09[0-9]{8}$/ ;
 export const schema_Customer = yup.object().shape({
 
     // 客戶
-    customer_Id                 : yup.string().required("必填欄位33333") ,
+    customer_Id                 : yup.string().required("必填欄位") ,
     customer_Name               : yup.string().required("必填欄位") ,
     customer_Cellphone          : yup.string().matches( phoneRegExp, '格式錯誤') ,
 

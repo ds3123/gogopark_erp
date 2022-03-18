@@ -33,7 +33,6 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
 
     const dispatch = useDispatch() ;
 
-
     // 是否顯示 : 詳細選項
     const [ is_Detial , set_Is_Detial ] = useState( current ? false : true ) ;
 
@@ -209,9 +208,11 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
 
 
    return <>
-               
+               <hr/>
+
+
                { /* 寵物基本資料 */ }
-               <label className="label relative" style={{ fontSize : "1.3em" }}>
+               <label className="label m_Top_70">
 
                    <i className="fas fa-dog"></i> &nbsp; 寵物資料
 
@@ -501,9 +502,7 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
                        }   
 
                         
-
-
-                       <br/>
+                       <br/> 
 
                    </>
 

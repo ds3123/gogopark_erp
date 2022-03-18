@@ -109,11 +109,11 @@ const Update_Pet = ( ) => {
               <Pet_Form  {...props}  />
 
               { /* 提交按鈕 */ }
-              <div className="has-text-centered" >
+              <div className="has-text-centered m_Top_50 m_Bottom_100" >
                   <button disabled={ !isValid } type="submit" className="button is-primary relative is-medium" style={{top: "-10px"}} >
                        提交表單
                   </button>
-              </div> <br/><br/>
+              </div> 
 
            </form>
 
