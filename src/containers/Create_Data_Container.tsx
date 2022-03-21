@@ -133,12 +133,12 @@ const Create_Data_Container = () => {
 
         // --------------------------------
 
+        // 新增驗證 : 寵物欄位 ( 是否會咬人 )  2022.03.21 先取消
+        // if( is_Obj.is_Check_Pet_Bite_Column && data['bite'] === null ){
+        //     alert('請勾選 : 寵物是否會咬人選項') ;
+        //     return false ;
+        // }
 
-        // 新增驗證 : 寵物欄位 ( 是否會咬人 )
-        if( is_Obj.is_Check_Pet_Bite_Column && data['bite'] === null ){
-            alert('請勾選 : 寵物是否會咬人選項') ;
-            return false ;
-        }
 
         // 新增驗證 : 住宿
         if( current === '住宿' ){
@@ -154,8 +154,8 @@ const Create_Data_Container = () => {
 
         // 新增驗證 : 員工 ( 工作人員 ) 欄位
         if( current === '員工' && data['employee_Type'] === '工作人員' ){
-           const bool = employee_Validator( data ) ;
-           if( !bool ) return false ;
+            const bool = employee_Validator( data ) ;
+            if( !bool ) return false ;
         }
 
         // --------------------------------

@@ -4,18 +4,20 @@ import * as yup from "yup"
 
 // 測試邏輯
 import test_Customer_Id from "utils/validator/verify_Field_Template/test_Customer_Id";
-
-
 import axios from "../axios";
+
 
 
 /* @ 新增表單 _ 檢核邏輯 */
 
 /*
-*  # 手機號碼 _ 正規表示
-*    1. 09 開頭
-*    2. 後 8 位數字
+  
+   # 手機號碼 _ 正規表示：
+      1. 09 開頭
+      2. 後 8 位數字
+
 */
+
 const phoneRegExp = /^09[0-9]{8}$/ ;
 
 
@@ -40,8 +42,12 @@ export const schema_Pet = yup.object().shape({
 
     pet_Serial                  : yup.string().required("必填欄位") ,
     pet_Name                    : yup.string().required("必填欄位") ,
+    
+    
     pet_Species                 : yup.string().required().test( "品種" , "請選擇", value => value !== "請選擇") ,
-    pet_Size                    : yup.string().required().test( "體型" , "請選擇體型", value => value !== "請選擇") ,
+    
+    // 體型先取消必填
+    // pet_Size                 : yup.string().required().test( "體型" , "請選擇體型", value => value !== "請選擇") ,
     
 });
 
@@ -63,8 +69,8 @@ export const schema_Basic = yup.object().shape({
     pet_Serial                  : yup.string().required("必填欄位") ,
     pet_Name                    : yup.string().required("必填欄位") ,
     pet_Species                 : yup.string().required().test( "品種" , "請選擇", value => value !== "請選擇") ,
-    pet_Size                    : yup.string().required().test( "體型" , "請選擇體型", value => value !== "請選擇") ,
-
+    
+    // pet_Size                 : yup.string().required().test( "體型" , "請選擇體型", value => value !== "請選擇") ,
     // pet_Sex                  : yup.string().required().test( "性別" , "請選擇", value => value !== "請選擇" ) ,
 
 });
@@ -87,8 +93,8 @@ export const schema_Bath = yup.object().shape({
     pet_Serial                  : yup.string().required("必填欄位") ,
     pet_Name                    : yup.string().required("必填欄位") ,
     pet_Species                 : yup.string().required().test( "品種" , "請選擇", value => value !== "請選擇") ,
-    pet_Size                    : yup.string().required().test( "體型" , "請選擇體型", value => value !== "請選擇") ,
-
+   
+    // pet_Size                    : yup.string().required().test( "體型" , "請選擇體型", value => value !== "請選擇") ,
     // pet_Sex                  : yup.string().required().test( "性別" , "請選擇", value => value !== "請選擇") ,
 
 
@@ -113,8 +119,8 @@ export const schema_Beauty = yup.object().shape({
     pet_Serial                  : yup.string().required("必填欄位") ,
     pet_Name                    : yup.string().required("必填欄位") ,
     pet_Species                 : yup.string().required().test( "品種" , "請選擇", value => value !== "請選擇") ,
-    pet_Size                    : yup.string().required().test( "體型" , "請選擇體型", value => value !== "請選擇") ,
-
+    
+    // pet_Size                    : yup.string().required().test( "體型" , "請選擇體型", value => value !== "請選擇") ,
     // pet_Sex                     : yup.string().required().test( "性別" , "請選擇", value => value !== "請選擇") ,
 
 });
@@ -139,8 +145,8 @@ export const schema_Care = yup.object().shape({
     pet_Serial                  : yup.string().required("必填欄位") ,
     pet_Name                    : yup.string().required("必填欄位") ,
     pet_Species                 : yup.string().required().test( "品種" , "請選擇", value => value !== "請選擇") ,
-    pet_Size                    : yup.string().required().test( "體型" , "請選擇體型", value => value !== "請選擇") ,
-
+   
+    // pet_Size                    : yup.string().required().test( "體型" , "請選擇體型", value => value !== "請選擇") ,
     // pet_Sex                     : yup.string().required().test( "性別" , "請選擇", value => value !== "請選擇") ,
 
 });
@@ -164,7 +170,8 @@ export const schema_Lodge = yup.object().shape({
     pet_Serial        : yup.string().required("必填欄位") ,
     pet_Name          : yup.string().required("必填欄位") ,
     pet_Species       : yup.string().required().test( "品種" , "請選擇", value => value !== "請選擇") ,
-    pet_Size          : yup.string().required().test( "體型" , "請選擇 : 體型", value => value !== "請選擇" ) ,
+   
+    // pet_Size          : yup.string().required().test( "體型" , "請選擇 : 體型", value => value !== "請選擇" ) ,
     
 });
 

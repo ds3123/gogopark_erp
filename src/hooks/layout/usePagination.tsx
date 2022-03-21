@@ -29,7 +29,7 @@ const usePagination = ( api : string , type? : string ) => {
     // 取得、設定 : 資料
     useEffect(() => {
 
-        axios.get( api ).then(res => {
+        axios.get( api ).then( res => {
 
             // # 排序資料
             const resData = res.data.sort(( a : any , b : any ) : any => {
@@ -40,12 +40,12 @@ const usePagination = ( api : string , type? : string ) => {
             set_filteredItems( resData ) ;
 
             // 設定 _ 下載完畢狀態
-            if( type === 'customer' ) dispatch( set_Customer_isLoading(false ) ) ; // 客戶頁
-            if( type === 'pet' )      dispatch( set_Pet_isLoading(false ) ) ;      // 寵物頁
-            if( type === 'service' )  dispatch( set_Service_isLoading(false ) ) ;  // 洗美頁
+            if( type === 'customer' ) dispatch( set_Customer_isLoading( false ) ) ; // 客戶頁
+            if( type === 'pet' )      dispatch( set_Pet_isLoading( false ) ) ;      // 寵物頁
+            if( type === 'service' )  dispatch( set_Service_isLoading( false ) ) ;  // 洗美頁
 
-            if( type === 'lodge' )    dispatch( set_Lodge_isLoading(false ) ) ;    // 住宿頁
-            if( type === 'care' )     dispatch( set_Care_isLoading(false ) ) ;     // 安親頁
+            if( type === 'lodge' )    dispatch( set_Lodge_isLoading( false ) ) ;    // 住宿頁
+            if( type === 'care' )     dispatch( set_Care_isLoading( false ) ) ;     // 安親頁
 
         }) ;
 

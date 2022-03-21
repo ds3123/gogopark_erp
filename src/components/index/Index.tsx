@@ -33,13 +33,13 @@ const Index = () => {
 
        let is_Mounted    = true ; 
 
-       const today       = moment( new Date() ).format('YYYY-MM-DD' ) ;   // 今日
+       const today       = moment( new Date() ).format('YYYY-MM-DD') ;   // 今日
 
        const get_Records = setInterval( () => { 
            
                               if( is_Mounted ) dispatch( get_Service_Records_By_Date( today ) ) ;
                 
-                           } , 3000  ) 
+                           } , 3000 )  
         
        return () => {
 

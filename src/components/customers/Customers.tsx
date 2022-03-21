@@ -1,4 +1,4 @@
-import { useState } from "react" ;
+import { useEffect, useState } from "react" ;
 
 // 分頁套件、呼叫邏輯｀
 import usePagination from "hooks/layout/usePagination";
@@ -12,6 +12,8 @@ import { useSearch_Bar } from "hooks/data/useSearch";
 import Data_List_Sum from "templates/search/Data_List_Sum";
 import SearchBar from "templates/search/SearchBar";
 import Search_Type_Note from "templates/search/Search_Type_Note";
+
+import { set_Customers_Cache_PageOfItems } from "store/actions/action_Cache";
 
 
 
@@ -39,6 +41,13 @@ const filter_Data = ( source : any[] , searchKeyword : string ) => {
 /* @ 客戶頁面  */
 const Customers = () => {
 
+
+    // # 快取資料
+    const cache_PageOfItems   = useSelector( ( state:any ) => state.Cache.customers_Cache_PageOfItems ) ; 
+    const cache_FilteredItems = useSelector( ( state:any ) => state.Cache.customers_Cache_filteredItems ) ; 
+
+
+
     // 所輸入 : 搜尋關鍵字
     const [ searchKeyword , set_SearchKeyword ] = useState( '' ) ;
 
@@ -52,8 +61,23 @@ const Customers = () => {
     const { pageOfItems , filteredItems , click_Pagination } = usePagination( '/customers/show_customers_relatives_pets/0' , 'customer' ) ;
 
 
+
+
     // 篩選資料 ( 依搜尋框輸入關鍵字 )
     const { data , dataSum } = useSearch_Bar( filteredItems , filter_Data , searchKeyword ) ;
+
+
+    // # 快取設定
+    useEffect( () => {
+
+
+
+
+
+
+
+    } , [ pageOfItems , filteredItems ] )
+
 
 
     return  <div className="relative">
@@ -62,10 +86,8 @@ const Customers = () => {
                 
                 <div className="column is-offset-8 is-4-desktop">
 
-
                     { /* 可搜尋類型提示 */ }  
-                    <Search_Type_Note search_Types={ search_Types } />
-
+                    <Search_Type_Note search_Types = { search_Types } />
 
                     { /* 搜尋列 */ }
                     <SearchBar get_Search_Text = { get_Search_Text } />

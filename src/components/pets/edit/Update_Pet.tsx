@@ -25,7 +25,7 @@ const Update_Pet = ( ) => {
 
 
     const value = useContext( SidePanelContext ) ;  // 取得 context 值
-    const pet   = value.preLoadData ? value.preLoadData : { } ;
+    const pet   = value.preLoadData ? value.preLoadData : {} ;
 
     // 取得 _ 所有寵物品種資料
     const petSpecies = useRead_Species() ;
@@ -87,15 +87,15 @@ const Update_Pet = ( ) => {
     } ;
 
 
-    const update_Data = useUpdate_Data( ) ;
+    const update_Data = useUpdate_Data() ;
 
 
     // 提交表單
     const onSubmit : SubmitHandler< IPet > = data => {
 
         // 將 "寵物品種 pet_species 資料表 id" ，改為 : "寵物品種名稱"  
-        const mPet       = petSpecies.filter( x => x['id'] ===  parseInt( data.pet_Species ) )[0] as any ;  // 篩選出該寵物
-        data.pet_Species =  mPet.name ;    // 將品種資料表 id ， 改為 : "寵物品種名稱"  
+        const mPet       = petSpecies.filter( x => x['id'] === parseInt( data.pet_Species ) )[0] as any ;  // 篩選出該寵物
+        data.pet_Species = mPet.name ;    // 將品種資料表 id ， 改為 : "寵物品種名稱"  
 
         // 更新 _ 寵物
         update_Data( "/pets" , data.pet_Serial , data , "/pets" , "寵物" ) ;
@@ -106,7 +106,7 @@ const Update_Pet = ( ) => {
     return <form onSubmit = { handleSubmit( onSubmit ) }>
 
               { /* 寵物表單欄位  */ }
-              <Pet_Form  {...props}  />
+              <Pet_Form  { ...props }  />
 
               { /* 提交按鈕 */ }
               <div className="has-text-centered m_Top_50 m_Bottom_100" >

@@ -290,8 +290,8 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
 
                             </div>
 
-                           { /* 性別  */ }
-                           <div className="column is-2-desktop">
+                            { /* 性別  */ }
+                            <div className="column is-2-desktop">
 
                                <p> 性 別 &nbsp; <b style={{color: "red"}}> {errors.pet_Sex?.message} </b></p>
 
@@ -312,21 +312,21 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
 
                                </div>
 
-                           </div>
+                            </div>
 
 
-                           <Input type="text"   name="pet_Color"  label="毛 色"      register={register} error={errors.pet_Color}
-                                  icon="fas fa-eye-dropper" asterisk={false} columns="3" />
+                            <Input type="text"   name="pet_Color"  label="毛 色"      register={register} error={errors.pet_Color}
+                                    icon="fas fa-eye-dropper" asterisk={false} columns="3" />
 
-                           <Input type="number" name="pet_Age"    label="年 紀 (歲)" register={register} error={errors.pet_Age}
-                                  icon="fas fa-pager"       asterisk={false} columns="3" />
+                            <Input type="number" name="pet_Age"    label="年 紀 (歲)" register={register} error={errors.pet_Age}
+                                    icon="fas fa-pager"       asterisk={false} columns="3" />
 
-                           <Input type="number" name="pet_Weight" label="體 重 (kg)" register={register} error={errors.pet_Weight}
-                                  icon="fas fa-weight"      asterisk={false} columns="3" />
+                            <Input type="number" name="pet_Weight" label="體 重 (kg)" register={register} error={errors.pet_Weight}
+                                    icon="fas fa-weight"      asterisk={false} columns="3" />
 
 
-                           { /* 體型 */ }
-                           <div className="column is-3-desktop required">
+                            { /* 體型 */ }
+                            <div className="column is-3-desktop">
 
                                <p> 體 型 &nbsp; <b style={{color: "red"}}> {errors.pet_Size?.message} </b></p>
 
