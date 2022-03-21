@@ -9,9 +9,6 @@ import { useRead_Species } from "hooks/ajax_crud/useAjax_Read";
 
 
 
-
-
-
 // 回傳 _ 寵物按鈕 ( 無、1隻、多隻 )
 const usePet_Button = ( pets : any[] ) => {
 
@@ -34,14 +31,14 @@ const usePet_Button = ( pets : any[] ) => {
             if( !x ) return null 
 
             return  <span key = { y }
-                          className = "tag is-medium relative m_Right_20 pointer"
+                          className = "tag is-medium relative pointer"
                           style = {{ paddingTop:"4px" }}
                           onClick = { () => click_Pet( x )  } >
 
                        <b> { x["name"] } ( { x["species"] } ) &nbsp;
 
                            { ( x["sex"] && x["sex"] !== '請選擇' )&& <>
-                                                                       <b className="tag is-rounded is-white" style={{ fontSize : "8pt" , color : "rgb(0,0,150)" }}>
+                                                                       <b className="tag is-rounded is-white" style={{  color : "rgb(0,0,150)" }}>
                                                                            { x["sex"] }
                                                                        </b>  &nbsp;
                                                                      </>
@@ -76,7 +73,7 @@ const usePet_Button = ( pets : any[] ) => {
 
             // 有多隻寵物，僅顯示名字
             return  <span key = { y }
-                          className = "tag is-medium relative m_Right_20 pointer"
+                          className = "tag is-medium relative m_Right_20 m_Bottom_10 pointer"
                           style = {{ paddingTop:"4px" }}
                           onClick = { () => click_Pet( x )  } >
 

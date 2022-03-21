@@ -474,7 +474,7 @@ export const useRead_All_Lodges = ( ) => {
 
     useEffect( () => {
 
-       axios.get( '/lodges/' ).then( res => { set_Lodges( res.data ) ; } );
+       axios.get( '/lodges' ).then( res => { set_Lodges( res.data ) ; } );
 
     } , [] ) ;
 

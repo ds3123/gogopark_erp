@@ -1,5 +1,4 @@
 
-import { FC , useEffect , useState } from "react" ;
 import usePet_Button from "hooks/layout/usePet_Button";
 import { set_Side_Panel } from "store/actions/action_Global_Layout";
 import { useDispatch } from "react-redux";
@@ -89,8 +88,11 @@ const Pets_Rows = ( props : any ) => {
 
    return <tr>
        
-             <td style={ t_L }> { petButton }         </td>
-             <td > { data['serial'].slice( 16 ,22 ) } </td>
+             <td style={ t_L }> { petButton } </td>
+
+             <td> 
+                 { data['serial'].slice( 16 ,22 ) ? data['serial'].slice( 16 ,22 ) : data['serial'] } 
+             </td>
 
              <td>
                  { data['name'] &&

@@ -43,7 +43,7 @@ export const useUpdate_Data = ( ) => {
 
                submitData = {
                               way_leave : data['way_Leave'] === '請選擇' ? null : data['way_Leave'] , // 離店方式
-                              end_time  : data['care_End_Time']                                       // 安親 : 結束時間
+                              end_time  : data['care_End_Time']                                      // 安親 : 結束時間
                             }
 
         }
@@ -93,7 +93,7 @@ export const useUpdate_Data = ( ) => {
                 if( submitData['service_type'] === '加價項目' ) value = '價格管理_加價項目' ;
                 if( submitData['service_type'] === '加價美容' ) value = '價格管理_加價美容' ;
 
-                cookie.save('after_Updated_Prices' , value , { path : '/' , maxAge : 5 } ) ;
+                cookie.save( 'after_Updated_Prices' , value , { path : '/' , maxAge : 5 } ) ;
 
             }
 

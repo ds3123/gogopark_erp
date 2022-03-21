@@ -22,8 +22,6 @@ import { useRating_Options } from "hooks/layout/useRating"
 import { useMatch_Obj } from "containers/data_components/Condition_for_Currnet_Tab"
 
 
-
-
 interface TS extends Edit_Form_Type {
    current : string ;
 }

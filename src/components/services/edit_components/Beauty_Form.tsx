@@ -17,6 +17,11 @@ interface IBeauty extends Edit_Form_Type {
 /* 美容單選項 */
 const Beauty_Form : FC<IBeauty> = ({ register , errors , isDirty , isValid , current , editType , serviceData } ) => {
 
+
+    // 目前在寵物資料欄位區，所選擇寵物品種
+    const current_Pet = useSelector( ( state : any ) => state.Pet.current_Pet ) ;
+
+
     // 美容價格
     const price = useSelector( ( state : any ) => state.Beauty.Beauty_Price ) ;
 
@@ -46,6 +51,16 @@ const Beauty_Form : FC<IBeauty> = ({ register , errors , isDirty , isValid , cur
                       </>
 
                   }
+
+
+                  { /* 沒有預設價格 */ }
+                  { (  current_Pet && !price && !editType && current === '美容' ) &&
+                      <b className="tag is-rounded is-white m_Left_10 m_Right_10 f_12" >  
+                          <i className="fas fa-exclamation"></i> &nbsp; 品種： <span className="fRed">  { current_Pet.species } </span> ，沒有設定預設價格 
+                      </b>
+                  }
+
+
 
                 { /* for 編輯 */ }
                 { ( editType && serviceData.payment_method === '現金' &&  current === '美容' ) &&

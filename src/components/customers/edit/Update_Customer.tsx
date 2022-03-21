@@ -103,6 +103,7 @@ const Update_Customer  = ( ) => {
     
     } , [ cus_Id ] ) ;
 
+
     // 欲傳遞屬性
     const props = {
 
