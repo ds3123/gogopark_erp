@@ -21,6 +21,7 @@ type Service = {
       3. 服務 Url ( Ex. /basics 、/bathes、/beauties ) "
 
 */
+
 export const switch_Service_Type_Id = ( data : Service ) => {
 
 

@@ -12,6 +12,9 @@ import { useSearch_Bar } from "hooks/data/useSearch";
 import Search_Type_Note from "templates/search/Search_Type_Note";
 import SearchBar from "templates/search/SearchBar";
 
+import { set_State } from 'utils/data/set_data'
+
+
 
 // 可搜尋關鍵字類型
 const search_Types = [ "方案名稱","客戶姓名","客戶身分證字號","客戶手機號碼", "寵物名字", "寵物品種" ] ;
@@ -46,21 +49,29 @@ const Plans = ( ) => {
     // 所輸入 : 搜尋關鍵字
     const [ searchKeyword , set_SearchKeyword ] = useState( '' ) ;
 
+ 
+    // 搜尋方案資料
+    const [ search_Plan , set_Search_Plan ] = useState( [] ) ;
+
+
+    // 所有服務資料
+    const [ all_Plans , set_All_Plans ] = useState( [] ) ;
+
+
     // 取得 _ 搜尋框中的文字
     const get_Search_Text = ( value : string ) => set_SearchKeyword( value ) ;
    
 
     // 取得 _ 分頁資料
     // const { pageOfItems , filteredItems , click_Pagination } = usePagination( "/services/show_with_cus_pet/" ) ;
-    const { pageOfItems , filteredItems , click_Pagination } = usePagination( "/plans/show_all_with_customer_species_records" ) ;
+    const { pageOfItems , filteredItems , click_Pagination } = usePagination( "/plans/show_with_customer_species_records/50" ) ;
 
     
-
     // 篩選資料 ( 依搜尋框輸入關鍵字 )
-    const { data , dataSum } = useSearch_Bar( filteredItems , filter_Data , searchKeyword ) ;
+    const { data , dataSum } = useSearch_Bar( search_Plan , filter_Data , searchKeyword ) ;
 
 
-    const dispatch = useDispatch();
+    const dispatch = useDispatch() ;
 
 
     // 先清空 : 目前方案類型( 名稱 )、寵物品種 id --> 點選方案類型時，才會顯示 : 編輯狀態版面
@@ -72,6 +83,33 @@ const Plans = ( ) => {
     } , [] ) ;
 
 
+    // # 當進行查詢時，才取得所有客戶資料
+    useEffect( () => {
+
+        let api = '' ; 
+  
+        if( searchKeyword ){   // 搜尋所有資料
+  
+           api = '/plans/show_all_with_customer_species_records' ;
+           set_State( api , set_Search_Plan ) ;
+             
+        }else{                 // 搜尋最近 50 筆資料 
+  
+           api = '/plans/show_with_customer_species_records/50' ;
+           set_State( api , set_Search_Plan ) ; 
+             
+        }
+  
+    } , [ searchKeyword ] ) ;
+
+
+    // # 取得、設定 _ 所有寵物資料
+    useEffect( () => {
+    
+        set_State( '/plans/show_all_with_customer_species_records' , set_All_Plans )
+      
+    } , []  )
+  
 
     return <>
 
@@ -84,14 +122,14 @@ const Plans = ( ) => {
                     <Search_Type_Note search_Types={ search_Types } />
 
                     { /* 搜尋欄位 */ }
-                    <SearchBar get_Search_Text = { get_Search_Text } /> 
+                    <SearchBar get_Search_Text={ get_Search_Text } /> 
 
                 </div>
             
             </div>   
 
             { /* 資料筆數 */ } 
-            <Data_List_Sum data_Sum={ dataSum } />       
+            <Data_List_Sum data_Sum={ dataSum } all_Data_Sum={ all_Plans.length } />       
 
             <table className="table is-fullwidth is-hoverable relative" style={{ width:"110%" , left:"-5%" }}>
 

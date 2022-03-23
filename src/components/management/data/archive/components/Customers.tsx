@@ -14,7 +14,7 @@ import Customers_Rows from "components/customers/Customers_Rows";
 const Customers = ( ) => {
 
     // 取得 _ 分頁資料
-    const { pageOfItems , filteredItems , click_Pagination } = usePagination('/customers/show_customers_relatives_pets/1' , 'customer' ) ;
+    const { pageOfItems , filteredItems , click_Pagination } = usePagination('/customers/show_customers_relatives_pets/1/100' , 'customer' ) ;
 
     const blue = { color : "rgb(0,0,170)" } ;
 

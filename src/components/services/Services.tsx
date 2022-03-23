@@ -13,12 +13,15 @@ import { useSearch_Bar } from "hooks/data/useSearch";
 import Data_List_Sum from "templates/search/Data_List_Sum";
 import Search_Type_Note from "templates/search/Search_Type_Note";
 
-
 // React Hook Form
 import { useForm } from "react-hook-form" ;
 import { ICustomer } from "utils/Interface_Type";
 
 import Date_Picker from "templates/form/Date_Picker";
+
+import { set_State } from 'utils/data/set_data'
+
+
 
 
 const serviceArr = [
@@ -55,6 +58,9 @@ const filter_Data = ( source : any[] , searchKeyword : string ) => {
 } ;
 
 
+
+
+
 /* @ 洗美頁面 ( 洗美資料、方案資料 ) */
 const Services = () => {
 
@@ -73,17 +79,23 @@ const Services = () => {
     // 所輸入 : 搜尋關鍵字
     const [ searchKeyword , set_SearchKeyword ] = useState( '' ) ;
 
+    // 搜尋服務資料
+    const [ search_Service , set_Search_Service ] = useState( [] ) ;
+
+    // 所有服務資料
+    const [ all_Service , set_All_Service ] = useState( [] ) ;
+
+
     // 取得 _ 搜尋框中的文字
     const get_Search_Text = ( value : string ) => set_SearchKeyword( value ) ;
  
     // ---------
 
-
     // 洗美頁資料 _ 是否下載中
     const Service_isLoading = useSelector( ( state : any ) => state.Service.Service_isLoading ) ;
 
     // 取得 _ 分頁資料
-    const { pageOfItems , filteredItems , click_Pagination } = usePagination( "/services/show_with_cus_relative_pet/0" , 'service' ) ;
+    const { pageOfItems , filteredItems , click_Pagination } = usePagination( "/services/show_with_cus_relative_pet/0/50" , 'service' ) ;
 
     // 目前 _ 所點選第 2 層選項
     const [ currentSecond , set_CurrentSecond ] = useState( serviceArr[0].title ) ;
@@ -92,12 +104,11 @@ const Services = () => {
     const click_Second = ( title : string ) => set_CurrentSecond( title ) ;
 
     // 篩選資料 ( 依搜尋框輸入關鍵字 )
-    const { data } = useSearch_Bar( filteredItems , filter_Data , searchKeyword ) ;
+    const { data  } = useSearch_Bar( search_Service , filter_Data , searchKeyword ) ;
 
     // React Hook Form
     const { control } = useForm<ICustomer>({ mode : "all" }) ;
 
-    
     // 二次篩選資料( 加入日期 )
     const [ fData , set_fData ] = useState( [] ) ;
 
@@ -124,6 +135,35 @@ const Services = () => {
         // click_Second( '洗 美' ) ;
 
     } , [] ) ;
+
+
+    // # 當進行查詢時，才取得所有客戶資料
+    useEffect( () => {
+
+        let api = '' ; 
+  
+        if( searchKeyword ){   // 搜尋所有資料
+  
+           api = '/services/show_all_with_cus_relative_pet/0' ;
+           set_State( api , set_Search_Service ) ;
+             
+        }else{                 // 搜尋最近 50 筆資料 
+  
+           api = '/services/show_with_cus_relative_pet/0/50' ;
+           set_State( api , set_Search_Service ) ; 
+             
+        }
+  
+    } , [ searchKeyword ] ) ;
+
+
+    // # 取得、設定 _ 所有寵物資料
+    useEffect( () => {
+    
+       set_State( '/services/show_all_with_cus_relative_pet/0' , set_All_Service )
+      
+    } , []  ) ;
+
 
     return <>
                
@@ -201,7 +241,7 @@ const Services = () => {
                     <div className="relative" style={{width:"110%" , left:"-5%"}} >
 
                         { /* 資料筆數 */ } 
-                        <Data_List_Sum data_Sum={ fData.length } />   
+                        <Data_List_Sum data_Sum={ fData.length } all_Data_Sum={ all_Service.length } />   
 
                         { /* 資料列表  */ }  
                         <table className="table is-fullwidth is-hoverable">

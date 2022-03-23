@@ -1,6 +1,5 @@
 
 
-import React from "react"
 import usePagination from "hooks/layout/usePagination";
 import Pagination from "utils/Pagination";
 import Contact_Customer_Row from "components/contact_customers/Contact_Customer_Row"
@@ -32,17 +31,15 @@ const Contact_Customers = ( ) => {
                             <th> 客戶手機號碼    </th>
                             <th> 寵物資訊        </th>
                             <th> 需聯繫原因      </th>
-                            <th> 最近一次聯繫 </th>
-                            <th> 處理方式 </th>
-                            <th> 聯繫紀錄         </th>
+                            <th> 最近一次聯繫    </th>
+                            <th> 處理方式        </th>
+                            <th> 聯繫紀錄        </th>
                         </tr>
                     </thead>
                     <tbody>
 
                        {
                           data.map( ( x , y ) => {
-
-
 
                               return <Contact_Customer_Row key={y} data={x} />
 
