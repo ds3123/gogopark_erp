@@ -17,13 +17,13 @@ const axios = baseURL => {
 
         // baseURL : baseURL || 'http://localhost/Laravel_Projects/gogopark/public/index.php/api' ,   // 本機開發
          
-        // baseURL : baseURL || 'http://localhost:7777/Laravel_Projects/gogopark/public/index.php/api' , // 本機開發 ( for Mac )
+        baseURL : baseURL || 'http://localhost:7777/Laravel_Projects/gogopark/public/index.php/api' , // 本機開發 ( for Mac )
 
         // baseURL : baseURL || 'http://demo04.cchouse.com.tw/backend/public/index.php/api' ,         // Demo4 測試空間 ( backend 資料夾 )
         
         // baseURL : baseURL || 'http://demo05.cchouse.com.tw/backend/public/index.php/api' ,         // Demo5 測試空間 ( backend 資料夾 )
   
-        baseURL : baseURL || 'http://erp2021.gogopark.com.tw/backend/public/index.php/api' ,          // ERP2021  ( backend 資料夾 )        
+        // baseURL : baseURL || 'http://erp2021.gogopark.com.tw/backend/public/index.php/api' ,          // ERP2021  ( backend 資料夾 )        
                            
         // baseURL : `${ cors }https://ds-gogopark.herokuapp.com/public/index.php/api` ,              // Heroku 空間
 

@@ -12,8 +12,9 @@ import { useSearch_Bar } from "hooks/data/useSearch";
 import Data_List_Sum from "templates/search/Data_List_Sum";
 import SearchBar from "templates/search/SearchBar";
 import Search_Type_Note from "templates/search/Search_Type_Note";
+import { set_State } from 'utils/data/set_data';
+import { is_Downloading , no_Query_Data } from "templates/note/Query_Info";
 
-import { set_State } from 'utils/data/set_data'
 
 
 
@@ -72,7 +73,7 @@ const Pets = () => {
     const { pageOfItems , filteredItems , click_Pagination } = usePagination( '/pets/show_pets_customers_relatives/0/50' , 'pet' ) ;
 
     // 篩選資料 ( 依搜尋框輸入關鍵字 )
-    const { data , dataSum } = useSearch_Bar( search_Pets , filter_Data , searchKeyword ) ;
+    const { data , dataSum } = useSearch_Bar( all_Pets.length === 0 ? search_Pets : all_Pets , filter_Data , searchKeyword ) ;
 
 
     // # 當進行查詢時，才取得所有客戶資料
@@ -113,8 +114,6 @@ const Pets = () => {
 
             <div className="columns is-multiline is-variable is-12 m_Bottom_50">
                 
-              { all_Pets.length > 0 && // 所有資料下載完成，才可搜尋 
-
                   <div className="column is-offset-8 is-4-desktop">
 
                       { /* 可搜尋類型提示 */ }  
@@ -125,8 +124,6 @@ const Pets = () => {
 
                   </div>
 
-              } 
-  
             </div>  
 
 
@@ -153,8 +150,6 @@ const Pets = () => {
 
                   pageOfItems.map( ( item : any , index ) => {
 
-                    if( item === 3 ) return false ;  // 確認 3 怎麼從 Pagination 套件得出 2020.06.10
-
                     return <Pets_Rows key={ index } data={ item } />
 
                   })
@@ -164,13 +159,14 @@ const Pets = () => {
               </tbody>
 
             </table>
+            
 
             { /* 下載圖示  */ }
-            { ( Pet_isLoading || dataSum === 0 )&&
-                <div className="has-text-centered" >
-                    <button className="button is-loading is-white m_Top_150"></button>
-                </div>
-            }
+            { Pet_isLoading &&  is_Downloading() }
+
+
+            { /* 查無相關資料  */ }
+            { ( searchKeyword && dataSum === 0 && !Pet_isLoading )  && no_Query_Data() }  
 
 
             { /* 分頁按鈕 */ }

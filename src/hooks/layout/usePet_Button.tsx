@@ -1,11 +1,6 @@
 
-import React, {useEffect, useState} from "react" ;
-import {set_Side_Panel} from "store/actions/action_Global_Layout";
-import Update_Pet from "components/pets/edit/Update_Pet";
 import {useDispatch} from "react-redux";
-
-
-import { useRead_Species } from "hooks/ajax_crud/useAjax_Read";
+import { click_Show_Edit_Pet } from "store/actions/action_Pet"
 
 
 
@@ -14,19 +9,16 @@ const usePet_Button = ( pets : any[] ) => {
 
     const dispatch = useDispatch() ;
 
-
-
-    // 點選 : 寵物
-    const click_Pet = ( data : any ) => dispatch( set_Side_Panel(true , <Update_Pet /> , { preLoadData : data } ) ) ;
-
+    // 點選 : 寵物 ( 顯示右側滑動寵物資訊面板 )
+    const click_Pet = ( data : any ) => dispatch( click_Show_Edit_Pet( data.serial ) ) ;
+    
     let pet_Button = [] as any[] ;
 
 
     // 1 隻 ( 顯示 : 名字、品種、 )
     if( pets.length === 1 ){
 
-        pet_Button = pets.map( ( x , y) => {
-
+        pet_Button = pets.map( ( x , y ) => {
 
             if( !x ) return null 
 

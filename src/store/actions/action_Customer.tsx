@@ -1,5 +1,4 @@
 
-import React from "react" ;
 import { Dispatch } from "redux";
 import axios from "utils/axios";
 
@@ -207,7 +206,8 @@ export const set_Customer_Relatives = ( relatives : any[] ) => {
 // # 更新 _ 客戶關係人
 
 // # 設定 _ 客戶關係人 : 數目 ( for 新增 _ 客戶、關係人 )
-export const update_Customer_Relatives = ( customer_Id : string , data : any , Customer_Relatives_Num : number , history : any ) => {
+export const update_Customer_Relatives = ( customer_Id : string , data : any , Customer_Relatives_Num : number , history : any , redirect : string ) => {
+
 
     return ( ) => {
 
@@ -246,7 +246,7 @@ export const update_Customer_Relatives = ( customer_Id : string , data : any , C
                     setTimeout( () => {
                         
                        history.push( "/wrongpath" );  // 錯誤路徑
-                       history.push( "/customers" );  // 正確路徑
+                       history.push( redirect );  // 正確路徑
 
                     }, 300 );
 
@@ -265,11 +265,9 @@ export const click_Show_Edit_Customer = ( cus_Id : string , customer : any ) => 
     return ( dispatch : any ) => {
 
                 // 查詢 _ 客戶關係人
-                axios.get( `/customers/show_relations/${ cus_Id }` ).then( res => { 
+                axios.get( `/customers/show_relations_pets/${ cus_Id }` ).then( res => { 
 
-                    customer.customer_relation  = res.data ;  // 加上 : 客戶關係人
-
-                    dispatch( set_Side_Panel( true , <Update_Customer /> , { preLoadData : customer } ) ) ;
+                    dispatch( set_Side_Panel( true , <Update_Customer /> , { preLoadData : res.data } ) ) ;
 
                 })  
 
@@ -279,6 +277,26 @@ export const click_Show_Edit_Customer = ( cus_Id : string , customer : any ) => 
 
 
 
+// # 設定 _ 目前客戶
+export const set_Current_Customer = ( cus_Id : string  ) => {
+
+    return ( dispatch : any ) => {
+
+               axios.get( '/customers/'+cus_Id ).then( res => {
+
+                    const cus = res.data ;
+
+                    dispatch({
+                        type             : "SET_CURRENT_CUSTOMER" ,
+                        Current_Customer : res.data
+                    }) ;
+
+                
+               }) ;
+
+           } ;
+
+} ;
 
 
 

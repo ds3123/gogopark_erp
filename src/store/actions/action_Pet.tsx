@@ -1,10 +1,11 @@
 
 import { curry } from "lodash";
-import React from "react" ;
 import { Dispatch } from "redux" ;
 import axios from "utils/axios";
 import { get_Service_Url } from "utils/data/switch" ;
 import { get_Today } from "utils/time/date"
+import { set_Side_Panel } from "store/actions/action_Global_Layout";
+import Update_Pet from "components/pets/edit/Update_Pet";
 
 
 
@@ -200,6 +201,23 @@ export const set_Pet_Serial_Input = (  pNum : string , current_Pet_Species_Num :
                 setValue( "pet_Serial" ,  'P_251_01_' + today + '_' + pNum + _cNum ) ;       // 設定 input 欄位值      
 
             } ;
+
+} ;
+
+
+// # 顯示 _ 編輯寵物資訊 ( 右側滑動面板 )
+export const click_Show_Edit_Pet = ( serial : string ) => {
+
+    return ( dispatch : any ) => {
+
+                // 查詢 _ 寵物資訊
+                axios.get( `/pets/${ serial }` ).then( res => { 
+
+                    dispatch( set_Side_Panel( true , <Update_Pet /> , { preLoadData : res.data } ) ) ;
+
+                })  
+
+           } ;
 
 } ;
 

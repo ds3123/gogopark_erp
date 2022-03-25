@@ -1,4 +1,4 @@
-import React , { useContext , FC , useEffect , useState } from "react"
+import { useContext , useEffect  } from "react"
 
 // React Hook Form
 import { useForm , SubmitHandler} from "react-hook-form";
@@ -14,18 +14,20 @@ import Customer_Form from "components/customers/edit/Customer_Form" ;
 
 // Hook
 import { useUpdate_Data } from "hooks/ajax_crud/useAjax_Update";
-import { update_Customer_Relatives } from "store/actions/action_Customer"
+import { update_Customer_Relatives } from "store/actions/action_Customer";
 import { useDispatch , useSelector } from "react-redux";
 import { useHistory } from "react-router-dom" ;
-
-import { get_Customer_Relatives } from "store/actions/action_Customer"
+import { get_Customer_Relatives } from "store/actions/action_Customer";
+import{ useLocation } from "react-router" ;
 
 
 
 { /*  編輯客戶 */ }
 const Update_Customer  = ( ) => {
 
-    const dispatch = useDispatch();
+    const dispatch    = useDispatch() ;
+    const current_Url = useLocation().pathname ;    // 取得目前 url  例如 :  ~ /customers
+
 
     // 取得 context 值
     const value    = useContext( SidePanelContext ) ;  
@@ -37,18 +39,20 @@ const Update_Customer  = ( ) => {
     // 預先填寫欄位 : 客人
     let obj : any = {
 
-          // 客戶
-          customer_Id        : customer.id ,
-          customer_Name      : customer.name ,
-          customer_Cellphone : customer.mobile_phone ,
-          customer_Telephone : customer.tel_phone ,
-          customer_Line      : customer.line ,
-          customer_Email     : customer.email ,
-          customer_Address   : customer.address ,
-          customer_Sex       : customer.sex ,
-          customer_P_Note    : customer.note ,
+        // 客戶
+        customer_Id        : cus_Id ,
+        customer_Name      : customer.name ,
+        customer_Cellphone : customer.mobile_phone ,
+        customer_Telephone : customer.tel_phone ,
+        customer_Line      : customer.line ,
+        customer_Email     : customer.email ,
+        customer_Address   : customer.address ,
+        customer_Sex       : customer.sex ,
+        customer_P_Note    : customer.note ,
 
     }
+
+
 
     // 預先填寫欄位 : 關係人         
     relative.forEach( ( x : any , y : number ) => { 
@@ -83,17 +87,17 @@ const Update_Customer  = ( ) => {
     const Customer_Relatives_Num = useSelector( ( state : any ) => state.Customer.Customer_Relatives_Num ) ;
     const history                = useHistory() ;
 
+
     // 提交表單
     const onSubmit : SubmitHandler< ICustomer > = data => {
 
        // 更新 _ 客戶
-       update_Data( "/customers" , customer.customer_id , data , "/customers" , "客戶" ) ;
+       update_Data( "/customers" , customer.customer_id , data , current_Url , "客戶" ) ;
 
        // 更新 _ 關係人 
-       dispatch( update_Customer_Relatives( data['customer_Id'] , data , Customer_Relatives_Num , history ) )
+       dispatch( update_Customer_Relatives( data['customer_Id'] , data , Customer_Relatives_Num , history , current_Url ) ) ;
 
-
-    };
+    } ;
 
 
     // 取得 _ 客戶關係人資料 ( Current_Customer_Relatives )

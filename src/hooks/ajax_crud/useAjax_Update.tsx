@@ -28,7 +28,7 @@ export const useUpdate_Data = ( ) => {
 
         // 轉換資料欄位
         let submitData : any ;
-
+        
         // 客戶
         if( api === '/customers' ) submitData = columns_Covert_Customer( data ) ;
 
@@ -102,6 +102,7 @@ export const useUpdate_Data = ( ) => {
 
             // for # 前往 : 員工管理
             if( api === '/employees' ) cookie.save( 'after_Created_Redirect' , '員工管理' , { path : '/' , maxAge : 5 } ) ;
+
 
 
             // 前往相對應頁面

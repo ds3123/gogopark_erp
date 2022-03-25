@@ -16,6 +16,9 @@ import{ useLocation }from"react-router";
 import {useHistory} from "react-router-dom";
 import cookie from "react-cookies";
 
+import { click_Show_Edit_Customer } from "store/actions/action_Customer" ;
+
+
 
 
 const Customers_Rows = ( props : any ) => {
@@ -26,15 +29,18 @@ const Customers_Rows = ( props : any ) => {
     const url                 = useLocation().pathname ;  
     const history             = useHistory() ;
 
+
     // 點選 _ 客戶
-    const click_Customer = () => dispatch( set_Side_Panel( true , <Update_Customer /> , { preLoadData : data } ) ) ;
+    const click_Customer = () => dispatch( click_Show_Edit_Customer( data.id , data ) ) ;
+    
 
     // 點選 _ 客人消費歷史紀錄
     const click_History  = ( customer_Id : string ) => dispatch( set_Side_Panel( true , <Customer_Consumption_Records customer_Id = { customer_Id } /> , {} ) ) ;
 
-
+    
     // * 寵物按鈕 ( 無 / 單隻 、多隻 )
     const petButton      = usePet_Button( pets ) ;
+
 
     // 點選 _ 封存資料
     const click_Archive  = ( id : string ) => {
@@ -84,6 +90,8 @@ const Customers_Rows = ( props : any ) => {
 
 
     } ;
+
+
 
     // 設定 _ 寵物資料
     useEffect( () => {

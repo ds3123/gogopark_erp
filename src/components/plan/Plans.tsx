@@ -152,8 +152,6 @@ const Plans = ( ) => {
                     {
                         pageOfItems.map( ( item : any , index ) => {
 
-                            if( item === 3 ) return false ;  // 確認 3 怎麼從 Pagination 套件得出 2020.06.10
-
                             return <Plans_Rows key={ index } data={ item } /> ;
 
                         })

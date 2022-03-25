@@ -1,8 +1,8 @@
 
-import React, {useContext} from "react"
+import { useContext } from "react"
 
 // React Hook Form
-import { useForm , SubmitHandler} from "react-hook-form";
+import { useForm , SubmitHandler } from "react-hook-form";
 
 // 各表單驗證條件
 import { schema_Pet } from "utils/validator/form_validator"
@@ -11,21 +11,23 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 // useContext
 import { SidePanelContext } from "templates/panel/Side_Panel";
-
 import Pet_Form from "components/pets/edit/Pet_Form";
 import {useRead_Species} from "hooks/ajax_crud/useAjax_Read";
 
-
 // Hook
 import { useUpdate_Data } from "hooks/ajax_crud/useAjax_Update";
+import{ useLocation } from "react-router" ;
+
+
 
 
 { /*  編輯寵物  */ }
 const Update_Pet = ( ) => {
 
+    const value       = useContext( SidePanelContext ) ;              // 取得 context 值
+    const pet         = value.preLoadData ? value.preLoadData : {} ;
+    const current_Url = useLocation().pathname;                       // 取得目前 url  例如 :  ~ /pets
 
-    const value = useContext( SidePanelContext ) ;  // 取得 context 值
-    const pet   = value.preLoadData ? value.preLoadData : {} ;
 
     // 取得 _ 所有寵物品種資料
     const petSpecies = useRead_Species() ;
@@ -98,7 +100,7 @@ const Update_Pet = ( ) => {
         data.pet_Species = mPet.name ;    // 將品種資料表 id ， 改為 : "寵物品種名稱"  
 
         // 更新 _ 寵物
-        update_Data( "/pets" , data.pet_Serial , data , "/pets" , "寵物" ) ;
+        update_Data( "/pets" , data.pet_Serial , data , current_Url , "寵物" ) ;
         
 
     } ;

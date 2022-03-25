@@ -32,7 +32,6 @@ const Pets_Rows = ( props : any ) => {
     // 點選 _ 寵物相關服務歷史紀錄
     const click_History  = ( pet_Data : any ) => dispatch( set_Side_Panel( true , <Pet_Consumption_Records pet_Data = { pet_Data } /> , { } ) ) ;
 
-
     // 點選 _ 封存資料
     const click_Archive  = ( id : string ) => {
 
@@ -46,7 +45,6 @@ const Pets_Rows = ( props : any ) => {
         }) ;
 
     } ;
-
 
     // 點選 _ 復原封存資料
     const click_Undo_Archive = ( id : string ) => {
@@ -82,6 +80,7 @@ const Pets_Rows = ( props : any ) => {
 
 
     } ;
+
 
     const t_L = { textAlign : "left" } as const ;
 

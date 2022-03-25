@@ -21,6 +21,8 @@ interface ICustomer {
    Customer_Relatives_Num     : number ; // 客戶關係人數 ( for 新增 _ 客戶、關係人)
    Current_Customer_Relatives : any[] ;  // 目前客戶所有關係人
 
+   Current_Customer           : any ;    // 目前客戶  
+
 }
 
 const initState = {
@@ -38,7 +40,9 @@ const initState = {
     Current_Customer_Id    : '' ,
 
     Customer_Relatives_Num     : 0 ,
-    Current_Customer_Relatives : []
+    Current_Customer_Relatives : [] ,
+
+    Current_Customer           : null
 
 } ;
 
@@ -80,6 +84,9 @@ const reducer_Customer = ( state : ICustomer = initState , action : any ) => {
         
         // # 設定 _ 客戶所有關係人
         case  "SET_CUSTOMER_RELATIVES" : return { ...state , Current_Customer_Relatives : action.Current_Customer_Relatives } ;
+
+        // # 設定 _ 目前客戶
+        case  "SET_CURRENT_CUSTOMER" : return { ...state , Current_Customer : action.Current_Customer } ;
 
 
         default : return state ;

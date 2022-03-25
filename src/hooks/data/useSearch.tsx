@@ -14,7 +14,7 @@ export const useSearch_Bar = ( filtered_Items : any[] , filter_Data : filterType
     const [ dataSum , set_dataSum ] = useState( 0 ) ;         // 資料筆數
 
 
-    useEffect( () :any => { 
+    useEffect( () : any => { 
     
       // * 有輸入 _ 搜尋關鍵字 --> 以搜尋關鍵字，過濾查詢結果
       if( search_Keyword && filtered_Items.length > 0 ){
