@@ -86,13 +86,11 @@ const Pets_Rows = ( props : any ) => {
 
 
    return <tr>
-       
-             <td style={ t_L }> { petButton } </td>
 
              <td> 
                  { data['serial'].slice( 16 ,22 ) ? data['serial'].slice( 16 ,22 ) : data['serial'] } 
              </td>
-
+             <td style={ t_L }> { petButton } </td>
              <td>
                  { data['name'] &&
                      <b className="tag is-medium pointer" onClick={ () => click_Customer( customer.id ) }>
@@ -114,7 +112,7 @@ const Pets_Rows = ( props : any ) => {
                { /* 寵物頁面 : 封存 */ }
                { url === '/pets' && <td>
                                         <b className="tag is-medium" onClick={ () => {  if( window.confirm( "確認要 : 封存此寵物資料?" ) )  click_Archive( data['serial'] ) } }>
-                                        <i className="fas fa-download"></i>
+                                           <i className="fas fa-download"></i>
                                         </b>
                                     </td> }
 

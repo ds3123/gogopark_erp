@@ -2,7 +2,7 @@
 /*  @ 日期處理   */
 
 import moment from  "moment";
-import {national_Holidays_Setting} from "components/lodge/edit/Lodge_Price";
+import { national_Holidays_Setting } from "components/lodge/edit/Lodge_Price";
 
 
 // 取得 : 昨天、今天、明天、後天 的西元日期 ( num 數字參數 -1、0、1、2 )
@@ -36,7 +36,7 @@ export const get_Date_Cal = ( date : string , num : number )=>{
 
 } ;
 
-// 取的 : 距離特定日期，還有幾日
+// 取得 : 距離特定日期，還有幾日
 export const get_Rest_of_Date = ( date : string ) => {
 
 

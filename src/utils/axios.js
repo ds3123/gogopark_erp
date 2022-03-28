@@ -23,7 +23,7 @@ const axios = baseURL => {
         
         // baseURL : baseURL || 'http://demo05.cchouse.com.tw/backend/public/index.php/api' ,         // Demo5 測試空間 ( backend 資料夾 )
   
-        // baseURL : baseURL || 'http://erp2021.gogopark.com.tw/backend/public/index.php/api' ,          // ERP2021  ( backend 資料夾 )        
+        // baseURL : baseURL || 'http://erp2021.gogopark.com.tw/backend/public/index.php/api' ,       // ERP2021  ( backend 資料夾 )        
                            
         // baseURL : `${ cors }https://ds-gogopark.herokuapp.com/public/index.php/api` ,              // Heroku 空間
 

@@ -9,18 +9,18 @@ import { useSelector } from "react-redux";
 import SearchBar from "templates/search/SearchBar";
 import cookie from 'react-cookies'     // 匯入 cookie
 import { useSearch_Bar } from "hooks/data/useSearch";
-
 import Data_List_Sum from "templates/search/Data_List_Sum";
 import Search_Type_Note from "templates/search/Search_Type_Note";
 
 // React Hook Form
 import { useForm } from "react-hook-form" ;
 import { ICustomer } from "utils/Interface_Type";
-
 import Date_Picker from "templates/form/Date_Picker";
-
 import { set_State } from 'utils/data/set_data'
+import axios from "utils/axios";
 
+
+import { sort_Data_By_Date } from "utils/data/sort_data"
 
 
 
@@ -64,63 +64,80 @@ const filter_Data = ( source : any[] , searchKeyword : string ) => {
 /* @ 洗美頁面 ( 洗美資料、方案資料 ) */
 const Services = () => {
 
-    // 是否顯示 _ 所有資料
-    const [ is_Show_All_Data , set_Is_Show_All_Data ] = useState( true ) ; 
+    const [ show_Service_Date , set_Show_Service_Date ] = useState( false ) ;
 
-    // 點選 _ 所有資料 / 來店日期
-    const click_Data_Type = () => set_Is_Show_All_Data( !is_Show_All_Data ) ;
-    
+    // 點選 _ 來店日期
+    const click_Show_Service_Date = () => set_Show_Service_Date( !show_Service_Date ) ;
+
+
     // 到店日期
     const service_Date = useSelector( ( state : any ) => state.Info.service_Date ) ; 
 
-    // ---------
-
-
-    // 所輸入 : 搜尋關鍵字
-    const [ searchKeyword , set_SearchKeyword ] = useState( '' ) ;
-
-    // 搜尋服務資料
-    const [ search_Service , set_Search_Service ] = useState( [] ) ;
-
-    // 所有服務資料
-    const [ all_Service , set_All_Service ] = useState( [] ) ;
-
-
-    // 取得 _ 搜尋框中的文字
-    const get_Search_Text = ( value : string ) => set_SearchKeyword( value ) ;
- 
-    // ---------
-
-    // 洗美頁資料 _ 是否下載中
-    const Service_isLoading = useSelector( ( state : any ) => state.Service.Service_isLoading ) ;
-
-    // 取得 _ 分頁資料
-    const { pageOfItems , filteredItems , click_Pagination } = usePagination( "/services/show_with_cus_relative_pet/0/50" , 'service' ) ;
-
+    
     // 目前 _ 所點選第 2 層選項
     const [ currentSecond , set_CurrentSecond ] = useState( serviceArr[0].title ) ;
 
     // 點選 _ 第 2 層選項
     const click_Second = ( title : string ) => set_CurrentSecond( title ) ;
 
+
+    // --------------------------
+
+    // 所輸入 : 搜尋關鍵字
+    const [ searchKeyword , set_SearchKeyword ] = useState( '' ) ;
+
+    // 搜尋服務資料
+    const [ search_Service , set_Search_Service ] = useState<any[]>( [] ) ;
+
+    // 所有服務資料
+    const [ all_Service , set_All_Service ] = useState<any[]>( [] ) ;
+
+
+    // 取得 _ 搜尋框中的文字
+    const get_Search_Text = ( value : string ) => set_SearchKeyword( value ) ;
+ 
+    // --------------------------
+
+    // 洗美頁資料 _ 是否下載中
+    const Service_isLoading = useSelector( ( state : any ) => state.Service.Service_isLoading ) ;
+
+    // 取得 _ 分頁資料
+    //const { pageOfItems , filteredItems , click_Pagination } = usePagination( "/services/show_with_cus_relative_pet/0/50" , 'service' ) ;
+    const { pageOfItems , filteredItems , click_Pagination } = usePagination( "/services/show_all_with_cus_relative_pet/0" , 'service' ) ;
+
     // 篩選資料 ( 依搜尋框輸入關鍵字 )
-    const { data  } = useSearch_Bar( search_Service , filter_Data , searchKeyword ) ;
+    const { data } = useSearch_Bar( all_Service.length === 0 ? search_Service : all_Service , filter_Data , searchKeyword ) ;
 
     // React Hook Form
     const { control } = useForm<ICustomer>({ mode : "all" }) ;
 
+    
     // 二次篩選資料( 加入日期 )
     const [ fData , set_fData ] = useState( [] ) ;
+
+
+     // 排序 _ 搜尋資料( 依：來店日期，降冪排序 )
+     const set_Sort_Search_Data = ( api : string , is_All_Search : boolean ) => {
+    
+        axios.get( api ).then( res => {
+
+            const sort_Data = sort_Data_By_Date( res.data , 'desc' )
+            
+            is_All_Search ? set_All_Service( sort_Data ) :  set_Search_Service( sort_Data )  
+
+        }) 
+
+    } ;
 
 
     // 是否加入 _ 日期篩選條件
     useEffect( () => { 
     
-      const _data = is_Show_All_Data ? data : data.filter( ( x:any ) => x['service_date'] === service_Date ) ;   
+      const _data = !show_Service_Date ? data : data.filter( ( x:any ) => x['service_date'] === service_Date ) ;   
     
       set_fData( _data ) ;
 
-    } , [ is_Show_All_Data , service_Date , data ] ) ;
+    } , [ show_Service_Date , service_Date , data ] ) ;
 
 
     // 新增 "方案" 後，利用 Cookie 點選方案標籤
@@ -132,7 +149,6 @@ const Services = () => {
         // * 服務價格
         if( redirect && redirect === '洗美_方案' ) click_Second( '方 案' ) ;
         
-        // click_Second( '洗 美' ) ;
 
     } , [] ) ;
 
@@ -140,17 +156,13 @@ const Services = () => {
     // # 當進行查詢時，才取得所有客戶資料
     useEffect( () => {
 
-        let api = '' ; 
-  
         if( searchKeyword ){   // 搜尋所有資料
-  
-           api = '/services/show_all_with_cus_relative_pet/0' ;
-           set_State( api , set_Search_Service ) ;
-             
+
+          set_Sort_Search_Data( '/services/show_all_with_cus_relative_pet/0' , true ) ;  
+
         }else{                 // 搜尋最近 50 筆資料 
-  
-           api = '/services/show_with_cus_relative_pet/0/50' ;
-           set_State( api , set_Search_Service ) ; 
+
+          set_Sort_Search_Data( '/services/show_with_cus_relative_pet/0/10' , false ) ;  
              
         }
   
@@ -160,8 +172,8 @@ const Services = () => {
     // # 取得、設定 _ 所有寵物資料
     useEffect( () => {
     
-       set_State( '/services/show_all_with_cus_relative_pet/0' , set_All_Service )
-      
+       set_Sort_Search_Data( '/services/show_all_with_cus_relative_pet/0' , true ) ; 
+
     } , []  ) ;
 
 
@@ -187,28 +199,18 @@ const Services = () => {
 
                     <div className="columns is-multiline is-variable is-12 m_Bottom_50">
 
-                        { /* 所有資料 */ }   
-                        <div className="column is-offset-4 is-1-desktop"> 
-
-                        <b className = { `tag is-medium relative pointer ${ is_Show_All_Data ? 'is-primary' : '' }` } 
-                            onClick   = { click_Data_Type }
-                            style     = {{top:"-3px"}}> 
-                            所有資料 
-                        </b>   
-
-                        </div>   
-
+                    
                         { /* 來店日期 */ }        
-                        <div className="column is-2-desktop"> 
+                        <div className="column is-offset-5 is-2-desktop"> 
 
                         <div className="relative" style={{top:"-3px"}}>
                                 
-                                <b className = { `tag is-medium m_Left_15 m_Bottom_5 pointer ${ !is_Show_All_Data ? 'is-primary' : '' }` } 
-                                    onClick  = { click_Data_Type } > 
+                                <b className = { `tag is-medium m_Left_15 m_Bottom_5 pointer ${ show_Service_Date ? 'is-primary' : '' }` } 
+                                    onClick  = { click_Show_Service_Date } > 
                                 來店日期 
                                 </b>     
                                 
-                                { !is_Show_All_Data &&
+                                { show_Service_Date &&
 
                                     <div className="tag is-large is-white">
                                     <Date_Picker control={ control } name="service_Date" default_Date={ new Date } />

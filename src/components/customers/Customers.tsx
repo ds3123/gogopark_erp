@@ -74,17 +74,13 @@ const Customers = () => {
     // # 當進行查詢時，才取得所有客戶資料
     useEffect( () => {
 
-       let api = '' ; 
-
        if( searchKeyword ){   // 搜尋所有資料
 
-         api = '/customers/show_all_customers_relatives_pets/0' ;
-         set_State( api , set_Search_Customers ) ;
+         set_State( '/customers/show_all_customers_relatives_pets/0' , set_Search_Customers ) ;
 
        }else{                 // 搜尋最近 50 筆資料 
 
-         api = '/customers/show_customers_relatives_pets/0/50' ;
-         set_State( api , set_Search_Customers ) ; 
+         set_State( '/customers/show_customers_relatives_pets/0/50' , set_Search_Customers ) ; 
             
        }
 

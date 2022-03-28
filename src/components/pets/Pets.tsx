@@ -27,7 +27,7 @@ const filter_Data = ( source : any[] , searchKeyword : string ) => {
 
   return source.filter( ( x : any ) => {
             
-             const pSerial = x['serial'].slice( 16 , 22 ) ;  
+             const pSerial = x['serial'].slice( 16 , 22 ) ? x['serial'].slice( 16 , 22 ) : x['serial'] ;  
              
              // 先行驗證
              const f_Cus_Name     = x['customer'] ? x['customer']['name'] : '' ;
@@ -79,22 +79,13 @@ const Pets = () => {
     // # 當進行查詢時，才取得所有客戶資料
     useEffect( () => {
 
-      let api = '' ; 
-
       if( searchKeyword ){   // 搜尋所有資料
 
-         api = '/pets/show_all_pets_customers_relatives/0' ;
+         set_State( '/pets/show_all_pets_customers_relatives/0' , set_Search_Pets ) ;
 
-         setTimeout( () => { 
-
-           set_State( api , set_Search_Pets ) ;
-
-         } , 500 )
-  
       }else{                 // 搜尋最近 50 筆資料 
 
-         api = '/pets/show_pets_customers_relatives/0/50' ;
-         set_State( api , set_Search_Pets ) ; 
+         set_State( '/pets/show_pets_customers_relatives/0/50' , set_Search_Pets ) ; 
            
       }
 
@@ -134,8 +125,8 @@ const Pets = () => {
 
               <thead>
                 <tr>
-                  <th> 寵物資訊 </th>
                   <th style={{ height : "10px" , width : "100px" }}> 寵物編號 </th>
+                  <th> 寵物資訊 </th>
                   <th> 主人姓名 </th>
                   <th> 主人手機 </th>
                   <th> 服務紀錄 </th> 

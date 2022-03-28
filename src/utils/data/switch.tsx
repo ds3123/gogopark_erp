@@ -2,9 +2,8 @@
 type Service = {
 
     service_type   : '基礎' | '洗澡' | '美容' ;  // for 主要服務
-    service_status : string ;                   // for 住宿、安親  
+    service_status : string ;                  // for 住宿、安親  
          
-    
     id             : number | string ;
     basic_id       : number | string ;
     bath_id        : number | string ;
@@ -22,6 +21,22 @@ type Service = {
 
 */
 
+// 轉換 : 服務 Url、服務資料表 ID
+export const switch_Service_Url_Id = ( data : Service ) => { 
+
+    let url = null ;  // 服務單路徑
+    let id  = null ;  // 服務單 id
+
+    if( data['service_type'] === '基礎' ){ id = data['basic_id'] ;  url = '/basics'   } ;
+    if( data['service_type'] === '洗澡' ){ id = data['bath_id'] ;   url = '/bathes'   } ;
+    if( data['service_type'] === '美容' ){ id = data['beauty_id'] ; url = '/beauties' } ;
+
+    return { url , id } ;
+
+}
+
+
+// 轉換 : 服務類型、服務資料表 ID 、服務 Url
 export const switch_Service_Type_Id = ( data : Service ) => {
 
 

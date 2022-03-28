@@ -1,16 +1,19 @@
-import { useEffect, useState} from "react"
+import { useEffect , useState } from "react"
 import useServiceType from "hooks/layout/useServiceType";
 import usePet_Button from "hooks/layout/usePet_Button";
-import {set_Side_Panel} from "store/actions/action_Global_Layout";
-import {useDispatch} from "react-redux";
+import { set_Side_Panel } from "store/actions/action_Global_Layout";
+import { useDispatch } from "react-redux";
 import Update_Service from "components/services/edit/Update_Service";
-import {useLocation} from "react-router";
-import {useHistory} from "react-router-dom";
+import { useLocation } from "react-router";
+import { useHistory } from "react-router-dom";
 import axios from "utils/axios";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
 import cookie from "react-cookies";
 import moment from "moment";
-import { click_Show_Edit_Customer } from "store/actions/action_Customer"
+import { click_Show_Edit_Customer } from "store/actions/action_Customer" ;
+import { switch_Service_Url_Id } from "utils/data/switch"
+import Service_Sign from "./components/Service_Sign";
+
 
 
 const Services_Rows = ( props : any ) => {
@@ -54,26 +57,13 @@ const Services_Rows = ( props : any ) => {
     // 點選 _ 客戶
     const click_Customer   = ( cus_Id : string ) => dispatch( click_Show_Edit_Customer( cus_Id , customer ) ) ;
 
-    // 取得個服務單資料表 id
-    const get_Service_Id   = ( data : any ) => {
-
-        let url = '' ;  // 服務單路徑
-        let id  = '' ;  // 服務單 id
-
-        if( data['service_type'] === '基礎' ){ id = data['basic_id'] ;  url = '/basics'   } ;
-        if( data['service_type'] === '洗澡' ){ id = data['bath_id'] ;   url = '/bathes'   } ;
-        if( data['service_type'] === '美容' ){ id = data['beauty_id'] ; url = '/beauties' } ;
-
-        return { url , id } ;
-
-    } ;
-
+    
     // ----------------------------------------------------------
 
     // 點選 _ 封存資料
     const click_Archive = ( data : any ) => {
 
-        const { url , id } = get_Service_Id( data ) ;
+        const { url , id } = switch_Service_Url_Id( data ) ;
 
         axios.put( `${ url }/${ id }` , { is_archive : 1 } ).then( res => {
 
@@ -90,7 +80,7 @@ const Services_Rows = ( props : any ) => {
     // 點選 _ 復原封存資料
     const click_Undo_Archive = ( data : any ) => {
 
-        const { url , id } = get_Service_Id( data ) ;
+        const { url , id } = switch_Service_Url_Id( data ) ;
 
         axios.put( `${ url }/${ id }` , { is_archive : 0 } ).then( res => {
 
@@ -109,7 +99,7 @@ const Services_Rows = ( props : any ) => {
     // 點選 _ 刪除資料
     const click_Delete = ( data : any ) => {
 
-        const { url , id } = get_Service_Id( data ) ;
+        const { url , id } = switch_Service_Url_Id( data ) ;
 
         axios.delete( `${ url }/${ id }` ).then( res => {
 
@@ -124,6 +114,7 @@ const Services_Rows = ( props : any ) => {
         }) ;
 
     } ;
+
 
     useEffect( () => {
 
@@ -178,33 +169,15 @@ const Services_Rows = ( props : any ) => {
 
 
     const t_L = { textAlign : "left" } as const ;
-    const tag = { top : "-7px", left : "5px" , color : "red" } ;
-
-    
+ 
+   
     return <tr style = { ( data[ 'service_date' ] && data[ 'service_date' ].slice(0,10) === today ) ? { background:"rgb(160,160,160,.2)" }  : { lineHeight : "40px" } } >
 
              { /* 服務類別 */ } 
              <td className="relative">
 
-                 { /* 異常標示 */ }
-                 <b className="absolute" style={ tag }>
-                     { data['is_error'] === 1 &&  <i className="fas fa-exclamation-triangle"></i> }
-                 </b>
-
-                 { /* 銷單標示 */ }
-                 <b className="absolute" style={ tag }>
-                     { data['is_delete'] === 1 &&  <i className="fas fa-trash-alt"></i> }
-                 </b>
-
-                 { /* 是否付費標示 */ }
-                 <b className="absolute f_14" style={{ top:"17px", left:"8px" , color:"red" }}>
-                     { data['amount_payable'] !== data['amount_paid']  &&  <i className="fas fa-dollar-sign"></i> }
-                 </b>
-
-                 { /* 申請退費標示  */ }
-                 <b className="absolute f_9" style={{top:"-10px", left:"-25px" , color:"red"}}>
-                     { ( data['is_return'] === 1 && data['return_status'] ) && <span> { data['return_status'] }  </span> }
-                 </b>
+                 { /* 服務相關標示 : 異常、銷單、是否付費、申請退費  */ } 
+                 <Service_Sign { ...data } />
 
                  <b className = { color+" pointer" } onClick = { click_Service } >
                      <i className = { icon } ></i> &nbsp; { data[ 'service_type' ] } &nbsp; Q{ data['q_code'] }
@@ -226,7 +199,7 @@ const Services_Rows = ( props : any ) => {
              <td className="f_10" style = { t_L } >
 
                  { !data['plan'] && 
-                       <> <b className="f_12">現金支付</b> : { data[ 'payment_type' ] }</> 
+                       <> <b className="f_12">現金支付</b> : { data[ 'payment_type' ] } </> 
                  }
 
                  { /* 屬於某方案  */ }
@@ -270,15 +243,19 @@ const Services_Rows = ( props : any ) => {
 
                   <span className="fDred">
 
-                      { /*
+                      { 
+
+                        /*
 
                            2021.08.26
                            * 新增基礎下，若無填寫金額，會有錯誤訊息
                            * 再確認或更新以下 "小計" 金額的加總方式
 
-                        */ }
+                        */ 
+                        
+                      }
 
-                       { data['plan']  ? '包月' : data[ 'amount_payable' ] }
+                      { data['plan']  ? '包月' : data[ 'amount_payable' ] }
 
                   </span> 
 
@@ -295,7 +272,17 @@ const Services_Rows = ( props : any ) => {
 
 
              { /* 來店日期 */ }
-             <td> { data[ 'service_date' ] ? data[ 'service_date' ].slice(5,10) : '' } </td>
+             <td> 
+                 
+                  { 
+                  
+                     // data[ 'service_date' ] ? data[ 'service_date' ].slice(5,10) : '' 
+                     data[ 'service_date' ]  
+                    
+                  } 
+             
+             
+             </td>
 
              { /* 洗美頁面 : 封存 */ }
              { url === '/services' && <td>
