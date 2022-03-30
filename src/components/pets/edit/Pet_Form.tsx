@@ -24,11 +24,14 @@ import { useVerify_Required_Columns_Pet } from "hooks/layout/useVerify_Columns"
 import { Service_Type } from "utils/Interface_Type"
 import { set_Pet_Service_Records } from "store/actions/action_Pet"
 
+import Pet_Prices_Status from "components/pets/edit/info/Pet_Prices_Status"
+
+
 
 type serviceType = '基礎' | '洗澡' | '美容' | '安親' | '住宿'
 
 
-{ /* 寵物表單欄位  */}
+{ /* 寵物表單欄位  */ }
 const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors , current  , pet_Species_id , pet_Serial } ) => {
 
     const dispatch = useDispatch() ;
@@ -180,7 +183,7 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
     
       if( pet_Species_Name ){
 
-         dispatch( get_Current_Pet_Species_Num( pet_Species_Name ) )
+         dispatch( get_Current_Pet_Species_Num( pet_Species_Name ) ) ;
 
       }  
 
@@ -233,14 +236,14 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
 
                        <div className="columns is-multiline  is-mobile">
 
-                           { /* 名字 */ }
-                           <Input type="text" name="pet_Name" label="名 字" register={register} error={errors.pet_Name}
-                                  icon="fas fa-paw" asterisk={true} columns="3" />
+                            { /* 名字 */ }
+                            <Input type="text" name="pet_Name" label="名 字" register={register} error={errors.pet_Name}
+                                   icon="fas fa-paw" asterisk={true} columns="3" />
 
-                           { /* 品種 */ }
-                           <div className="column is-3-desktop required">
+                            { /* 品種 */ }
+                            <div className="column is-3-desktop required">
 
-                               <p> 品 種 &nbsp; <b style={{color: "red"}}> {errors.pet_Species?.message} </b></p>
+                               <p> 品 種 &nbsp; <b className="fRed"> {errors.pet_Species?.message} </b></p>
 
                                <div className="control has-icons-left">
 
@@ -328,7 +331,7 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
                             { /* 體型 */ }
                             <div className="column is-3-desktop">
 
-                               <p> 體 型 &nbsp; <b style={{color: "red"}}> {errors.pet_Size?.message} </b></p>
+                               <p> 體 型 &nbsp; <b className="fRed"> {errors.pet_Size?.message} </b></p>
 
                                <div className="control has-icons-left">
 
@@ -354,6 +357,7 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
 
                        <br/>
 
+                    
                        { /* Radio 單選 */}
                        <div className="columns is-multiline  is-mobile">
 
@@ -385,10 +389,17 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
                        </div>
 
 
+                       { /* 寵物價格 ：標準、個別定價  */ }
+                       { pet_Serial && 
+                           <> 
+                              <Pet_Prices_Status register = { register } /> <br/>
+                           </>  
+                       }
+                      
                        { is_Detial &&
                        
                             <>
-                                    
+
                                     <div className="columns is-multiline  is-mobile">
 
                                         <div className="column is-6-desktop">

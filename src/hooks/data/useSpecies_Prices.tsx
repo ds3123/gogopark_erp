@@ -1,6 +1,6 @@
 
 
-import React, {useCallback, useEffect, useState} from "react"
+import { useEffect, useState } from "react"
 import axios from "utils/axios";
 
 
@@ -10,12 +10,12 @@ export const useSpecies_Name_Prices = ( species_Name : string  ) => {
 
     // 服務價格
     const [ prices , set_Prices ] = useState({
-                                                            bath_First    : 0 , // 初次洗澡
-                                                            bath_Single   : 0 , // 單次洗澡
-                                                            bath_Month    : 0 , // 包月洗澡
-                                                            beauty_Single : 0 , // 單次美容
-                                                            beauty_Month  : 0 , // 包月美容
-                                                         }) ;
+                                                bath_First    : 0 , // 初次洗澡
+                                                bath_Single   : 0 , // 單次洗澡
+                                                bath_Month    : 0 , // 包月洗澡
+                                                beauty_Single : 0 , // 單次美容
+                                                beauty_Month  : 0 , // 包月美容
+                                              }) ;
 
 
     useEffect(( ) : any => {
@@ -63,7 +63,6 @@ export const useSpecies_Name_Prices = ( species_Name : string  ) => {
     return prices
 
 } ;
-
 
 
 // # 藉由 : "寵物品種 id " ，查詢 _ 相對應的各種服務 : 基本價錢
@@ -124,9 +123,6 @@ export const useSpecies_Id_Prices = ( species_Id : string | number  ) => {
 
 
     } ,[ species_Id ] ) ;
-
-
-
 
     return prices
 

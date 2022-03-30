@@ -19,9 +19,7 @@ import Date_Picker from "templates/form/Date_Picker";
 import { set_State } from 'utils/data/set_data'
 import axios from "utils/axios";
 
-
 import { sort_Data_By_Date } from "utils/data/sort_data"
-
 
 
 const serviceArr = [
@@ -56,9 +54,6 @@ const filter_Data = ( source : any[] , searchKeyword : string ) => {
           })
 
 } ;
-
-
-
 
 
 /* @ 洗美頁面 ( 洗美資料、方案資料 ) */
@@ -102,7 +97,6 @@ const Services = () => {
     const Service_isLoading = useSelector( ( state : any ) => state.Service.Service_isLoading ) ;
 
     // 取得 _ 分頁資料
-    //const { pageOfItems , filteredItems , click_Pagination } = usePagination( "/services/show_with_cus_relative_pet/0/50" , 'service' ) ;
     const { pageOfItems , filteredItems , click_Pagination } = usePagination( "/services/show_all_with_cus_relative_pet/0" , 'service' ) ;
 
     // 篩選資料 ( 依搜尋框輸入關鍵字 )
@@ -116,8 +110,8 @@ const Services = () => {
     const [ fData , set_fData ] = useState( [] ) ;
 
 
-     // 排序 _ 搜尋資料( 依：來店日期，降冪排序 )
-     const set_Sort_Search_Data = ( api : string , is_All_Search : boolean ) => {
+    // 排序 _ 搜尋資料( 依：來店日期，降冪排序 )
+    const set_Sort_Search_Data = ( api : string , is_All_Search : boolean ) => {
     
         axios.get( api ).then( res => {
 
@@ -153,7 +147,7 @@ const Services = () => {
     } , [] ) ;
 
 
-    // # 當進行查詢時，才取得所有客戶資料
+    // # 當進行查詢時，才取得所有資料
     useEffect( () => {
 
         if( searchKeyword ){   // 搜尋所有資料
@@ -162,7 +156,7 @@ const Services = () => {
 
         }else{                 // 搜尋最近 50 筆資料 
 
-          set_Sort_Search_Data( '/services/show_with_cus_relative_pet/0/10' , false ) ;  
+          set_Sort_Search_Data( '/services/show_with_cus_relative_pet/0/50' , false ) ;  
              
         }
   
@@ -207,13 +201,13 @@ const Services = () => {
                                 
                                 <b className = { `tag is-medium m_Left_15 m_Bottom_5 pointer ${ show_Service_Date ? 'is-primary' : '' }` } 
                                     onClick  = { click_Show_Service_Date } > 
-                                來店日期 
+                                    來店日期 
                                 </b>     
                                 
                                 { show_Service_Date &&
 
                                     <div className="tag is-large is-white">
-                                    <Date_Picker control={ control } name="service_Date" default_Date={ new Date } />
+                                        <Date_Picker control={ control } name="service_Date" default_Date={ new Date } />
                                     </div>
 
                                 } 

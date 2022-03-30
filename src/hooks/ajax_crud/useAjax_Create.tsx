@@ -776,6 +776,12 @@ export const columns_Covert_Pet = ( data : any ) => {
 
                     note         : data['pet_Note'] ,
 
+                    // 該寵物品種價格   
+                    single_bath_price   : data['price_Single_Bath'] ,
+                    single_beauty_price : data['price_Single_Beauty'] ,
+                    month_bath_price    : data['price_Month_Bath'] ,
+                    month_beauty_price  : data['price_Month_Beauty']
+
                   } ;
 
     return obj

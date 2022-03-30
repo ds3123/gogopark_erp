@@ -76,25 +76,14 @@ const Pets = () => {
     const { data , dataSum } = useSearch_Bar( all_Pets.length === 0 ? search_Pets : all_Pets , filter_Data , searchKeyword ) ;
 
 
-    // # 當進行查詢時，才取得所有客戶資料
+
+    // # 取得、設定 _ 資料
     useEffect( () => {
 
-      if( searchKeyword ){   // 搜尋所有資料
+      // 初始取得部份資料( 50 筆 )
+      if( !searchKeyword ) set_State( '/pets/show_pets_customers_relatives/0/50' , set_Search_Pets ) ; 
 
-         set_State( '/pets/show_all_pets_customers_relatives/0' , set_Search_Pets ) ;
-
-      }else{                 // 搜尋最近 50 筆資料 
-
-         set_State( '/pets/show_pets_customers_relatives/0/50' , set_Search_Pets ) ; 
-           
-      }
-
-    } , [ searchKeyword ] ) ;
-
-
-    // # 取得、設定 _ 所有寵物資料
-    useEffect( () => {
-    
+      // 取得所有資料
       set_State( '/pets/show_all_pets_customers_relatives/0' , set_All_Pets )
     
     } , []  )

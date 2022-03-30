@@ -23,8 +23,8 @@ const Services_Rows = ( props : any ) => {
     const url      = useLocation().pathname;
     const history  = useHistory() ;
 
-    // 今日
-    const today    = moment( new Date() ).format('YYYY-MM-DD' ) ;
+    // 今日 
+    const today    = moment( new Date() ).format( 'YYYY-MM-DD' ) ;
     
 
     const [ pet , set_Pet ] = useState<any>( {} ) ;
@@ -169,7 +169,7 @@ const Services_Rows = ( props : any ) => {
 
 
     const t_L = { textAlign : "left" } as const ;
- 
+
    
     return <tr style = { ( data[ 'service_date' ] && data[ 'service_date' ].slice(0,10) === today ) ? { background:"rgb(160,160,160,.2)" }  : { lineHeight : "40px" } } >
 
@@ -190,7 +190,7 @@ const Services_Rows = ( props : any ) => {
              
              { /* 客戶姓名 */ }
              <td>
-                 <b className="tag is-medium pointer" onClick = { () => click_Customer( customer.id ) } >
+                 <b className="tag is-medium pointer" onClick = { customer ? () => click_Customer( customer.id ) : () => {} } >
                     { data['customer'] ? data['customer']['name'] : '' }
                  </b>
              </td>

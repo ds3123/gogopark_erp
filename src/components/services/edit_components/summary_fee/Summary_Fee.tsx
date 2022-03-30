@@ -111,8 +111,10 @@ const Summary_Fee : FC<TS> = ( { register , setValue , errors  , current, editTy
                     <div className="column is-4-desktop">
                        <span className="tag is-large is-white">
                           <b> 建檔日期 : <span className="fDblue">
-                              { editType !== '編輯' && get_Today() }                        { /* for 新增  */ }
-                              { editType !== '編輯' || serviceData.created_at.slice(0,10) } { /* for 編輯 */ }
+                              { /* for 新增  */ }
+                              { editType !== '編輯' && get_Today() }  
+                              { /* for 編輯 */ }
+                              { editType !== '編輯' || ( serviceData.created_at ? serviceData.created_at.slice(0,10) : '' )}
                           </span> </b>
                        </span>
                     </div>

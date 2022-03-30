@@ -260,7 +260,13 @@ export interface IPet {
     ownerProvide       : string [] ;
 
     // * 備註 ( 1 )
-    pet_Note           : string ;
+    pet_Note            : string ;
+
+    // * 價格 (  針對寵物自行調整價格，自行調整價格 )
+    price_Single_Bath   : number ;
+    price_Month_Bath    : number ;
+    price_Single_Beauty : number ; 
+    price_Month_Beauty  : number ;
 
 }
 

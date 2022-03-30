@@ -71,25 +71,14 @@ const Customers = () => {
     const { data , dataSum } = useSearch_Bar( all_Customers.length === 0 ? search_Customers : all_Customers , filter_Data , searchKeyword ) ;
  
 
-    // # 當進行查詢時，才取得所有客戶資料
-    useEffect( () => {
-
-       if( searchKeyword ){   // 搜尋所有資料
-
-         set_State( '/customers/show_all_customers_relatives_pets/0' , set_Search_Customers ) ;
-
-       }else{                 // 搜尋最近 50 筆資料 
-
-         set_State( '/customers/show_customers_relatives_pets/0/50' , set_Search_Customers ) ; 
-            
-       }
-
-    } , [ searchKeyword ] ) ;
-
-
-    // # 取得、設定 _ 所有客戶資料
+    
+    // # 取得、設定 _ 資料
     useEffect( () => { 
 
+       // 初始取得部份資料( 50 筆 )
+       if( !searchKeyword ) set_State( '/customers/show_customers_relatives_pets/0/50' , set_Search_Customers ) ; 
+
+       // 取得所有資料
        set_State( '/customers/show_all_customers_relatives_pets/0' , set_All_Customers )
         
     } , [] ) ;
@@ -99,15 +88,19 @@ const Customers = () => {
 
               <div className="columns is-multiline is-variable is-12 m_Bottom_50">
 
-                <div className="column is-offset-8 is-4-desktop">
+                { all_Customers.length !== 0  &&
 
-                    { /* 可搜尋類型提示 */ }  
-                    <Search_Type_Note search_Types = { search_Types } />
+                    <div className="column is-offset-8 is-4-desktop">
 
-                    { /* 搜尋列 */ }
-                    <SearchBar get_Search_Text = { get_Search_Text } />
+                        { /* 可搜尋類型提示 */ }  
+                        <Search_Type_Note search_Types = { search_Types } />
 
-                </div>
+                        { /* 搜尋列 */ }
+                        <SearchBar get_Search_Text = { get_Search_Text } /> 
+
+                    </div>
+
+                }
                 
               </div>  
 

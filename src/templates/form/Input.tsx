@@ -7,7 +7,8 @@ type TI = {
     label    : string ;
     icon     : string ;
     register : any ;
-    error?    : any ;
+    error?   : any ;
+    note?    : string ; 
     asterisk : boolean ;
     columns  : string ;
     onChange? : any ;
@@ -17,11 +18,20 @@ type TI = {
     
 } ;
 
-export const Input : FC<TI> = ({ register , type , name , label , icon , error , asterisk , columns, min , max , onChange = () => {} , style , ...inputProps }) => {
+export const Input : FC<TI> = ({ register , type , name , label , icon , error , asterisk , columns, min , max , onChange = () => {} , style , note , ...inputProps }) => {
 
     return  <div className= { `column is-${columns}-desktop ${ ( asterisk ? "required" : "" ) }` }  >
 
-               <p className="relative" > { label } &nbsp; <b className="fRed"> { error?.message } </b>  </p>
+               <p className="relative" > 
+                    { label } &nbsp; 
+                    
+                    <b className="fRed"> { error?.message } </b>  
+
+                    { error?.message ||
+                         <b className="fDblue f_9 relative" style={{ left:"-10px" }}> { note } </b>
+                    }
+
+               </p>
 
                <div className="control has-icons-left" >
 

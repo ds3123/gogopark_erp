@@ -1,5 +1,4 @@
 
-import { useContext } from "react"
 
 // React Hook Form
 import { useForm , SubmitHandler } from "react-hook-form";
@@ -10,7 +9,9 @@ import { IPet } from "utils/Interface_Type";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 // useContext
+import { useContext } from "react"
 import { SidePanelContext } from "templates/panel/Side_Panel";
+
 import Pet_Form from "components/pets/edit/Pet_Form";
 import {useRead_Species} from "hooks/ajax_crud/useAjax_Read";
 
@@ -22,7 +23,7 @@ import{ useLocation } from "react-router" ;
 
 
 { /*  編輯寵物  */ }
-const Update_Pet = ( ) => {
+const Update_Pet = () => {
 
     const value       = useContext( SidePanelContext ) ;              // 取得 context 值
     const pet         = value.preLoadData ? value.preLoadData : {} ;
@@ -35,8 +36,10 @@ const Update_Pet = ( ) => {
     // 將 "寵物品種名稱" ，改為 : "寵物品種 pet_species 資料表 id"
     const _pet = petSpecies.filter( x => x['name'] === pet['species'] )[0] ;
 
+
+
     // React Hook Form
-    const { register , watch , setValue , handleSubmit , formState: { errors , isDirty , isValid } } =
+    const { register , watch , setValue , handleSubmit , formState : { errors , isDirty , isValid } } =
                 useForm<IPet>({
                     mode          : "all" ,
                     resolver      : yupResolver( schema_Pet ) ,
@@ -72,6 +75,12 @@ const Update_Pet = ( ) => {
 
                                         pet_Note     : pet.note ,
 
+                                        // 價格 ( 針對寵物自行調整價格 )
+                                        price_Single_Bath   : pet.single_bath_price ,   // 單次洗澡
+                                        price_Month_Bath    : pet.month_bath_price ,    // 包月洗澡  
+                                        price_Single_Beauty : pet.single_beauty_price , // 單次美容
+                                        price_Month_Beauty  : pet.month_beauty_price    // 包月美容
+                                        
                                     }
                 }) ;
 
@@ -99,10 +108,10 @@ const Update_Pet = ( ) => {
         const mPet       = petSpecies.filter( x => x['id'] === parseInt( data.pet_Species ) )[0] as any ;  // 篩選出該寵物
         data.pet_Species = mPet.name ;    // 將品種資料表 id ， 改為 : "寵物品種名稱"  
 
+
         // 更新 _ 寵物
         update_Data( "/pets" , data.pet_Serial , data , current_Url , "寵物" ) ;
         
-
     } ;
 
     return <form onSubmit = { handleSubmit( onSubmit ) }>

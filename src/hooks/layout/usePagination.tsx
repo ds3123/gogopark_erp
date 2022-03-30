@@ -19,26 +19,9 @@ const usePagination = ( api : string , type? : string ) => {
 
     const dispatch = useDispatch() ;
 
-    let [ filteredItems , set_filteredItems ] = useState<any[]>( [] ) ; // 點選頁碼後 _ 所篩選項目
-    let [ pageOfItems , set_pageOfItems ]     = useState<any[]>( [] ) ;        // 當前頁面 _ 顯示項目
+    let [ filteredItems , set_filteredItems ] = useState<any[]>( [] ) ;  // 點選頁碼後 _ 所篩選項目
+    let [ pageOfItems , set_pageOfItems ]     = useState<any[]>( [] ) ;  // 當前頁面 _ 顯示項目
 
-
-    // 排序 ( 依洗美：到店日期 )
-    const sort = ( arr : any[] ) => {
-    
-
-        const sorted_Arr = arr.sort(( a : any , b : any ) : any => {
-                                  
-                              const _a = new Date( a['service_date'] ) ; 
-                              const _b = new Date( b['service_date'] ) ; 
-  
-                              return _a < _b ? 1 : -1
-  
-                          }) ;    
-  
-        return sorted_Arr                  
-      
-      } ;
 
     // 點選 : 分頁頁碼
     const click_Pagination = ( _pageOfItems : [] ) => set_pageOfItems( _pageOfItems ) ; 
@@ -48,15 +31,8 @@ const usePagination = ( api : string , type? : string ) => {
     useEffect( () => {
 
         axios.get( api ).then( res => {
-
-            // # 排序資料
-            // const resData = res.data.sort(( a : any , b : any ) : any => {
-            //                     return a['created_at'] < b['created_at'] ? 1 : -1
-            //                 }) ;
-
         
             // # 設定 _ 回傳資料
-            //set_filteredItems( resData ) ;
             set_filteredItems( res.data ) ;
             
 
