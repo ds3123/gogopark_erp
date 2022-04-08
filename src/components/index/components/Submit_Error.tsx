@@ -72,7 +72,7 @@ const Submit_Error = ( props : error ) => {
                     { ( data['is_error'] === 0 && data['is_delete'] === 0 && !is_Error ) &&
                     
                         <b className="tag is-large pointer hover" style={{width:"100%"}} onClick = { click_Is_Error } >
-                            <i className="fas fa-exclamation-triangle"></i> &nbsp;  轉異常
+                            <i className="fas fa-exclamation-triangle"></i> &nbsp;  轉異常 
                         </b>
                     }
 

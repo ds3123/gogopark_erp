@@ -26,6 +26,8 @@ import reducer_Test from "store/reducers/reducer_Test";
 
 import reducer_Cache from "store/reducers/reducer_Cache";
 
+import reducer_Price from "store/reducers/reducer_Price";
+
 
 const root_Reducer = combineReducers({
 
@@ -85,6 +87,8 @@ const root_Reducer = combineReducers({
                          // @ 快取
                          "Cache"      : reducer_Cache ,  
 
+                         //
+                         "Price"      : reducer_Price ,
 
                          // @ 測試練習 ( 2022.03.06 ) 
                          "Test"       : reducer_Test

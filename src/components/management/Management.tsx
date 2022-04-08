@@ -137,13 +137,18 @@ const Management = () => {
             click_Second('員工管理' ) ;
         }
 
-
        // # 資料管理
        // * 服務異常
        if( redirect && redirect === '資料管理_服務異常' ){
            click_Second( '資料管理' ) ;
        }
 
+
+       // * 方案資料  
+       if( redirect && redirect === '資料管理_方案資料' ){
+           click_Second('資料管理') ;
+           click_Third('方案資料') ;
+       } 
 
        // # 系統設定 :
        // * 寵物品種

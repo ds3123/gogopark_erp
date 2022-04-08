@@ -1,13 +1,15 @@
 
 import { useEffect , useState } from "react";
 import usePagination from "hooks/layout/usePagination";
+import usePagination_Search from "hooks/layout/usePagination_Search";
+import { I_Pagination } from "utils/Interface_Type";
+
 import Services_Rows from "components/services/Services_Rows";
 import Pagination from "utils/Pagination";
 import Plans from "components/plan/Plans";
-import Contact_Customers from "components/contact_customers/Contact_Customers";
 import { useSelector } from "react-redux";
 import SearchBar from "templates/search/SearchBar";
-import cookie from 'react-cookies'     // 匯入 cookie
+import cookie from 'react-cookies' ;     // 匯入 cookie
 import { useSearch_Bar } from "hooks/data/useSearch";
 import Data_List_Sum from "templates/search/Data_List_Sum";
 import Search_Type_Note from "templates/search/Search_Type_Note";
@@ -16,10 +18,8 @@ import Search_Type_Note from "templates/search/Search_Type_Note";
 import { useForm } from "react-hook-form" ;
 import { ICustomer } from "utils/Interface_Type";
 import Date_Picker from "templates/form/Date_Picker";
-import { set_State } from 'utils/data/set_data'
-import axios from "utils/axios";
 
-import { sort_Data_By_Date } from "utils/data/sort_data"
+import { sort_Data_By_ServiceDate } from "utils/data/sort_data";
 
 
 const serviceArr = [
@@ -30,7 +30,7 @@ const serviceArr = [
 
 
 // 可搜尋關鍵字類型
-const search_Types = [ "客戶姓名","客戶身分證字號","客戶手機號碼", "寵物名字", "寵物品種","服務類型","到店狀態" ] ;
+const search_Types = [ "客戶姓名","客戶身分證字號","客戶手機號碼", "寵物名字", "寵物品種","服務類型" ] ;
 
 
 // 關鍵字搜尋 : 過濾資料 _ 條件 ( for 洗澡、美容 )
@@ -38,22 +38,26 @@ const filter_Data = ( source : any[] , searchKeyword : string ) => {
 
   return source.filter( ( x : any ) => {
 
+              const customer   = x['customer'] ;
+              const pet        = x['pet'] ;    
+
               // # 設置 _ 多種查詢條件
-              let cus_Name     = x['customer']['name'].match(new RegExp(searchKeyword, 'gi'));         // 客戶_姓名
-              let cus_Id       = x['customer']['id'].match(new RegExp(searchKeyword, 'gi'));           // 客戶_身分證號
-              let cus_Mobile   = x['customer']['mobile_phone'].match(new RegExp(searchKeyword, 'gi')); // 客戶_手機號碼
+              let cus_Name     = customer?.name.match(new RegExp(searchKeyword, 'gi'));         // 客戶_姓名
+              let cus_Id       = customer?.id.match(new RegExp(searchKeyword, 'gi'));           // 客戶_身分證號
+              let cus_Mobile   = customer?.mobile_phone.match(new RegExp(searchKeyword, 'gi')); // 客戶_手機號碼
 
-              let pet_Name     = x['pet']['name'].match(new RegExp(searchKeyword, 'gi'));              // 寵物_名字
-              let pet_Species  = x['pet']['species'].match(new RegExp(searchKeyword, 'gi'));           // 寵物_品種
+              let pet_Name     = pet?.name.match(new RegExp(searchKeyword, 'gi'));              // 寵物_名字
+              let pet_Species  = pet?.species.match(new RegExp(searchKeyword, 'gi'));           // 寵物_品種
 
-              let shop_status  = x['shop_status'].match(new RegExp(searchKeyword, 'gi'));              // 處理狀態
-              let service_type = x['service_type'].match(new RegExp(searchKeyword, 'gi'));             // 服務類型
+              //  let shop_status  = x['shop_status'].match(new RegExp(searchKeyword, 'gi'));   // 處理狀態
+              let service_type = x['service_type'].match(new RegExp(searchKeyword, 'gi'));      // 服務類型
 
-              return !!cus_Name || !!cus_Id || !!cus_Mobile || !!pet_Name || !!pet_Species || !!shop_status || !!service_type ;
+              return !!cus_Name || !!cus_Id || !!cus_Mobile || !!pet_Name || !!pet_Species || !!service_type ;
 
           })
 
 } ;
+
 
 
 /* @ 洗美頁面 ( 洗美資料、方案資料 ) */
@@ -63,7 +67,6 @@ const Services = () => {
 
     // 點選 _ 來店日期
     const click_Show_Service_Date = () => set_Show_Service_Date( !show_Service_Date ) ;
-
 
     // 到店日期
     const service_Date = useSelector( ( state : any ) => state.Info.service_Date ) ; 
@@ -75,55 +78,42 @@ const Services = () => {
     // 點選 _ 第 2 層選項
     const click_Second = ( title : string ) => set_CurrentSecond( title ) ;
 
-
-    // --------------------------
-
     // 所輸入 : 搜尋關鍵字
     const [ searchKeyword , set_SearchKeyword ] = useState( '' ) ;
 
-    // 搜尋服務資料
-    const [ search_Service , set_Search_Service ] = useState<any[]>( [] ) ;
-
-    // 所有服務資料
-    const [ all_Service , set_All_Service ] = useState<any[]>( [] ) ;
-
-
+    
     // 取得 _ 搜尋框中的文字
     const get_Search_Text = ( value : string ) => set_SearchKeyword( value ) ;
  
-    // --------------------------
 
     // 洗美頁資料 _ 是否下載中
     const Service_isLoading = useSelector( ( state : any ) => state.Service.Service_isLoading ) ;
 
+    // --------------------------
+
+
+    const page_Config : I_Pagination = {
+        api_Num        : "/services/show_with_cus_relative_pet/0/50" ,   // 僅搜尋部分筆數資料的 api
+        api_All        : "/services/show_all_with_cus_relative_pet/0" ,  // 搜尋全部筆數資料的 api
+        data_Type      : "service" ,                                     // 資料類型 ( Ex. customer,pet,services,lodge,care )
+        sort_Data_Type : sort_Data_By_ServiceDate                        // 資料排序方式
+    }
+
     // 取得 _ 分頁資料
-    const { pageOfItems , filteredItems , click_Pagination } = usePagination( "/services/show_all_with_cus_relative_pet/0" , 'service' ) ;
+    const { pageOfItems , filteredItems , click_Pagination , is_All_Data_Done } = usePagination_Search( page_Config ) ;
 
-    // 篩選資料 ( 依搜尋框輸入關鍵字 )
-    const { data } = useSearch_Bar( all_Service.length === 0 ? search_Service : all_Service , filter_Data , searchKeyword ) ;
+    // 取得 _ 搜尋資料
+    const { data } = useSearch_Bar( filteredItems , filter_Data , searchKeyword ) ;
 
+    // -------------------------------------
+    
     // React Hook Form
     const { control } = useForm<ICustomer>({ mode : "all" }) ;
 
-    
     // 二次篩選資料( 加入日期 )
     const [ fData , set_fData ] = useState( [] ) ;
 
-
-    // 排序 _ 搜尋資料( 依：來店日期，降冪排序 )
-    const set_Sort_Search_Data = ( api : string , is_All_Search : boolean ) => {
     
-        axios.get( api ).then( res => {
-
-            const sort_Data = sort_Data_By_Date( res.data , 'desc' )
-            
-            is_All_Search ? set_All_Service( sort_Data ) :  set_Search_Service( sort_Data )  
-
-        }) 
-
-    } ;
-
-
     // 是否加入 _ 日期篩選條件
     useEffect( () => { 
     
@@ -145,30 +135,6 @@ const Services = () => {
         
 
     } , [] ) ;
-
-
-    // # 當進行查詢時，才取得所有資料
-    useEffect( () => {
-
-        if( searchKeyword ){   // 搜尋所有資料
-
-          set_Sort_Search_Data( '/services/show_all_with_cus_relative_pet/0' , true ) ;  
-
-        }else{                 // 搜尋最近 50 筆資料 
-
-          set_Sort_Search_Data( '/services/show_with_cus_relative_pet/0/50' , false ) ;  
-             
-        }
-  
-    } , [ searchKeyword ] ) ;
-
-
-    // # 取得、設定 _ 所有寵物資料
-    useEffect( () => {
-    
-       set_Sort_Search_Data( '/services/show_all_with_cus_relative_pet/0' , true ) ; 
-
-    } , []  ) ;
 
 
     return <>
@@ -237,7 +203,7 @@ const Services = () => {
                     <div className="relative" style={{width:"110%" , left:"-5%"}} >
 
                         { /* 資料筆數 */ } 
-                        <Data_List_Sum data_Sum={ fData.length } all_Data_Sum={ all_Service.length } />   
+                        <Data_List_Sum data_Sum = { fData.length } is_All_Data_Done = { is_All_Data_Done } /> 
 
                         { /* 資料列表  */ }  
                         <table className="table is-fullwidth is-hoverable">

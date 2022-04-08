@@ -116,7 +116,29 @@ const Services_Rows = ( props : any ) => {
     } ;
 
 
+    // 取得 _ 服務價格
+    const get_Bath_Service_Price = ( data : any ) => {
+
+        const pet = data['pet'] ;
+
+        // 初次洗澡價格
+        if( data['"初次洗澡優惠"'] ) return data['bath_fee'] ;
+
+        // 單次洗澡下，有 _ 自訂洗澡價格
+        if( data['payment_type'] === '單次洗澡' && pet['single_bath_price'] ) return pet['single_bath_price']
+
+        // 單次洗澡下，沒有 _ 自訂洗澡價格
+        return data['bath_fee']
+
+    }
+
     useEffect( () => {
+
+          const pet = data['pet'] ;
+
+          // 取得洗澡價格
+          const bath_Service_Price = get_Bath_Service_Price( data ) ; 
+
 
           // 有些服務單，沒有寵物 ( null ) 2021.06.10 再確認查詢式
           if( data['pet'] ) set_Pet( data['pet'] ) ;
@@ -135,7 +157,7 @@ const Services_Rows = ( props : any ) => {
           if( data['service_type'] === '洗澡' ){
 
               set_Price({ ...price ,
-                                   service      : data['bath_fee'] ,
+                                   service      : bath_Service_Price ,
 
                                    self_adjust  : data['self_adjust_amount'] ,
                            
@@ -144,7 +166,7 @@ const Services_Rows = ( props : any ) => {
 
                                    pickup       : data['pickup_fee'] ,
 
-                                   plan_Price   : data['bath_month_fee'] ? data['bath_month_fee'] : 0 
+                                   plan_Price   : pet['month_bath_price'] ? pet['month_bath_price'] : data['bath_month_fee']  
                         })
 
           }
@@ -152,7 +174,7 @@ const Services_Rows = ( props : any ) => {
           if( data['service_type'] === '美容' ){
 
               set_Price({ ...price ,
-                                   service     : data['beauty_fee'] ,
+                                   service     : pet['single_beauty_price'] ? pet['single_beauty_price'] : data['beauty_fee'] ,
 
                                    self_adjust : data['self_adjust_amount'] ,
 
@@ -160,7 +182,7 @@ const Services_Rows = ( props : any ) => {
 
                                    pickup      : data['pickup_fee'] ,
 
-                                   plan_Price  : data['beauty_month_fee'] ? data['beauty_month_fee'] : 0 
+                                   plan_Price  : pet['month_beauty_price'] ? pet['month_beauty_price'] : data['beauty_month_fee'] 
                         })
 
           }
@@ -169,6 +191,7 @@ const Services_Rows = ( props : any ) => {
 
 
     const t_L = { textAlign : "left" } as const ;
+
 
    
     return <tr style = { ( data[ 'service_date' ] && data[ 'service_date' ].slice(0,10) === today ) ? { background:"rgb(160,160,160,.2)" }  : { lineHeight : "40px" } } >
@@ -255,7 +278,7 @@ const Services_Rows = ( props : any ) => {
                         
                       }
 
-                      { data['plan']  ? '包月' : data[ 'amount_payable' ] }
+                      { data['plan']  ? '包月' : price['service'] }
 
                   </span> 
 

@@ -48,7 +48,7 @@ const Side_Info  = ( ) => {
                       <hr/>
 
                       { /* 服務基本價格  */ }
-                       <Side_Info_Prices />
+                      <Side_Info_Prices />
 
                       <br/>
 

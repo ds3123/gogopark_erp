@@ -17,7 +17,7 @@ const axios = baseURL => {
 
         // baseURL : baseURL || 'http://localhost/Laravel_Projects/gogopark/public/index.php/api' ,   // 本機開發
          
-        baseURL : baseURL || 'http://localhost:7777/Laravel_Projects/gogopark/public/index.php/api' , // 本機開發 ( for Mac )
+         baseURL : baseURL || 'http://localhost:7777/Laravel_Projects/gogopark/public/index.php/api' , // 本機開發 ( for Mac )
 
         // baseURL : baseURL || 'http://demo04.cchouse.com.tw/backend/public/index.php/api' ,         // Demo4 測試空間 ( backend 資料夾 )
         
@@ -29,7 +29,7 @@ const axios = baseURL => {
 
         timeout : 60000  // ( 原先為 1000ms --> 設長點，避免資料過多情況下，來不及取得，即拋出 timeout 錯誤 : Error: timeout of 1000ms exceeded )
 
-    });
+    }) ;
 
     return instance ;
 

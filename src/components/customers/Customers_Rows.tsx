@@ -45,6 +45,8 @@ const Customers_Rows = ( props : any ) => {
     // 點選 _ 封存資料
     const click_Archive  = ( id : string ) => {
 
+        if( !id ){ alert( '封存資料 id 錯誤' ) ; return false ; }
+
         axios.put( `/customers/${ id }` , { is_archive : 1 } ).then( res => {
 
             toast(`🦄 資料已封存`, { position : "top-left", autoClose : 1500 , hideProgressBar : false });
@@ -52,7 +54,12 @@ const Customers_Rows = ( props : any ) => {
             history.push("/wrongpath");  // 錯誤路徑
             history.push("/customers");  // 正確路徑
 
-        }) ;
+        }).catch( err => {
+
+            alert( `封存失敗，錯誤訊息 ：${ err }` ) ;
+
+        })
+ 
 
     } ;
 
@@ -92,7 +99,6 @@ const Customers_Rows = ( props : any ) => {
     } ;
 
 
-
     // 設定 _ 寵物資料
     useEffect( () => {
 
@@ -110,6 +116,7 @@ const Customers_Rows = ( props : any ) => {
 
 
     const t_L = { textAlign : "left" } as const ;
+
 
    return <tr>
              <td style={ t_L } >

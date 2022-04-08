@@ -16,15 +16,36 @@ const Service_Receivable_Table : FC< { data : any } > = ( { data } ) => {
     const click_Service = ( service : any ) => dispatch( set_Side_Panel( true , <Update_Service /> , { service_Type : service['service_type'] ,  preLoadData : service } ) ) ;
 
 
+
+
+    // 取得 _ 應收金額
+    const get_Amount_Payable = ( data : any ) => {
+
+        if( !data ) return 0 ;
+
+        const pet = data['pet'] ;
+      
+        // 單次洗澡下，有調整價格 
+        if( data['payment_type'] === '單次洗澡' && pet['single_bath_price'] ) return pet['single_bath_price'] ;
+        
+        // 單次美容下，有調整價格  
+        if( data['payment_type'] === '單次美容' && pet['single_beauty_price'] ) return pet['single_beauty_price'] ;
+         
+
+        return data['amount_payable'] ;
+
+    } ;
+
     useEffect( () => { 
     
       // 篩選、設定 _ 現金支付資料，並且服務類型為 : 基礎、洗澡、美容 ( 排除 : 安親、住宿 ) 
       const _data = data.filter( ( x : any ) => x['payment_method'] === '現金' && ( x['service_type'] === '基礎' || x['service_type'] === '洗澡' || x['service_type'] === '美容' ) ) ;
      
       set_Receivable_Data( _data ) ;
-
     
     } , [ data ] ) ;
+
+
 
 
    return  <table className="table is-fullwidth is-hoverable">
@@ -46,7 +67,18 @@ const Service_Receivable_Table : FC< { data : any } > = ( { data } ) => {
                     { 
                       
                       receivable_Data.map( ( x : any , y : number )=> {
+  
+                            let amount_Payable = x['amount_payable'] ;
 
+                            const pet = x['pet'] ;
+      
+                            // 單次洗澡下，有調整價格 
+                            if( x['payment_type'] === '單次洗澡' && pet['single_bath_price'] ) amount_Payable = pet['single_bath_price'] ;
+                            
+                            // 單次美容下，有調整價格  
+                            if( x['payment_type'] === '單次美容' && pet['single_beauty_price'] ) amount_Payable = pet['single_beauty_price'] ;
+                             
+  
                             return <tr key = { y }>
                                       <td className="td_Left">
                                          <b className="tag is-medium pointer" onClick = { () => click_Service( x ) } > 
@@ -58,8 +90,8 @@ const Service_Receivable_Table : FC< { data : any } > = ( { data } ) => {
                                       </td>
                                       <td> Q { x['q_code'] }                                                    </td>
                                       <td className="td_Left"> { x['pet']['name'] } ( { x['pet']['species'] } ) </td>
-                                      <td> { x['amount_payable'] }                                              </td>
-                                      <td>  0                                                                   </td>
+                                      <td> { amount_Payable }                                              </td>
+                                      <td> { amount_Payable - x['amount_paid'] }                                                                   </td>
                                       <td> { x['amount_paid'] }                                                 </td>
                                       <td> { x['admin_service_note'] }                                          </td>
                                    </tr>

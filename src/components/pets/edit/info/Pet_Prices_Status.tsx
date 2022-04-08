@@ -1,91 +1,78 @@
-/*
+import { useState } from "react";
+import { useSelector } from "react-redux";
 
-  ＠ 寵物個別定價 :
-     1.標準價格
-     2.個別手動調整  
-
-*/
-
-import { Input } from "templates/form/Input";
 
 // useContext
 import { useContext } from "react"
 import { SidePanelContext } from "templates/panel/Side_Panel";
 
-import { useSpecies_Name_Prices } from "hooks/data/useSpecies_Prices"
+import { useSpecies_Name_Prices } from "hooks/data/useSpecies_Prices" ;
+
+import Species_Default_Prices from "components/pets/edit/info/components/Species_Default_Prices" ;
+import Adjust_Price_Section from "components/pets/edit/info/components/Adjust_Price_Section" ;
+import Species_Adjust_Prices from "components/pets/edit/info/components/Species_Adjust_Prices" ;
+import Price_Difference_Info from "components/pets/edit/info/components/Price_Difference_Info" ;
+
+
+
+/*
+
+  ＠ 寵物個別定價 :
+     1.標準價格
+     2.個別手動調整 ( 加減、百分比 )
+     3.調整後價格  
+
+*/
+
 
 
 type Status = {
-   register : any 
+   register : any ;
+   setValue : any ;
 }
 
 
-const Pet_Prices_Status = ( { register } : Status ) => {
 
-    const value   = useContext( SidePanelContext ) ;              
-    const pet     = value.preLoadData ? value.preLoadData : {} ;
-    const species = pet?.species ;                            // 品種名稱
-    const species_Prices = useSpecies_Name_Prices( species )  // 根據品種名稱，取得該品種基本價格
+const Pet_Prices_Status = ( { register , setValue } : Status ) => {
 
+    const value          = useContext( SidePanelContext ) ;              
+    const pet            = value.preLoadData ? value.preLoadData : {} ;
+    const species        = pet?.species ;                                // 品種名稱
+    const species_Prices = useSpecies_Name_Prices( species )             // 根據品種名稱，取得該品種基本價格
 
-    const position = { top:"-5px" , left : "10px" } ;
+    const [ is_Show_Adjust , set_Is_Show_Adjust  ] = useState( false ) ; // 是否顯示：調整金額輸入框
+   
 
-    return <>
+    return <div className="relative">
 
               <hr/> <br/>
 
-              <div className="columns is-multiline  is-mobile">
+              { /* 是否顯示：調整金額輸入框  */ }
+              <b className = { `absolute tag is-medium is-rounded pointer ${ is_Show_Adjust ? "is-primary" : "hover" }` } 
+                 style     = {{ top : "110px" , right:"50px" , zIndex :200 } }
+                 onClick   = { () => set_Is_Show_Adjust( !is_Show_Adjust ) } >  <i className="fas fa-calculator"></i> </b>
 
-                <div className="column is-12-desktop">
-                    <b className="tag is-large is-white">  <i className="fas fa-dollar-sign"></i>&nbsp; 
-                     基本價格 ( <span className="fDblue" > &nbsp;{ species }&nbsp;</span>) </b> 
-                </div>  
+              { /* 品種標準價格  */ }
+              <Species_Default_Prices species = { species } species_Prices = { species_Prices } /> 
+             
+              { /* 調整金額輸入框 */ }
+              { is_Show_Adjust &&
+                 <Adjust_Price_Section species_Prices = { species_Prices } setValue = { setValue } />
+              }
 
-                <div className="column is-offset-1 is-2-desktop">  <span className="fOrange">  初次洗澡 </span> : <b className="fRed"> { species_Prices.bath_First } </b> </div>      
-                <div className="column is-2-desktop"> 單次洗澡 : <b className="fRed"> { species_Prices.bath_Single } </b> </div>      
-                <div className="column is-2-desktop relative"> 
-                      包月洗澡 
-                      <span className=" absolute fDblue f_9" style={ position }> ( 4 次洗澡 ) </span>   : 
-                      <b className="fRed"> { species_Prices.bath_Month } </b> 
-                </div>      
-                <div className="column is-2-desktop"> 單次美容 : <b className="fRed"> { species_Prices.beauty_Single } </b> </div>      
-                <div className="column is-2-desktop relative"> 
-                     包月美容 : 
-                     <span className=" absolute fDblue f_9" style={ position }> ( 含 1 大美 ) </span>   : 
-                     <b className="fRed"> { species_Prices.beauty_Month } </b> </div>      
+              { /* 調整後金額 */ }
+              <Species_Adjust_Prices register = { register } />
+             
+              { /*  調整差價顯示資訊  */ }
+              { is_Show_Adjust || 
+                 <Price_Difference_Info species_Prices = { species_Prices } />
+              }
 
-                <div className="column is-12-desktop">
-                    <b className="tag is-large is-white">  <i className="fas fa-dollar-sign"></i> &nbsp; 個別調整 </b>
-                </div>  
-
-             </div>
-
-             <div className="columns is-multiline  is-mobile relative" style={{ left : "90px" }}>
-
-                <Input type="number"  name="price_Single_Bath"  label="單次洗澡"  register={ register }  error={ null }
-                                    icon="fas fa-shower" asterisk={false} columns="2" />
-
-            
-                <Input type="number"  name="price_Month_Bath"  label="包月洗澡"  register={ register }  error={ null }
-                                    icon="fas fa-shower" asterisk={false} columns="2" note="4 次洗澡" />
-
-                <div className="column is-1-desktop"></div>    
-
-                <Input type="number"  name="price_Single_Beauty"  label="單次美容"  register={ register }  error={ null }
-                                    icon="fas fa-cut" asterisk={false} columns="2" />
-
-                <Input type="number"  name="price_Month_Beauty"  label="包月美容"  register={ register }  error={ null }
-                                    icon="fas fa-cut" asterisk={false} columns="2" note="含 1 大美"  />                    
-
-             </div>
-
-                                
-             <hr/>
+              <br/> <hr/>
     
-           </> 
+           </div> 
            
            
-
 } ;
 
 export default Pet_Prices_Status 

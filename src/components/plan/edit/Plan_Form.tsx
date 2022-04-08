@@ -1,17 +1,18 @@
 
-import { FC , useEffect  } from "react"
+import { FC , useEffect, useState  } from "react"
 import { Edit_Form_Type } from "utils/Interface_Type";
 import { useRead_Species } from "hooks/ajax_crud/useAjax_Read";
 import { useDispatch, useSelector} from "react-redux";
 import { set_month_bath_price , set_month_beauty_price } from 'store/actions/action_Plan'
-
 import { set_Species_Service_Prices } from 'store/actions/action_Service'
-
+import { set_Current_Pet } from "store/actions/action_Pet" ;
 import Customer_Pets from "../../pets/edit/info/Customer_Pets";
 import Plan_Type_Columns from "./components/Plan_Type_Columns"
 
 import Applied_Species_Select from "./components/Applied_Species_Select"
 import Applied_Plan_Type from "./components/Applied_Plan_Type"
+
+
 
 
 interface IPlan extends Edit_Form_Type {
@@ -36,9 +37,17 @@ const Plan_Form : FC< IPlan > = ( { register , setValue , errors , current, edit
 
      const current_Plan_Type      = useSelector( ( state : any ) => state.Plan.current_Plan_Type ) ;         // 目前所選擇 : 方案類型 ( 名稱 )
 
+
+     // 方案基本價格 ( for 編輯 )
+     const [ plan_Fee , set_Plan_Fee ] = useState( 0 ) ;
+
     
      // 點選 _ 客戶寵物標籤，以帶入所欲適用的 : 寵物編號
      const click_Pet_Button = ( pet : any ) => {
+
+        // 設定所點選的寵物資料
+        dispatch( set_Current_Pet( pet ) ) ;  
+
 
         if( !current_Plan_Type || current_Plan_Type === '請選擇' ){
             alert('請先選擇 : 方案類型') ;
@@ -80,6 +89,25 @@ const Plan_Form : FC< IPlan > = ( { register , setValue , errors , current, edit
      }
 
 
+     // 取得 _ 基本價格
+     const get_Edit_Plan_Basic_Price = ( data : any ) => {
+
+         if( !data ) return 0 ;
+
+         const pet       = data['pet'] ;
+         const plan_Type = data[ 'plan_type' ] ;  // 方案類型( Ex. 包月洗澡、包月美容... )
+ 
+         // 包月洗澡下，有自訂價錢
+         if( plan_Type === '包月洗澡' && pet['month_bath_price'] )   return pet['month_bath_price'] ;
+         
+         // 包月美容下，有自訂價錢
+         if( plan_Type === '包月美容' && pet['month_beauty_price'] ) return pet['month_beauty_price'] ;
+         
+         return data['plan_basic_price'] ;
+
+     } ;
+
+
     
      // 設定 _ 所選擇品種，其所有 ( 5種 ) 基本服務價格
      useEffect( ( ) => {
@@ -98,6 +126,14 @@ const Plan_Form : FC< IPlan > = ( { register , setValue , errors , current, edit
      } , [ species_Service_Prices ] ) ;
 
 
+
+     // 設定 _ 方案基本價格 ( for 編輯 )
+     useEffect( () => {
+
+        if( editType ) set_Plan_Fee( get_Edit_Plan_Basic_Price( serviceData ) )
+
+     } , [ serviceData ] ) ;
+     
 
      return <div className="relative">
 
@@ -137,7 +173,9 @@ const Plan_Form : FC< IPlan > = ( { register , setValue , errors , current, edit
 
                             { /* 基本價格 */ }
                             <div className="column is-6-desktop">
-                                <div className="f_14"> 基本價格 : <b className="fDred"> { serviceData.plan_basic_price } </b> 元 </div>
+                                <div className="f_14"> 基本價格 : 
+                                    <b className="fDred"> { plan_Fee } </b> 元 
+                                </div>
                             </div>
 
                             { /* 自訂 : 加 / 減 金額 */ }
@@ -156,7 +194,7 @@ const Plan_Form : FC< IPlan > = ( { register , setValue , errors , current, edit
 
                 </div>
 
-                <br/>
+                 <br/>
 
             </div>
 

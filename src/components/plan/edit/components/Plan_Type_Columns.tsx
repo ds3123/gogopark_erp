@@ -16,6 +16,9 @@ const Plan_Type_Columns : FC< pType > = ( { register , errors } ) => {
 
     const dispatch = useDispatch() ;
 
+    // 目前所選擇寵物資料
+    const current_Pet = useSelector( ( state : any ) => state.Pet.current_Pet ) ;
+
     const current_Plan_Name  = useSelector( ( state : any ) => state.Plan.current_Plan_Type ) ;  // 目前所選擇 : 方案類型( 名稱 )
     const current_Species_Id = useSelector( ( state : any ) => state.Pet.current_Species_Id ) ;  // 目前 "寵物品種" 下拉選項所選擇 id ( species 資料表的 id )    
 
@@ -23,6 +26,11 @@ const Plan_Type_Columns : FC< pType > = ( { register , errors } ) => {
     //【 預設 】方案價格 -----------------------------------------------------------
     const Month_Bath_Price   = useSelector( ( state : any ) => state.Plan.Month_Bath_Price ) ;   // 包月洗澡 
     const Month_Beauty_Price = useSelector( ( state : any ) => state.Plan.Month_Beauty_Price ) ; // 包月美容
+
+
+    //【 預設 】方案價格 ( 如果有調整過 : 包月洗澡、包月美容價格，以此調整過的價格優先 ) -----------------------------------------------------------
+    const adjust_Month_Bath_Price   = current_Pet?.month_bath_price ;                            // 包月洗澡 
+    const adjust_Month_Beauty_Price = current_Pet?.month_beauty_price ;                          // 包月美容
 
 
     //【 自訂 】方案價格 -----------------------------------------------------------
@@ -55,12 +63,12 @@ const Plan_Type_Columns : FC< pType > = ( { register , errors } ) => {
 
       // 預設方案
       if( current_Plan_Name === '包月洗澡' ){
-        set_Current_Baisc_Price( Month_Bath_Price ) ;  
+        set_Current_Baisc_Price(  adjust_Month_Bath_Price ? adjust_Month_Bath_Price : Month_Bath_Price ) ;  
         set_Service_Num( { ...service_Num , 'bath' : 4 , 'beauty' : 0 } ) ;   
       }   
 
       if( current_Plan_Name === '包月美容' ){
-        set_Current_Baisc_Price( Month_Beauty_Price ) ; 
+        set_Current_Baisc_Price( adjust_Month_Beauty_Price ? adjust_Month_Beauty_Price : Month_Beauty_Price ) ; 
         set_Service_Num( { ...service_Num , 'bath' : 3 , 'beauty' : 1 } ) ;   
       } 
 
@@ -68,7 +76,7 @@ const Plan_Type_Columns : FC< pType > = ( { register , errors } ) => {
       if( current_Plan_Name !== '包月洗澡' && current_Plan_Name !== '包月美容' ) get_Custom_Plan_By_Name( current_Plan_Name ) ;
 
 
-    } , [ current_Plan_Name , current_Species_Id , Month_Bath_Price , Month_Beauty_Price ] ) ;      
+    } , [ current_Plan_Name , current_Species_Id , Month_Bath_Price , Month_Beauty_Price , adjust_Month_Bath_Price , adjust_Month_Beauty_Price ] ) ;      
 
 
 

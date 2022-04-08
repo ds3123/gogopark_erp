@@ -37,10 +37,6 @@ const Side_Info_Prices = ( ) => {
            } = useSpecies_Id_Prices( current_Species_Id );
 
 
-    console.log( current_Customer_Pets )  
-
-
-
     const no_Adj = <b className="fDred"> 未調整 </b> ;
 
 
@@ -56,7 +52,6 @@ const Side_Info_Prices = ( ) => {
                     }
                 </span>
                 
-
                 { current_Pet_Species_Name &&
 
                     <>
@@ -78,8 +73,7 @@ const Side_Info_Prices = ( ) => {
 
                 }
 
-
-                <br/> <br/>
+                <br/> <br/> 
 
 
                 { /* 調整價格 */ }
@@ -91,14 +85,11 @@ const Side_Info_Prices = ( ) => {
                             <i className="fas fa-dollar-sign"></i> &nbsp; 調整價格  &nbsp;
                         </span>
                         
-
                         { current_Customer_Pets.map( ( x:any , y:number ) => (
 
                             <div className="m_Top_10" key={y}>
 
-
                                 <b className="fDblue relatvie m_Top_30" style={{ marginLeft : "50px"  }}> { x.name }  </b>( { x.species } )
-
 
                                 <div className="relative" style={{ left : "60px" }}>
 
@@ -138,13 +129,9 @@ const Side_Info_Prices = ( ) => {
                                     
                                 </div> 
 
-
-
                             </div>
 
-                            ) ) }
-
-                        
+                        ) ) }
 
                     </>
 

@@ -129,16 +129,16 @@ class Pagination extends React.Component< MyProps , MyState >{
 
         // return object with all pager properties required by the view
         return {
-            totalItems  : totalItems,
-            currentPage : currentPage,
-            pageSize    : pageSize,
-            totalPages  : totalPages,
-            startPage   : startPage,
-            endPage     : endPage,
-            startIndex  : startIndex,
-            endIndex    : endIndex,
-            pages       : pages
-        };
+                  totalItems  : totalItems,
+                  currentPage : currentPage,
+                  pageSize    : pageSize,
+                  totalPages  : totalPages,
+                  startPage   : startPage,
+                  endPage     : endPage,
+                  startIndex  : startIndex,
+                  endIndex    : endIndex,
+                  pages       : pages
+               };
     }
 
     render(){

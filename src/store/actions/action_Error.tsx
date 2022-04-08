@@ -8,6 +8,15 @@ import cookie from "react-cookies";
 
 
 
+// 刪除 _ 使用方案的服務紀錄( 資料表 : plan_used_records )
+export const delete_Plan_Service_Record = ( plan_Data : any ) => {
+
+    // 刪除 _ 服務紀錄
+    if( plan_Data['id'] ) axios.delete( `/plan_records/${ plan_Data['id'] }` ) ;
+
+
+}
+
 // # 點選 _ 提交異常 ( 服務轉異常 ) 
 export const submit_Service_Error = ( data : any , error_Cause : string , current_User_Name : string , history : any ) => {
 
@@ -15,7 +24,6 @@ export const submit_Service_Error = ( data : any , error_Cause : string , curren
 
                 // 取得 _ 服務單 id 、API Url
                 const { service_Id , service_Url } = switch_Service_Type_Id( data ) ;
-
                 
                 // 更新 _ 異常狀態
                 if( service_Id && service_Url ){
@@ -93,14 +101,24 @@ export const submit_Undo_Service_Error = ( data : any , history : any ) => {
 
 } ;
 
-
 // # 點選 _ 銷單 ( 取消該單據 )
 export const submit_Delete_Service = ( data : any , current_User_Name : string , history : any ) => {
 
     return ( dispatch : any ) => {
 
                 // 取得 _ 服務單 id 、API Url
-                const { service_Id , service_Url } =  switch_Service_Type_Id( data ) ;
+                const { service_Id , service_Url } = switch_Service_Type_Id( data ) ;
+
+                // 銷單的服務若為 : 使用方案 
+                if( data[ 'payment_method' ] === "方案" && data[ 'plan' ] ){
+                    
+                    // 刪除 _ 使用方案的服務紀錄( 資料表 : plan_used_records )
+                    delete_Plan_Service_Record( data[ 'plan' ] ) ;
+
+                }
+
+             
+
 
                 // 更新 _ 異常狀態
                 if( service_Id && service_Url ){
@@ -127,7 +145,6 @@ export const submit_Delete_Service = ( data : any , current_User_Name : string ,
            } ;
 
 } ;
-
 
 // # 點選 _ 回復 : 銷單 
 export const submit_Undo_Delete_Service = ( data : any , history : any ) => {
@@ -161,8 +178,6 @@ export const submit_Undo_Delete_Service = ( data : any , history : any ) => {
                     })
 
                 }
-
-
 
            } ;
 

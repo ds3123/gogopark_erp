@@ -1,9 +1,5 @@
 
 import { useEffect , useState } from "react" ;
-import moment from "moment"
-
-import { get_Date , get_Interval_Dates } from "utils/time/date"
-
 
 
 type filterType = ( source : any[] , searchKeyword : string  ) => any[] ; // 篩選資料函式 ( 各區塊不同的篩選條件 )
@@ -22,7 +18,7 @@ export const useSearch_Bar = ( filtered_Items : any[] , filter_Data : filterType
       // * 有輸入 _ 搜尋關鍵字 --> 以搜尋關鍵字，過濾查詢結果
       if( search_Keyword && filtered_Items.length > 0 ){
 
-          const _filter       = filter_Data( filtered_Items , search_Keyword ) ;
+          const _filter = filter_Data( filtered_Items , search_Keyword ) ;
 
           set_Data( _filter ) ;
           set_dataSum( _filter.length ) ;

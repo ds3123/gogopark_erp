@@ -139,11 +139,26 @@ type feeDetail = {
 export const FeeDetail : FC< feeDetail > = ( { current , editType , paymentMethod } ) => {
 
 
-  const custom_Plan_Basic_Price = useSelector( ( state : any ) => state.Plan.custom_Plan_Basic_Price ) ; // 自訂方案基本價格 
+   // 服務類型 ( Ex.初次洗澡優惠、單次洗澡、單次美容 )
+   const service_Type  = useSelector( ( state : any ) => state.Service.current_Create_Service_Type ) ;
+
+
+  // 目前在寵物資料欄位區，所選擇寵物品種
+  const current_Pet = useSelector( ( state : any ) => state.Pet.current_Pet ) ;
+
+  // 自訂方案基本價格 
+  const custom_Plan_Basic_Price = useSelector( ( state : any ) => state.Plan.custom_Plan_Basic_Price ) ; 
 
 
   // 取得 _ 基礎、洗澡、美容 : 金額
-  const { basicSumPrice , bathSumPrice , beautySumPrice , extraItemFee , extraBeautyFee } = useHelper_Prices();
+  let { basicSumPrice , bathSumPrice , beautySumPrice , extraItemFee , extraBeautyFee } = useHelper_Prices();
+
+
+  // 如有以下調整後的價格，以這些調整過的價格優先 :
+  const adjust_Single_Bath_Price   = current_Pet?.single_bath_price  ;   // 單次洗澡
+  const adjust_Single_Beauty_Price = current_Pet?.single_beauty_price ;  // 單次美容 
+  const adjust_Month_Bath_Price    = current_Pet?.month_bath_price ;     // 包月洗澡 
+  const adjust_Month_Beauty_Price  = current_Pet?.month_beauty_price ;   // 包月美容
 
 
   // # 安親 --------
@@ -183,7 +198,7 @@ export const FeeDetail : FC< feeDetail > = ( { current , editType , paymentMetho
 
       // 洗澡
       const obj_Bath = {
-                          servicePrice     : bathSumPrice ,
+                          servicePrice     : service_Type === "單次洗澡" && adjust_Single_Bath_Price ? adjust_Single_Bath_Price : bathSumPrice ,
                           pickupFee        : pickupFee ,
                           extraItem        : extraItemFee ,
                           extraBeauty      : extraBeautyFee ,
@@ -192,7 +207,7 @@ export const FeeDetail : FC< feeDetail > = ( { current , editType , paymentMetho
 
       // 美容
       const obj_Beauty = {
-                            servicePrice     : beautySumPrice ,
+                            servicePrice     : adjust_Single_Beauty_Price ? adjust_Single_Beauty_Price : beautySumPrice ,
                             pickupFee        : pickupFee ,
                             extraItem        : extraItemFee ,
                             selfAdjustAmount : Self_Adjust_Amount
@@ -228,13 +243,13 @@ export const FeeDetail : FC< feeDetail > = ( { current , editType , paymentMetho
 
       //【 預設 】方案 : 包月洗澡
       const obj_Plan_Bath = {
-                              servicePrice : Month_Bath_Price ,
+                              servicePrice : adjust_Month_Bath_Price ? adjust_Month_Bath_Price : Month_Bath_Price ,
                               adjustAmount : self_Adjust_Price ,
                              } ;
 
       //【 預設 】方案 : 包月美容
       const obj_Plan_Beauty = {
-                                servicePrice : Month_Beauty_Price ,
+                                servicePrice : adjust_Month_Beauty_Price ? adjust_Month_Beauty_Price : Month_Beauty_Price ,
                                 adjustAmount : self_Adjust_Price ,
                               } ;
 
@@ -279,7 +294,7 @@ export const FeeDetail : FC< feeDetail > = ( { current , editType , paymentMetho
                         { ( current === '方案' && current_Plan_Type === '包月洗澡' ) && <FeeDetail_Plan_Bath   { ...obj_Plan_Bath } /> }
                         { ( current === '方案' && current_Plan_Type === '包月美容' ) && <FeeDetail_Plan_Beauty { ...obj_Plan_Beauty } /> }
 
-                        { ( current === '方案' && ( current_Plan_Type !== '包月洗澡' && current_Plan_Type !== '包月美容' ) ) && 
+                        { ( current === '方案' && ( current_Plan_Type && current_Plan_Type !== '包月洗澡' && current_Plan_Type !== '包月美容' ) ) && 
                                  <FeeDetail_Plan_Custom { ...obj_Plan_Custom } /> }
 
                   </>

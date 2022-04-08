@@ -9,6 +9,13 @@ body{
   .pointer{ cursor:pointer; }
 
 
+
+  /* 寬、高 */
+
+  .w-full{ width:100% !important ; }
+  .h-full{ height:100% !important ; }
+
+
   /* HOVER */
   .hover:hover{ background : rgba(0,0,0,.1); cursor: pointer ; }
 

@@ -129,7 +129,7 @@ const Plans = ( ) => {
             </div>   
 
             { /* 資料筆數 */ } 
-            <Data_List_Sum data_Sum={ dataSum } all_Data_Sum={ all_Plans.length } />       
+            <Data_List_Sum data_Sum={ dataSum } />       
 
             <table className="table is-fullwidth is-hoverable relative" style={{ width:"110%" , left:"-5%" }}>
 

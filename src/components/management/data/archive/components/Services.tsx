@@ -1,5 +1,4 @@
 
-import React from "react"
 import usePagination from "hooks/layout/usePagination";
 import Services_Rows from "components/services/Services_Rows";
 import Pagination from "utils/Pagination";
@@ -10,7 +9,7 @@ import Pagination from "utils/Pagination";
 const Services = ( ) => {
 
     // 取得 _ 分頁資料
-    const { pageOfItems , filteredItems , click_Pagination } = usePagination( "/services/show_with_cus_relative_pet/1" , 'service' ) ;
+    const { pageOfItems , filteredItems , click_Pagination } = usePagination( "/services/show_with_cus_relative_pet/1/1000" , 'service' ) ;
 
 
     return <div className="relative" style={{width:"114%" , left:"-7%"}}>

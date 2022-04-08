@@ -76,10 +76,10 @@ const Update_Pet = () => {
                                         pet_Note     : pet.note ,
 
                                         // 價格 ( 針對寵物自行調整價格 )
-                                        price_Single_Bath   : pet.single_bath_price ,   // 單次洗澡
-                                        price_Month_Bath    : pet.month_bath_price ,    // 包月洗澡  
-                                        price_Single_Beauty : pet.single_beauty_price , // 單次美容
-                                        price_Month_Beauty  : pet.month_beauty_price    // 包月美容
+                                        price_Single_Bath   : pet?.single_bath_price ? pet.single_bath_price : '' ,     // 單次洗澡
+                                        price_Month_Bath    : pet?.month_bath_price ? pet.month_bath_price : '' ,       // 包月洗澡  
+                                        price_Single_Beauty : pet?.single_beauty_price ? pet.single_beauty_price : '' , // 單次美容
+                                        price_Month_Beauty  : pet?.month_beauty_price ? pet.month_beauty_price : ''     // 包月美容
                                         
                                     }
                 }) ;

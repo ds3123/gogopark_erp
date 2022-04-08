@@ -46,7 +46,14 @@ const Beauty_Form : FC<IBeauty> = ({ register , errors , isDirty , isValid , cur
 
                       <>
                           &nbsp;&nbsp;
-                          <b className="tag is-rounded is-white" style={{ fontSize : "12pt" }} > 小計 : <span style={{color:"red"}}> &nbsp; { price } &nbsp; </span> 元 </b> &nbsp;
+                          <b className="tag is-rounded is-white f_12"  > 
+                               小計 : <span className="fRed"> &nbsp; 
+                                        { /* 如果有調整 "單次美容" ( single_beauty_price )，以調整後的單次美容優先 */ }  
+                                        { current_Pet?.single_beauty_price ? current_Pet?.single_beauty_price : price }      
+                                        &nbsp;
+                                     </span> 
+                                  元 
+                          </b> &nbsp;
                           { type && <span> ( { type } ) </span> }
                       </>
 
@@ -59,7 +66,6 @@ const Beauty_Form : FC<IBeauty> = ({ register , errors , isDirty , isValid , cur
                           <i className="fas fa-exclamation"></i> &nbsp; 品種： <span className="fRed">  { current_Pet.species } </span> ，沒有設定預設價格 
                       </b>
                   }
-
 
 
                 { /* for 編輯 */ }

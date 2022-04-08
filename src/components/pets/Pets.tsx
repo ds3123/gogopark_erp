@@ -1,25 +1,26 @@
-import { useState , useEffect } from "react" ;
+import { useState } from "react" ;
 
 // 分頁套件、呼叫邏輯
-import usePagination from "hooks/layout/usePagination" ;
 import Pagination from "utils/Pagination" ;
+import usePagination_Search from "hooks/layout/usePagination_Search";
+import { I_Pagination } from "utils/Interface_Type";
 
 // 資料列
 import Pets_Rows from "components/pets/Pets_Rows" ;
 import { useSelector } from "react-redux";
-
 import { useSearch_Bar } from "hooks/data/useSearch";
 import Data_List_Sum from "templates/search/Data_List_Sum";
 import SearchBar from "templates/search/SearchBar";
 import Search_Type_Note from "templates/search/Search_Type_Note";
-import { set_State } from 'utils/data/set_data';
 import { is_Downloading , no_Query_Data } from "templates/note/Query_Info";
 
 
 
+import { sort_Data_By_CreatedDate } from "utils/data/sort_data"
 
 // 可搜尋關鍵字類型
 const search_Types = [ "寵物名字" , "寵物品種" , "寵物編號" , "客戶姓名" , "客戶身分證字號" , "客戶手機號碼" ] ;
+
 
 
 // 關鍵字搜尋 : 過濾資料 _ 條件 ( for 寵物 )
@@ -35,13 +36,13 @@ const filter_Data = ( source : any[] , searchKeyword : string ) => {
              const f_Mobile_Phone = x['customer'] ? x['customer']['mobile_phone'] : '' ;
              
              // # 設置 _ 多種查詢條件
-             let cus_Name   = f_Cus_Name.match(new RegExp(searchKeyword, 'gi'));     // 客戶_姓名
-             let cus_Id     = f_Cus_Id.match(new RegExp(searchKeyword, 'gi'));       // 客戶_身分證號
-             let cus_Mobile = f_Mobile_Phone.match(new RegExp(searchKeyword, 'gi')); // 客戶_手機號碼
+             let cus_Name    = f_Cus_Name.match(new RegExp(searchKeyword, 'gi'));      // 客戶_姓名
+             let cus_Id      = f_Cus_Id.match(new RegExp(searchKeyword, 'gi'));        // 客戶_身分證號
+             let cus_Mobile  = f_Mobile_Phone.match(new RegExp(searchKeyword, 'gi'));  // 客戶_手機號碼
 
-             let pet_Name    = x['name'].match(new RegExp(searchKeyword, 'gi'));                    // 寵物_名字
-             let pet_Species = x['species'].match(new RegExp(searchKeyword, 'gi'));                 // 寵物_品種
-             let pet_Serial  = pSerial.match(new RegExp(searchKeyword, 'gi'));                      // 寵物_編號
+             let pet_Name    = x['name'].match(new RegExp(searchKeyword, 'gi'));       // 寵物_名字
+             let pet_Species = x['species'].match(new RegExp(searchKeyword, 'gi'));    // 寵物_品種
+             let pet_Serial  = pSerial.match(new RegExp(searchKeyword, 'gi'));         // 寵物_編號
            
              return !!cus_Name || !!cus_Id || !!cus_Mobile || !!pet_Name || !!pet_Species || !!pet_Serial ;
 
@@ -57,36 +58,28 @@ const Pets = () => {
     // 所輸入 : 搜尋關鍵字
     const [ searchKeyword , set_SearchKeyword ] = useState( '' ) ;
 
-    // 搜尋寵物資料
-    const [ search_Pets , set_Search_Pets ] = useState( [] ) ;
-
-    // 所有寵物資料
-    const [ all_Pets , set_All_Pets ] = useState( [] ) ;
-
     // 取得 _ 搜尋框中的文字
     const get_Search_Text = ( value : string ) => set_SearchKeyword( value ) ;
 
     // 寵物頁資料 _ 是否下載中
     const Pet_isLoading = useSelector( ( state : any ) => state.Pet.Pet_isLoading ) ;
 
+    
+    // --------------------------
+
+    const page_Config : I_Pagination = {
+      api_Num        : "/pets/show_pets_customers_relatives/0/50" ,   // 僅搜尋部分筆數資料的 api
+      api_All        : "/pets/show_all_pets_customers_relatives/0" ,  // 搜尋全部筆數資料的 api
+      data_Type      : "pet" ,                                        // 資料類型 ( Ex. customer,pet,services,lodge,care )
+      sort_Data_Type : sort_Data_By_CreatedDate                        // 資料排序方式
+    }
+
     // 取得 _ 分頁資料
-    const { pageOfItems , filteredItems , click_Pagination } = usePagination( '/pets/show_pets_customers_relatives/0/50' , 'pet' ) ;
+    const { pageOfItems , filteredItems , click_Pagination , is_All_Data_Done } = usePagination_Search( page_Config ) ;
+
 
     // 篩選資料 ( 依搜尋框輸入關鍵字 )
-    const { data , dataSum } = useSearch_Bar( all_Pets.length === 0 ? search_Pets : all_Pets , filter_Data , searchKeyword ) ;
-
-
-
-    // # 取得、設定 _ 資料
-    useEffect( () => {
-
-      // 初始取得部份資料( 50 筆 )
-      if( !searchKeyword ) set_State( '/pets/show_pets_customers_relatives/0/50' , set_Search_Pets ) ; 
-
-      // 取得所有資料
-      set_State( '/pets/show_all_pets_customers_relatives/0' , set_All_Pets )
-    
-    } , []  )
+    const { data , dataSum } = useSearch_Bar( filteredItems , filter_Data , searchKeyword ) ;
 
 
 
@@ -108,7 +101,7 @@ const Pets = () => {
 
 
             { /* 資料筆數 */ } 
-            <Data_List_Sum data_Sum={ dataSum } all_Data_Sum={ all_Pets.length } />   
+            <Data_List_Sum data_Sum={ dataSum } is_All_Data_Done = { is_All_Data_Done } />   
 
             <table className="table is-fullwidth is-hoverable">
 

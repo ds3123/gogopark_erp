@@ -37,6 +37,20 @@ const Advance_Receipt_Table : FC< { data : any } > = ( { data } ) => {
 
                   data.map( ( x : any , y : number ) => {
 
+
+                      let amount_Payable = x['amount_payable'] ;
+
+                      const pet = x['pet'] ;
+
+
+                      // 包月洗澡下，有調整價格 
+                      if( x['plan_type'] === '包月洗澡' && pet['month_bath_price'] ) amount_Payable = pet['month_bath_price'] ;
+                            
+                      // 包月美容下，有調整價格  
+                      if( x['plan_type'] === '包月美容' && pet['month_beauty_price'] ) amount_Payable = pet['month_beauty_price'] ;
+                     
+
+
                       return <tr key = { y }>
                                 <td className="td_Left"> 
                                     <b className="tag is-medium pointer" onClick={ () => click_Plan_Type( x ) } > 
@@ -44,9 +58,9 @@ const Advance_Receipt_Table : FC< { data : any } > = ( { data } ) => {
                                     </b>  
                                 </td>
                                 <td className="td_Left"> { x['pet'] ? x['pet']['name'] : '' } ( { x['pet'] ? x['pet']['species'] : '' } )  </td>
-                                <td> { x['amount_payable'] }                         </td>
+                                <td> { amount_Payable }                         </td>
                                 <td> 1                                               </td>
-                                <td> { x['amount_payable'] - x['amount_paid'] }      </td>
+                                <td> { amount_Payable - x['amount_paid'] }      </td>
                                 <td> { x['amount_paid'] }                            </td>
                                 <td className="td_Left"> { x['admin_service_note'] } </td>
                              </tr>

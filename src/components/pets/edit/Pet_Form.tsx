@@ -201,7 +201,7 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
            // 延後 300 ms 設定 _ 品種預設值
            setTimeout( () => {
 
-             setValue( 'pet_Species' , pet_Species_id ,  { shouldValidate : true }  ) ;
+              setValue( 'pet_Species' , pet_Species_id ,  { shouldValidate : true }  ) ;
 
            } , 300 ) ;
 
@@ -212,7 +212,6 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
 
    return <>
                <hr/>
-
 
                { /* 寵物基本資料 */ }
                <label className="label m_Top_70">
@@ -270,7 +269,6 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
 
                             </div>
 
-
                             { /* 編號 */ }
                             <div className=  'column is-4-desktop required'  >
 
@@ -317,7 +315,6 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
 
                             </div>
 
-
                             <Input type="text"   name="pet_Color"  label="毛 色"      register={register} error={errors.pet_Color}
                                     icon="fas fa-eye-dropper" asterisk={false} columns="3" />
 
@@ -356,7 +353,6 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
                        </div>
 
                        <br/>
-
                     
                        { /* Radio 單選 */}
                        <div className="columns is-multiline  is-mobile">
@@ -392,7 +388,7 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
                        { /* 寵物價格 ：標準、個別定價  */ }
                        { pet_Serial && 
                            <> 
-                              <Pet_Prices_Status register = { register } /> <br/>
+                              <Pet_Prices_Status register = { register } setValue = { setValue } /> <br/>
                            </>  
                        }
                       

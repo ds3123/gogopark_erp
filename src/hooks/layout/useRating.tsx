@@ -65,8 +65,7 @@ export const useRating_Options = ( title : string , colName : string , register 
 
             </div>
             
-            <hr/>
-         
+        
           </>
 
 

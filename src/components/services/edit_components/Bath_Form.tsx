@@ -31,6 +31,7 @@ const Bath_Form : FC< IBath > = ( { register , current , editType, serviceData }
     const { is_folding , Folding_Bt } = useSection_Folding( false ) ; 
 
 
+
     return <>
 
                 <div className="columns is-multiline is-mobile">
@@ -47,7 +48,13 @@ const Bath_Form : FC< IBath > = ( { register , current , editType, serviceData }
                             { ( price !== 0 && !editType && current === '洗澡' ) &&
 
                                 <>
-                                    <b className="tag is-rounded is-white m_Left_10 m_Right_10 f_12" > 小計 : <span style={{color:"red"}} > &nbsp; { price } &nbsp; </span> 元 </b>
+                                    <b className="tag is-rounded is-white m_Left_10 m_Right_10 f_12" > 
+                                         小計 : <span className="fRed" > 
+                                                  &nbsp; 
+                                                       { /* 如果有調整 "單次洗澡" ( single_bath_price )，以調整後的單次洗澡優先 */ }  
+                                                       { ( type === "單次洗澡" && current_Pet?.single_bath_price ) ? current_Pet?.single_bath_price : price } 
+                                                  &nbsp; </span> 元 
+                                    </b>
                                     { type && <span> ( { type } ) </span> }
                                 </>
 
@@ -64,7 +71,9 @@ const Bath_Form : FC< IBath > = ( { register , current , editType, serviceData }
                             { ( editType && serviceData.payment_method === '現金' &&  current === '洗澡' ) &&
                          
                                 <>  
-                                   <b className="tag is-rounded is-white f_12 m_Left_10 m_Right_10" > 小計 : <span style={{color:"red"}}> &nbsp; { serviceData.bath_fee } &nbsp; </span> 元 </b>
+                                   <b className="tag is-rounded is-white f_12 m_Left_10 m_Right_10" > 
+                                        小計 : <span className="fRed"> &nbsp; { serviceData.bath_fee } &nbsp; </span> 元 
+                                   </b>
                                    ( { serviceData.payment_type } )   
                                 </>
 

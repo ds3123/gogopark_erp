@@ -1,5 +1,5 @@
 
-import React , { useEffect , useState } from "react" ;
+import { useEffect , useState } from "react" ;
 import axios from "utils/axios" ;
 import { set_Index_isLoading } from "store/actions/action_Index";
 import { useDispatch } from "react-redux";
@@ -10,8 +10,6 @@ import { set_Pet_isLoading } from 'store/actions/action_Pet'
 import { set_Service_isLoading } from 'store/actions/action_Service'
 import { set_Lodge_isLoading } from 'store/actions/action_Lodge'
 import { set_Care_isLoading } from 'store/actions/action_Care'
-
-
 
 
 /*  @ 分頁功能 _ 共用邏輯 */
@@ -35,7 +33,6 @@ const usePagination = ( api : string , type? : string ) => {
             // # 設定 _ 回傳資料
             set_filteredItems( res.data ) ;
             
-
             // 設定 _ 下載完畢狀態
             if( type === 'customer' ) dispatch( set_Customer_isLoading( false ) ) ; // 客戶頁
             if( type === 'pet' )      dispatch( set_Pet_isLoading( false ) ) ;      // 寵物頁

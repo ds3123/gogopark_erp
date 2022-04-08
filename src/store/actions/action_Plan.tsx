@@ -557,13 +557,12 @@ export const create_Custom_Plan = ( obj : any , history : any ) => {
                     dispatch( set_Modal( false , null , { modal_Style : { width : "50%"  , left : "25%" } } ) ) ;
         
                     // 設定 cookie ( for 前往 : 價格管理 > 服務價格 / 5 秒後銷毀 )
-                    cookie.save( 'after_Created_Redirect' , '價格管理_品種價格'  ,  { path : '/' , maxAge : 5 } ) ;
+                    cookie.save( 'after_Created_Redirect' , '資料管理_方案資料'  ,  { path : '/' , maxAge : 5 } ) ;
         
                     history.push("/wrongpath");   // 錯誤路徑
                     history.push("/management");  // 正確路徑
         
                 })
-
 
            } ;
 

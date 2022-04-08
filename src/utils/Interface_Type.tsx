@@ -1,3 +1,4 @@
+import { iteratee } from "lodash";
 import React from "react" ;
 
 /* @ 定義 _ 全局 Interface、Type */
@@ -459,6 +460,35 @@ export interface ICustom_Plan {
     plan_Type_Note       : string ;
 
 }
+
+
+// 品種 5 種基本價格
+export interface ISpecies_Prices {
+
+    bath_First    : number ,
+    bath_Month    : number ,
+    bath_Single   : number ,
+    beauty_Month  : number ,
+    beauty_Single : number
+
+}
+
+
+
+// 分頁功能
+export interface I_Pagination {
+
+    api_Num         : string ;     // 僅搜尋部分筆數資料的 api
+    api_All         : string ;     // 搜尋全部筆數資料的 api
+    
+    // 資料類型 
+    data_Type       : 'customer' | 'pet' | 'service' | 'care' | 'lodge' ;  
+
+    // 資料排序方式 
+    sort_Data_Type  : ( data : any[] , order : 'asc' | 'desc' )  => any[]  ;
+
+}
+
 
 
 

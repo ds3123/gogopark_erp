@@ -1,5 +1,4 @@
 
-import { curry } from "lodash";
 import { useEffect , useState } from "react"
 import { useSelector } from "react-redux";
 
@@ -30,6 +29,14 @@ export const useHelper_Prices = ( ) => {
 
 // # 主要服務 ( 基礎、洗澡、美容 )
 export const usePrice_Service = ( current : string , paymentMethod : string , setValue : any , editType? : string ) => {
+
+
+    // 目前在寵物資料欄位區，所選擇寵物品種
+    const current_Pet        = useSelector( ( state : any ) => state.Pet.current_Pet ) ;
+
+     // 服務類型 ( Ex.初次洗澡優惠、單次洗澡、單次美容 )
+     const service_Type      = useSelector( ( state : any ) => state.Service.current_Create_Service_Type ) ;
+
 
     // 服務狀態 ( 已到店、預約_今天、預約_未來 )
     const service_Status     = useSelector( ( state : any ) => state.Info.service_Status ) ;
@@ -83,8 +90,15 @@ export const usePrice_Service = ( current : string , paymentMethod : string , se
     useEffect( ( ) => {
 
         if( current === '基礎' ) set_Service_Price( basicSumPrice ) ;
-        if( current === '洗澡' ) set_Service_Price( bathSumPrice ) ;
-        if( current === '美容' ) set_Service_Price( beautySumPrice ) ;
+
+        /* 如果有調整 "單次洗澡" ( single_bath_price )、"單次美容" ( single_beauty_price )，服務價格，以調整後的單次洗澡、單次美容優先 */ 
+        if( current === '洗澡' && !current_Pet?.single_bath_price ) set_Service_Price( bathSumPrice ) ; 
+       
+        if( current === '洗澡' && service_Type === '初次洗澡優惠' && current_Pet?.single_bath_price ) set_Service_Price( bathSumPrice ) ; 
+        if( current === '洗澡' && service_Type === '單次洗澡' && current_Pet?.single_bath_price ) set_Service_Price( current_Pet['single_bath_price']  ) ; 
+        
+        if( current === '美容' && !current_Pet?.single_beauty_price ){ set_Service_Price( beautySumPrice ) } ;
+        if( current === '美容' && current_Pet?.single_beauty_price ){ set_Service_Price( current_Pet['single_beauty_price'] ) } ;
 
     } , [ basicSumPrice , bathSumPrice , beautySumPrice ] ) ;
 
@@ -210,18 +224,27 @@ export const usePrice_Lodge = ( current : string , paymentMethod : string , setV
 // # 方案價格
 export const usePrice_Plan = ( current : string , paymentMethod : string , setValue : any ) => {
 
-    const current_Plan_Type  = useSelector(( state : any ) => state.Plan.current_Plan_Type ) ;  // 目前所選擇的 _ 方案類型(名稱)
+    
+    const current_Pet             = useSelector( ( state : any ) => state.Pet.current_Pet ) ;              // 目前所選擇寵物資料
+
+    const current_Plan_Type       = useSelector(( state : any ) => state.Plan.current_Plan_Type ) ;        // 目前所選擇的 _ 方案類型(名稱)
 
     const custom_Plan_Basic_Price = useSelector( ( state : any ) => state.Plan.custom_Plan_Basic_Price ) ; // 自訂方案基本價格
 
 
-    // # 從 Redux 取得相關費用 -------------
 
     // 包月洗澡金額
     const Month_Bath_Price   = parseInt( useSelector( ( state : any ) => state.Plan.Month_Bath_Price ) ) ;
 
     // 包月美容金額
     const Month_Beauty_Price = parseInt( useSelector( ( state : any ) => state.Plan.Month_Beauty_Price ) ) ;
+
+
+    //【 預設 】方案價格 ( 如果有調整過 : 包月洗澡、包月美容價格，以此條正過價格優先 ) -----------------------------------------------------------
+    const adjust_Month_Bath_Price   = current_Pet?.month_bath_price ;    // 包月洗澡 
+    const adjust_Month_Beauty_Price = current_Pet?.month_beauty_price ;  // 包月美容
+
+
 
     // 接送費
     const pickupFee          = useSelector(( state : any ) => state.Plan.service_Pickup_Fee )  ;
@@ -241,7 +264,9 @@ export const usePrice_Plan = ( current : string , paymentMethod : string , setVa
     // 設定 _ 應收金額 ( receivable )
     useEffect( ( ) => {
 
-        set_Receivable( plan_Price + pickupFee + self_Adjust_Price  ) ;
+        const _plan_Price = plan_Price ? plan_Price : 0 ;
+
+        set_Receivable( _plan_Price + pickupFee + self_Adjust_Price  ) ;
 
     } , [ plan_Price , pickupFee , self_Adjust_Price ] ) ;
 
@@ -258,10 +283,10 @@ export const usePrice_Plan = ( current : string , paymentMethod : string , setVa
     useEffect( ( ) => {
 
         // 預設方案  
-        if( current_Plan_Type === '包月洗澡' ) set_Plan_Price( Month_Bath_Price ) ;
-        if( current_Plan_Type === '包月美容' ) set_Plan_Price( Month_Beauty_Price ) ;
+        if( current_Plan_Type === '包月洗澡' ) set_Plan_Price( adjust_Month_Bath_Price   ? adjust_Month_Bath_Price   : Month_Bath_Price ) ;
+        if( current_Plan_Type === '包月美容' ) set_Plan_Price( adjust_Month_Beauty_Price ? adjust_Month_Beauty_Price : Month_Beauty_Price ) ;
         
-    } , [ current_Plan_Type , Month_Bath_Price , Month_Beauty_Price ] ) ;
+    } , [ current_Plan_Type , Month_Bath_Price , Month_Beauty_Price , adjust_Month_Bath_Price , adjust_Month_Beauty_Price  ] ) ;
 
 
 

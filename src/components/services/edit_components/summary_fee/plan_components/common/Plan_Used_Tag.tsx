@@ -61,8 +61,6 @@ const Plan_Used_Tag : FC< tag > = ( { current , plan , index } ) => {
     const used_Amount                             = get_Plan_Used_Amount( plan['plan_used_records'] ) ;                    // 已使用 _ 全部金額     
     const used_Num                                = get_Plan_Used_Num( current , plan['plan_used_records'] ) ;             // 已使用 _ 方案次數 ( 資料表 : plan_used_records )
 
-    console.log( 'plan_Quota' , plan_Quota ) 
-
 
     // 點選 _ 使用此方案標籤
     const click_Use_Plan_Tag = ( index : number , plan : any ) => {
