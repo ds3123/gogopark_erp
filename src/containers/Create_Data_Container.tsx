@@ -18,21 +18,31 @@ import Create_Other from "components/other/Create_Other";
 
 // Interface
 import { IService } from "utils/Interface_Type" ;
-import Service_Info from "components/services/edit_components/Service_Info" ;
 
 // Hook
-import { useCreate_Data , useCreate_Customer_Relatives } from "hooks/ajax_crud/useAjax_Create";
-import { useDispatch , useSelector } from "react-redux" ;
-import { useHelper_Prices } from "hooks/data/usePrice"
+import { useSelector } from "react-redux" ;
 import { useRead_Species } from "hooks/ajax_crud/useAjax_Read";
 import { useEmployee_Validator , useLodge_Validator , usePrice_Validator } from "hooks/data/useForm_Validator"
-import { set_Side_Info } from "store/actions/action_Global_Layout"
 import { get_Validator_Schema } from "containers/data_components/get_Validator_Schema"
-import { get_Api_Msg_String } from "containers/data_components/get_Api_Msg_String"
 import { useAdd_Data_Obj_Extra_Props } from "containers/data_components/Data_Obj_Extra_Props"
 import { useMatch_Obj } from "containers/data_components/Condition_for_Currnet_Tab"
 import Debug_Button from "templates/note/Debug_Button";
 
+
+// 新增函式
+import { useCreate_Customer } from "hooks/crud/create/useCreate_Customer" ;
+import { useCreate_Customer_Relatives } from "hooks/crud/create/useCreate_Customer_Relatives";
+import { useCreate_Pet } from "hooks/crud/create/useCreate_Pet" ;
+import { useCreate_Service_Basic  } from "hooks/crud/create/useCreate_Service_Basic" ;
+import { useCreate_Service_Bath  } from "hooks/crud/create/useCreate_Service_Bath" ;
+import { useCreate_Service_Beauty  } from "hooks/crud/create/useCreate_Service_Beauty" ;
+import { useCreate_Service_Care  } from "hooks/crud/create/useCreate_Service_Care" ;
+import { useCreate_Service_Lodge  } from "hooks/crud/create/useCreate_Service_Lodge" ;
+import { useCreate_Other  } from "hooks/crud/create/useCreate_Other" ;
+import { useCreate_Service_Plan  } from "hooks/crud/create/useCreate_Service_Plan" ;
+import { useCreate_Service_Price  } from "hooks/crud/create/useCreate_Service_Price" ;
+import { useCreate_Species  } from "hooks/crud/create/useCreate_Species" ;
+import { useCreate_Employee  } from "hooks/crud/create/useCreate_Employee" ;
 
 
 
@@ -59,10 +69,7 @@ export const ReachHookFormContext = createContext<ReachHookFormContext>( {} as R
 /* @ 新增資料 */
 const Create_Data_Container = () => {
 
-    const dispatch                              = useDispatch() ;
-
-    // -------------------------------
-
+    
     // * 新增提交按鈕 _ 是否有效啟用 ( 加上 : 自訂 _ 表單驗證邏輯 --> 因欲驗證值 / 邏輯，有些區塊無法僅透過 RHF 表單欄位值表示 )
     const [ disabled_Form , set_Disabled_Form ] = useState( true ) ;
 
@@ -117,9 +124,27 @@ const Create_Data_Container = () => {
                     current  : current
                   }  ;
 
-    const create_Data              = useCreate_Data() ;               // 新增 _ 一般資料
-    const create_Cus_Relatives     = useCreate_Customer_Relatives() ; // 新增 _ 客戶關係人
+
+    
     const add_Data_Obj_Extra_Props = useAdd_Data_Obj_Extra_Props() ;  // 新增 _ 提交資料物件( data ) 屬性、屬性值
+
+
+    // # 新增函式 --------------------
+
+    const create_Customer      = useCreate_Customer() ;           // 客戶 
+    const create_Cus_Relatives = useCreate_Customer_Relatives() ; // 客戶關係人
+    const create_Pet           = useCreate_Pet() ;                // 寵物 
+    const create_Basic         = useCreate_Service_Basic() ;      // 基礎單
+    const create_Bath          = useCreate_Service_Bath() ;       // 洗澡單
+    const create_Beauty        = useCreate_Service_Beauty() ;     // 美容單
+    const create_Care          = useCreate_Service_Care() ;       // 安親單
+    const create_Lodge         = useCreate_Service_Lodge() ;      // 住宿單
+    const create_Other         = useCreate_Other() ;              // 其他收支
+    const create_Plan          = useCreate_Service_Plan() ;       // 預設方案 ( 包月洗澡 / 包月美容 )   
+    const create_Service_Price = useCreate_Service_Price();       // 服務價格
+    const create_Species       = useCreate_Species();             // 品種
+    const create_Employee      = useCreate_Employee();            // 員工
+    
 
     // 提交表單 ( IService 再確認 2021.07.23 )
     const onSubmit : SubmitHandler<IService> = ( data : any ) => {
@@ -158,22 +183,50 @@ const Create_Data_Container = () => {
             if( !bool ) return false ;
         }
 
-        // --------------------------------
-
-        // api : 新增資料 API 路徑 ( 並用以判斷 : 新增何種類型的資料  )  /  msg : 新增成功後訊息
-        const { api , msg } = get_Api_Msg_String( current ) ;
 
         // 經處理後 ( 某些區塊，Ex. 基礎、洗澡... ，需額外附加 data 物件的屬性、屬性值 ) 提交新增的資料物件
-        const submit_Data   = add_Data_Obj_Extra_Props( current , data ) ;
+        const submit_Data = add_Data_Obj_Extra_Props( current , data ) ;
 
-        // # 新增資料
-        create_Data( api , submit_Data , msg ) ; // 所有資料
+
+        // 新增 _ 客戶 
+        if( current === "客戶" ) create_Customer( data ) ; 
 
         // 僅針對 _ 客戶關係人 ( 再確認 2021.07.05 / 改為若有 "新增客戶" 情況下，即新增關係人 --> 寫在 useAjax_Create 中，目前以下條件判斷，容易漏掉  )
         if( is_Obj.is_Customer_Relatives ) create_Cus_Relatives( '/customers/store_relation' , data ) ;
 
-        // # 關閉 _ 左側資訊面板 ( 右側滑動、遮罩，是否也統一集中於此 ?　09.06 )
-        dispatch( set_Side_Info( false ) ) ;    // 開啟左側資訊面板
+        // 新增 _ 寵物
+        if( current === "寵物" ) create_Pet( data ) ; 
+
+        // 新增 _ 基礎單
+        if( current === "基礎" ) create_Basic( submit_Data ) ; 
+
+        // 新增 _ 洗澡單
+        if( current === "洗澡" ) create_Bath( submit_Data ) ; 
+
+        // 新增 _ 美容單
+        if( current === "美容" ) create_Beauty( submit_Data ) ;
+
+        // 新增 _ 安親單
+        if( current === "安親" ) create_Care( submit_Data ) ; 
+
+        // 新增 _ 住宿單
+        if( current === "住宿" ) create_Lodge( submit_Data ) ; 
+        
+        // 新增 _ 其他收支
+        if( current === "其他" ) create_Other( submit_Data ) ; 
+
+        // 新增 _ 方案( 預設 )
+        if( current === "方案" ) create_Plan( submit_Data ) ; 
+
+        // 新增 _ 服務價格
+        if( current === "價格" ) create_Service_Price( submit_Data ) ; 
+
+        // 新增 _ 品種
+        if( current === "品種" ) create_Species( submit_Data ) ; 
+
+        // 新增 _ 員工
+        if( current === "員工" ) create_Employee( submit_Data ) ; 
+               
  
     } ;
 
@@ -204,7 +257,7 @@ const Create_Data_Container = () => {
                 <form onSubmit = { handleSubmit( onSubmit ) } className="m_Top_50">
 
                     { /* 服務單 : 基礎、洗澡、美容 */ }
-                    { is_Obj.is_Show_Create_Service  && <Create_Service /> }
+                    { is_Obj.is_Show_Create_Service  && <Create_Service />   }
 
                     { /* 價格項目 */ }
                     { current === "價格" && <Create_Price    { ...props } />  }

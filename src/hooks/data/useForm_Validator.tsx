@@ -4,9 +4,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {set_Invalid_To_Plan} from "../../store/actions/action_Form_Validator";
 import {set_Use_Plan} from "../../store/actions/action_Plan";
 
-
 import moment from "moment";
-
 
 /*
 *   @ 自訂 _ 表單驗證邏輯
@@ -15,12 +13,12 @@ import moment from "moment";
 
 
 // 新增 _ 洗澡、美容時，付款方式採 [ 方案 ] : "包月洗澡"、"包月美容" 下 ，方案相關驗證 ( invalid_To_Plan )
-export const usePlan_Validator = ( paymentMethod : string   ) => {
+export const usePlan_Validator = ( paymentMethod : string ) => {
 
-     const dispatch      = useDispatch() ;
+     const dispatch     = useDispatch() ;
 
      // 是否已點選 : 方案標籤中 "使用此方案" ( 由 usePlans_Records.tsx 中，點選標籤後設定 --> 作為後續判斷 _ 表單是否可提交，判斷依據之一 )
-     const is_Plan_Used  = useSelector(( state : any ) => state.Plan.is_Plan_Used ) ;
+     const is_Plan_Used = useSelector(( state : any ) => state.Plan.is_Plan_Used ) ;
 
 
     // 變動 _ 付款方式
@@ -57,8 +55,6 @@ export const usePlan_Validator = ( paymentMethod : string   ) => {
 
 
 } ;
-
-
 
 // 新增 _ 住宿
 export const useLodge_Validator = () => {
@@ -123,9 +119,6 @@ export const usePrice_Validator = () => {
     return price_Validator
 
 } ;
-
-
-
 
 
 // 新增 _ 員工

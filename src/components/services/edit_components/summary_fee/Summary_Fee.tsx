@@ -15,6 +15,14 @@ import Admin_User from "components/services/edit_components/summary_fee/summary_
 import Admin_Note from "components/services/edit_components/summary_fee/summary_components/Admin_Note"
 
 
+import Date_Picker from "templates/form/Date_Picker";
+
+// React Hook Form
+import { useForm } from "react-hook-form" ;
+import { ICustomer } from "utils/Interface_Type";
+
+
+
 interface TS extends Edit_Form_Type {
     current      : string ;
     editType?    : string ;   // 新增狀態 --> undefined / 編輯狀態 --> "編輯" 
@@ -45,6 +53,12 @@ const Summary_Fee : FC<TS> = ( { register , setValue , errors  , current, editTy
           // # 方案 ------
           const { current_Plan_Type , receivable : plan_Receivable  } = usePrice_Plan( current , paymentMethod , setValue ) ;
 
+
+
+          // React Hook Form
+          const { control } = useForm<ICustomer>({ mode : "all" }) ;
+
+
  
           // 設定 _ 應收金額 ( receivable )
           useEffect( () => {
@@ -63,9 +77,14 @@ const Summary_Fee : FC<TS> = ( { register , setValue , errors  , current, editTy
 
           } , [ current , service_Receivable , lodge_Receivable , care_Receivable , plan_Receivable ] ) ;
           
+
+          const hr = editType ? "" : <><hr/><br/></> ;
+
         
     return <>
 
+              { hr }
+             
               { /* # 費用明細 */ }
               <div className="columns is-multiline is-mobile">
 
@@ -109,15 +128,33 @@ const Summary_Fee : FC<TS> = ( { register , setValue , errors  , current, editTy
 
                     { /* 建檔日期 */ }
                     <div className="column is-4-desktop">
+
                        <span className="tag is-large is-white">
-                          <b> 建檔日期 : <span className="fDblue">
+                          <b> 建檔日期 : 
+                            <span className="fDblue">
                               { /* for 新增  */ }
-                              { editType !== '編輯' && get_Today() }  
+                              { editType !== '編輯' && <>&nbsp;{ get_Today() } </> }  
                               { /* for 編輯 */ }
                               { editType !== '編輯' || ( serviceData.created_at ? serviceData.created_at.slice(0,10) : '' )}
-                          </span> </b>
+                            </span> 
+                          </b>
                        </span>
+
                     </div>
+
+                    { /* 收款日期 ( 僅方案 ) */ }
+                    { current === '方案' && 
+
+                        <div className="column is-6-desktop">
+
+                            <div className="tag is-large is-white">
+                            <b> 收款日期 : </b> &nbsp;&nbsp;
+                                <Date_Picker control={ control } name="receive_Fee_Date" default_Date={ new Date } />
+                            </div>
+
+                        </div>
+
+                    }
 
               </div>
 

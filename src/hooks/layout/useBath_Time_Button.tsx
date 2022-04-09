@@ -1,9 +1,9 @@
 
-import React, {useEffect, useState , useMemo} from "react"
-import {get_H_M} from "utils/time/time";
+import { useEffect , useState , useMemo } from "react"
+import { get_H_M } from "utils/time/time";
 
 // Hook ( Ajax )
-import { useCreate_TimeRecord } from 'hooks/ajax_crud/useAjax_Create'
+import { useCreate_TimeRecord } from 'hooks/crud/create/useCreate_TimeRecord'
 import { useDelete_TimeRecord } from 'hooks/ajax_crud/useAjax_Delete'
 import { useSelector } from "react-redux";
 import { useRead_TimeRecord_By_Id_Button } from "hooks/ajax_crud/useAjax_Read";

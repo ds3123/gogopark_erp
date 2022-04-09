@@ -1,6 +1,4 @@
 
-import React from "react" ;
-
 
 
 // @ 美容師 _ 處理過程、結果
@@ -9,7 +7,11 @@ const Beautician_Process = ( props : { data : any } ) => {
   const { data } = props ;
 
   return  <>
-  
+
+ 
+             <hr/> <br/>
+
+
             { /* 安親、住宿 --> 不顯示  */ }     
             { data['shop_status'] &&
 

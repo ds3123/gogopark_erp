@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 
 
 
-const get_Return_Value = ( current : string , arr : string[] ) => arr.indexOf( current ) !== -1 ? true : false ;
+const get_Return_Value = ( current : string , arr : string[] ) => arr.includes( current ) ? true : false ;
 
 // ------------------------------------------------------------------------------------
 
@@ -31,8 +31,6 @@ export const useMatch_Obj = ( current : string ) => {
      obj.is_Show_Rating_Options     = useIs_Show_Rating_Options( current ) ;     //  rating_Options
      
      obj.is_Show_Summary_Fee        = useIs_Show_Summary_Fee( current ) ;        //  <Summary_Fee />
-
-
 
      return obj ;
 

@@ -497,7 +497,7 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
 
                                         <div className="column is-12-desktop">
 
-                                            <textarea className="textarea" {...register("pet_Note")} placeholder="備註事項"
+                                            <textarea rows="8" className="textarea" {...register("pet_Note")} placeholder="備註事項"
                                                         style={{color: "rgb(0,0,180)", fontWeight: "bold"}}/>
 
                                         </div>

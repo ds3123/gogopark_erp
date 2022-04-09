@@ -1,5 +1,5 @@
 
-import React, { useState , useEffect , useContext } from "react"
+import { useState , useEffect , useContext } from "react"
 
 // React Hook Form
 import { useForm , SubmitHandler } from "react-hook-form";
@@ -21,12 +21,10 @@ import Beauty_Form from "components/services/edit_components/Beauty_Form";
 import Extra_Beauty from "components/services/edit_components/Extra_Beauty";
 import Extra_Item from "components/services/edit_components/Extra_Item";
 import Pickup_Fee from "components/services//edit_components/Pickup_Fee";
-
 import Summary_Fee from "components/services/edit_components/summary_fee/Summary_Fee";
 import useServiceType from "hooks/layout/useServiceType";
 import Lodge_Form from "components/lodge/edit/Lodge_Form";
 import Care_Form from "components/lodge/care/edit/Care_Form";
-
 import Nav_Qcode_List from "components/services/Nav_Qcode_List";
 import Appointment_Records from "components/index/list/Appointment_Record";
 
@@ -208,10 +206,11 @@ const Update_Service = ( ) => {
 
     } , [] ) ;
 
+
     // # 依照目前服務類型 ( service_Type，例如：基礎、洗澡、美容... )，判斷 _ 是否顯示
     const is_Obj = useMatch_Obj( service_Type ) ;
-
     const sign   = { background:"red" , color:"white" , width:"100%" } ;
+
 
     return <form onSubmit = { handleSubmit( onSubmit ) } >
 
@@ -219,7 +218,7 @@ const Update_Service = ( ) => {
                    { service_Type } 資料表 ID : {  service_Id  } 
                 </span>
 
-                <b className={ color } style={{ fontSize:"16pt" }} >
+                <b className={ color } >
 
                     <i className = { icon } ></i> &nbsp; &nbsp;
                     { ( service_Type === "基礎" || service_Type === "洗澡" || service_Type === "美容" ) &&  <> Q{ Q_code } &nbsp; </> }
@@ -243,7 +242,6 @@ const Update_Service = ( ) => {
                 { /* 轉異常 */ }
                 <Submit_Error current_User_Name = { current_User['name'] } data = { data } /> 
     
-
                 { /* 顯示 : 異常案件 */ }
                 <div>
                     { data['is_error'] === 1 &&
@@ -328,9 +326,6 @@ const Update_Service = ( ) => {
                 { ( service_Type === "基礎" || service_Type === "洗澡" || service_Type === "美容" || service_Type === "住宿" || service_Type === "安親" ) && 
                        <Summary_Fee { ...props } /> 
                 }
-
-
-                <hr/> <br/>
 
                 { /*  美容師處理結果  */ }
                 <Beautician_Process  data={ data } />
