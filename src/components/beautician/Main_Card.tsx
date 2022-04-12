@@ -1,5 +1,4 @@
 
-import React from "react" ;
 import Pet_Info from "components/beautician/main_components/pet_info/Pet_Info"
 import Cus_Confirm_Bar from "components/beautician/main_components/Cus_Confirm_Bar"
 import Bath_Time_Records from "components/beautician/main_components/Bath_Time_Records"

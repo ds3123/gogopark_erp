@@ -42,6 +42,7 @@ const usePagination_Search = ( { api_Num , api_All , data_Type , sort_Data_Type 
 
     const callBack = ( data : any[] , is_All : boolean  ) => {
 
+
                         // 所有資料已下載完成 
                         if( is_All ) set_Is_All_Data_Done( true ) ;
 
@@ -56,6 +57,8 @@ const usePagination_Search = ( { api_Num , api_All , data_Type , sort_Data_Type 
                         if( data_Type === 'care' )     dispatch( set_Care_isLoading( false ) ) ;     // 安親頁
                         
                     } ;
+
+                    
 
     useEffect( () => {
 

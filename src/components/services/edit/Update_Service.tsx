@@ -36,14 +36,13 @@ import {useDispatch} from "react-redux";
 
 import { switch_Service_Type_Id } from "utils/data/switch"
 import Self_Adjust_Amount from "components/services/edit_components/Self_Adjust_Amount";
-import Beautician_Process from "components/index/components/Beautician_Process" 
+import Beautician_Process from "components/index/components/Beautician_Process" ; 
 import Submit_Error from "components/index/components/Submit_Error";
 
-import cookie from 'react-cookies'
+import cookie from 'react-cookies' ;
 
-import { colCovert_Basic_UPDATE , colCovert_Bath_UPDATE , colCovert_Beauty_UPDATE } from "utils/data/Columns_Convert_Update"
-
-import { useMatch_Obj } from "containers/data_components/Condition_for_Currnet_Tab"
+import { colCovert_Basic_UPDATE , colCovert_Bath_UPDATE , colCovert_Beauty_UPDATE } from "hooks/crud/process/convert_Columns_Update" ;
+import { useMatch_Obj } from "containers/data_components/Condition_for_Currnet_Tab" ;
 
 
 type preLoad = {
@@ -155,6 +154,10 @@ const Update_Service = ( ) => {
                                                                // # 服務明細 ( Summary_Fee )
                                                                payment_Method : data.payment_method ,   // 付款方式
 
+                                                               
+                                                               // # 洗美備註
+                                                               beautician_Note : data.beautician_note
+
                                                          }
 
                                    }) ;
@@ -191,7 +194,7 @@ const Update_Service = ( ) => {
        if( service_Type === '基礎' ) updateObj = colCovert_Basic_UPDATE( submit_Data ) ;
        if( service_Type === '洗澡' ) updateObj = colCovert_Bath_UPDATE( submit_Data ) ;
        if( service_Type === '美容' ) updateObj = colCovert_Beauty_UPDATE( submit_Data ) ;
-       
+
        update_Data( service_Url , service_Id , updateObj , '/index' , `${ service_Type }單` ) ; 
 
     } ;
@@ -291,7 +294,6 @@ const Update_Service = ( ) => {
                 { /* 住宿項目 */ }
                 { service_Type === "住宿" && <Lodge_Form   { ...props } /> }
 
-
                 { /* 安親項目 */ }
                 {
                    ( service_Type === "安親" || service_Type === "一般安親" || service_Type === "住宿_提早抵達" || service_Type === "住宿_延後帶走" ) &&
@@ -320,24 +322,26 @@ const Update_Service = ( ) => {
 
                 </div>
 
-                <hr/>
+                
+                { /*  美容師處理結果 ()  */ }
+                { ( service_Type === "安親" || service_Type === "住宿"  ) || 
+                    <Beautician_Process  data={ data } register={ register } />
+                }
 
+                 <hr/> <br/>
+ 
                 { /* 費用結算 */ }
                 { ( service_Type === "基礎" || service_Type === "洗澡" || service_Type === "美容" || service_Type === "住宿" || service_Type === "安親" ) && 
                        <Summary_Fee { ...props } /> 
                 }
 
-                { /*  美容師處理結果  */ }
-                <Beautician_Process  data={ data } />
-
-                <br/><br/><br/><br/><br/>
-
+                              
                 { /* 提交按鈕 */ }
-                <div className="has-text-centered" >
+                <div className="has-text-centered m_Top_150 m_Bottom_100" >
                     <button type="submit" className="button is-primary relative is-medium" style={{top: "-10px"}} >
                         提交表單
                     </button>
-                </div> <br/><br/>
+                </div> 
 
            </form>
 

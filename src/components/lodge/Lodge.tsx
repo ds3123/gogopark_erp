@@ -2,6 +2,8 @@
 import { useState , useEffect } from "react";
 import Lodge_Rows from "components/lodge/Lodge_Rows";
 import Pagination from "utils/Pagination";
+import usePagination_Search from "hooks/layout/usePagination_Search";
+import { I_Pagination } from "utils/Interface_Type";
 import { useDispatch, useSelector } from "react-redux";
 import usePagination from "hooks/layout/usePagination";
 import Care from 'components/lodge/care/Care';
@@ -14,6 +16,9 @@ import SearchBar from "templates/search/SearchBar";
 import Search_Type_Note from "templates/search/Search_Type_Note";
 import Date_Period from "./components/Date_Period";
 import moment from "moment";
+
+
+import { sort_Data_By_CreatedDate } from "utils/data/sort_data";
 
 
 const lodgeArr = [
@@ -44,7 +49,6 @@ const filter_Data = ( source : any[] , searchKeyword : string ) => {
                 let cus_Id      = x['customer']['id'].match(new RegExp(searchKeyword, 'gi'));           // 客戶_身分證號
                 let cus_Mobile  = x['customer']['mobile_phone'].match(new RegExp(searchKeyword, 'gi')); // 客戶_手機號碼
     
-
                 return !!room_Type || !!room_Number || !!pet_Name || !!pet_Species || !!cus_Name || !!cus_Id || !!cus_Mobile ;
    
             })
@@ -67,8 +71,30 @@ const Lodge = () => {
     // 住宿頁資料 _ 是否下載中 ( 再修改為 住宿 2021.08.12 )
     const Lodge_isLoading = useSelector( ( state:any ) => state.Lodge.Lodge_isLoading ) ;
 
+    // --------------------------
+
+    const page_Config : I_Pagination = {
+        // NOTE 住宿 api 並沒有區分取得 部分 / 全部資料 --> 暫時皆取得全部資料
+        api_Num        : "/lodges/show_with_cus_relative_pet/0" ,   // 僅搜尋部分筆數資料的 api
+        api_All        : "/lodges/show_with_cus_relative_pet/0" ,   // 搜尋全部筆數資料的 api
+        data_Type      : "lodge" ,                                 // 資料類型 ( Ex.customer,pet,services,lodge,care )
+        sort_Data_Type : sort_Data_By_CreatedDate                   // 資料排序方式
+    }
+
+
     // 取得 _ 分頁資料 ( 再修改為 住宿 2021.08.12  )
-    const { pageOfItems , filteredItems , click_Pagination } = usePagination( "/lodges/show_with_cus_relative_pet/0" , 'lodge' ) ;
+    // const { pageOfItems , filteredItems , click_Pagination } = usePagination( "/lodges/show_with_cus_relative_pet/0" , 'lodge' ) ;
+    const { pageOfItems , filteredItems , click_Pagination , is_All_Data_Done } = usePagination_Search( page_Config ) ;
+
+    
+
+    // 篩選資料 ( 依搜尋框輸入關鍵字 )
+    const { data } = useSearch_Bar( filteredItems , filter_Data , searchKeyword ) ;
+
+    
+
+    // -------------------------
+
 
     // 目前 _ 所點選第 2 層選項
     const [ currentSecond , set_CurrentSecond ] = useState( lodgeArr[0].title ) ;
@@ -84,10 +110,6 @@ const Lodge = () => {
     } ;
 
 
-    // 篩選資料 ( 依搜尋框輸入關鍵字 )
-    const { data , dataSum } = useSearch_Bar( filteredItems , filter_Data , searchKeyword ) ;
-
-
     // -------------------------------------------------
 
 
@@ -97,26 +119,26 @@ const Lodge = () => {
     // 是否顯示 _ 所有資料
     const [ is_Show_All_Data , set_Is_Show_All_Data ] = useState( true ) ; 
     
-
-    const today = moment( new Date ).format('YYYY-MM-DD') ;                                  // 今日
+    const today = moment( new Date ).format( "YYYY-MM-DD" ) ;                                  // 今日
 
     const [ check_In_Date , set_Check_In_Date ]   = useState( today ) ;                      // 住房日期
     const [ check_Out_Date , set_Check_Out_Date ] = useState( today ) ;                      // 退房日期
 
-    const get_Check_In_Date  = ( checke_In : string ) => set_Check_In_Date( checke_In ) ;    // 取得 _ 住房日期
+    const get_Check_In_Date  = ( checke_In : string )  => set_Check_In_Date( checke_In ) ;   // 取得 _ 住房日期
     const get_Check_Out_Date = ( checke_Out : string ) => set_Check_Out_Date( checke_Out ) ; // 取得 _ 退房日期
 
     const click_Data_Type    = () => set_Is_Show_All_Data( !is_Show_All_Data ) ;             // 點選 _ 所有資料 / 住房期間
+
 
 
     // 是否加入 _ 住房期間篩選條件
     useEffect( () => { 
 
         // 依照住房日期篩選   
-        const fDate = data.filter( ( x : any ) => x['start_date'] >= check_In_Date && x['end_date'] <= check_Out_Date ) ;    
+        const fData = data.filter( ( x : any ) => x['start_date'] >= check_In_Date && x['end_date'] <= check_Out_Date ) ;    
         
         // 判斷採取
-        const _data = is_Show_All_Data ? data : fDate ; 
+        const _data = is_Show_All_Data ? data : fData ; 
 
         set_fData( _data ) ;
   
@@ -150,7 +172,6 @@ const Lodge = () => {
 
                 }
 
-
                 { /* 第 2 層選項 */
                     lodgeArr.map( ( item , index ) => {
 
@@ -163,16 +184,11 @@ const Lodge = () => {
                     })
                 }
 
-
-                <br/><br/><br/><br/>
-
-
                 { /* 搜尋區塊*/ }   
                 { currentSecond === '住 宿' &&    
 
-                    <div className="columns is-multiline is-variable is-12 m_Bottom_50">
+                    <div className="columns is-multiline is-variable is-12 m_Top_100 m_Bottom_50">
 
-                       
                         { /* 所有資料 / 住房、退房日期  */ }
                         <div className="column is-offset-3 is-4-desktop">
 
@@ -221,7 +237,7 @@ const Lodge = () => {
                     <>
                             
                         { /* 資料筆數 */ } 
-                        <Data_List_Sum data_Sum={ fData.length } />       
+                        <Data_List_Sum data_Sum={ fData.length } is_All_Data_Done = { is_All_Data_Done } />       
 
                         <table className="table is-fullwidth is-hoverable relative" style={{ width:"116%" , left:"-8%" }}>
 
@@ -266,8 +282,7 @@ const Lodge = () => {
                         { Lodge_isLoading &&
 
                             <div className="has-text-centered" >
-                                <br/><br/><br/><br/><br/><br/>
-                                <button className="button is-loading is-white"></button>
+                                <button className="button is-loading is-white m_Top_100"></button>
                             </div>
 
                         }

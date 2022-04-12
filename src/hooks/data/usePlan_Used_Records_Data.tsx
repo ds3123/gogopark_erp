@@ -1,11 +1,11 @@
 
-import React , { useContext } from "react" ;
 
 // useContext
+import { useContext } from "react" ;
 import { ModalContext } from "templates/panel/Modal" ;
-import { SidePanelContext } from "templates/panel/Side_Panel"
+import { SidePanelContext } from "templates/panel/Side_Panel" ;
 
-
+import { sort_Data_By_CreatedDate } from 'utils/data/sort_data' ;
 
 
 type useRecords = {
@@ -33,13 +33,9 @@ export const usePlan_Used_Records_Data = () : useRecords  => {
     // 該方案 : 使用紀錄
     const plan_Used_Records    = data ? data.plan_used_records : [] ;
 
-    // # 排序 _ 使用紀錄 ( 依建立時間 )
-    const _plan_Used_Records   = plan_Used_Records.sort(( a : any , b : any ) : any => {
-
-        return a['created_at'] < b['created_at'] ? 1 : -1
-
-    }) ;
-
+    // # 排序( 降冪 ) _ 使用紀錄 ( 依建立時間 )
+    const _plan_Used_Records   = sort_Data_By_CreatedDate( plan_Used_Records , 'desc'  ) ;
+    
     // --------------------------------------------------------------------------
 
     return { data , plan_Type , applied_Species_Name , _plan_Used_Records }

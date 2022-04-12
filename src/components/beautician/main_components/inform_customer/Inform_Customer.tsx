@@ -1,4 +1,3 @@
-import React , { useEffect } from "react" ;
 import { useDispatch } from "react-redux";
 import Inform_Customer_Options from "components/beautician/main_components/inform_customer/Inform_Customer_Options";
 import Customer_Confirm_Options from "components/beautician/main_components/inform_customer/Customer_Confirm_Options";
@@ -19,12 +18,7 @@ const Inform_Customer = () => {
     // 顯示 _ 主人確認面板
     const show_CustomerConfirm = () => dispatch( set_Side_Panel( true , <Customer_Confirm_Options /> , {} ) ) ;
 
-    useEffect(() => {
-
-       // show_InfoCustomer() ;
-
-    } ,[] ) ;
-
+  
 
     return <div style={{ textAlign : "right" }}>
 

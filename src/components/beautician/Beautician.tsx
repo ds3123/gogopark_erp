@@ -1,5 +1,5 @@
 
-import React, {useEffect, useState} from "react" ;
+import {useEffect, useState} from "react" ;
 import Main_Card from "components/beautician/Main_Card";
 import Left_Cards from "components/beautician/Left_Cards";
 import Inform_Cutomer from "components/beautician/main_components/inform_customer/Inform_Customer"

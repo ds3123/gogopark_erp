@@ -45,8 +45,6 @@ const Service_Info : FC<IInfo> = ({ register , setValue , control , editType, se
     const service_Date = useSelector( ( state : any ) => state.Info.service_Date ) ; // 到店日期( 預設 : 今日 )
 
     
-
-
     // # 服務狀態
     const [ serviceStatus , set_serviceStatus ] = useState({
                                                               is_Arrived_Today    : true ,  // 當日已到店
@@ -68,7 +66,6 @@ const Service_Info : FC<IInfo> = ({ register , setValue , control , editType, se
     useEffect( () => {
 
          
-
         //【 新增 】
 
         // 預約 _ 未來
@@ -159,7 +156,7 @@ const Service_Info : FC<IInfo> = ({ register , setValue , control , editType, se
                             { editType === '編輯' && 
                              
                                 <>
-
+                                
                                     <b className="fDred m_Right_30"> 
                                        { serviceData['service_status'] === '已到店' ? '到 店' : '預 約' }
                                     </b>  

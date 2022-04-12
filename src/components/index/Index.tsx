@@ -67,10 +67,9 @@ const Index = () => {
 
                 { is_Detail_Mode &&  <Statistics_Rows /> }
 
-                <br/><br/><br/><br/> 
 
                 {/* 今日服務 _ 各階段狀態  */}
-                <div className="columns is-mobile is-multiline relative" style={{ width:"110%" , left:"-4%" }}>
+                <div className="columns is-mobile is-multiline relative m_Top_100 m_Bottom_50" style={{ width:"110%" , left:"-4%" }}>
 
                     {/* 到店等候中 */}
                     <div className="column is-3-desktop" style={ card }>
@@ -92,7 +91,7 @@ const Index = () => {
                         <Status_Cards  pet_Arr = { pet_Arr } shop_Status = "已回家( 房 )" service_Sum = { numObj_4 } />
                     </div>
 
-                </div> <br/>
+                </div> 
 
            </div>
 

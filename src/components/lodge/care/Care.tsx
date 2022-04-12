@@ -2,6 +2,8 @@
 import { useState } from "react"
 import {useSelector} from "react-redux";
 import usePagination from "hooks/layout/usePagination";
+import usePagination_Search from "hooks/layout/usePagination_Search";
+import { I_Pagination } from "utils/Interface_Type";
 import Care_Rows from "components/lodge/care/Care_Rows";
 import Pagination from "utils/Pagination";
 
@@ -9,6 +11,8 @@ import { useSearch_Bar } from "hooks/data/useSearch";
 import Data_List_Sum from "templates/search/Data_List_Sum";
 import SearchBar from "templates/search/SearchBar";
 import Search_Type_Note from "templates/search/Search_Type_Note";
+
+import { sort_Data_By_CreatedDate } from "utils/data/sort_data";
 
 
 // 可搜尋關鍵字類型
@@ -48,12 +52,26 @@ const Care = ( ) => {
    // 安親頁資料 _ 是否下載中
    const Care_isLoading = useSelector( ( state:any ) => state.Care.Care_isLoading ) ;
 
+   // --------------------------
+
+   const page_Config : I_Pagination = {
+      // NOTE 住宿 api 並沒有區分取得 部分 / 全部資料 --> 暫時皆取得全部資料
+      api_Num        : "/cares/show_with_cus_relative_pet/0" ,   // 僅搜尋部分筆數資料的 api
+      api_All        : "/cares/show_with_cus_relative_pet/0" ,   // 搜尋全部筆數資料的 api
+      data_Type      : "care" ,                                  // 資料類型 ( Ex.customer,pet,services,lodge,care )
+      sort_Data_Type : sort_Data_By_CreatedDate                  // 資料排序方式
+  }
+
+
    // 取得 _ 分頁資料
-   const { pageOfItems , filteredItems , click_Pagination } = usePagination( "/cares/show_with_cus_relative_pet/0" , 'care' ) ;
+   // const { pageOfItems , filteredItems , click_Pagination } = usePagination( "/cares/show_with_cus_relative_pet/0" , 'care' ) ;
+   const { pageOfItems , filteredItems , click_Pagination , is_All_Data_Done } = usePagination_Search( page_Config ) ;
 
 
    // 篩選資料 ( 依搜尋框輸入關鍵字 )
    const { data , dataSum } = useSearch_Bar( filteredItems , filter_Data , searchKeyword ) ;
+
+
 
 
    return  <>
@@ -74,7 +92,7 @@ const Care = ( ) => {
                </div>   
 
                { /* 資料筆數 */ } 
-               <Data_List_Sum data_Sum={ dataSum } />  
+               <Data_List_Sum data_Sum={ dataSum } is_All_Data_Done = { is_All_Data_Done } />  
 
                <table className="table is-fullwidth is-hoverable relative" style={{width:"110%",left:"-5%"}} >
 
@@ -98,15 +116,15 @@ const Care = ( ) => {
 
                   <tbody>
 
-                  { Care_isLoading ||
+                     { Care_isLoading ||
 
-                     pageOfItems.map( ( item : any , index ) => {
+                        pageOfItems.map( ( item : any , index ) => {
 
-                        return <Care_Rows key={ index } data={ item } /> ;
+                           return <Care_Rows key={ index } data={ item } /> ;
 
-                     })
+                        })
 
-                  }
+                     }
 
                   </tbody>
 
@@ -116,8 +134,7 @@ const Care = ( ) => {
                { Care_isLoading &&
 
                   <div className="has-text-centered" >
-                     <br/><br/><br/><br/><br/><br/>
-                     <button className="button is-loading is-white"></button>
+                     <button className="button is-loading is-white m_Top_100"></button>
                   </div>
 
                }

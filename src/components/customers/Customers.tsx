@@ -6,10 +6,7 @@ import Pagination from "utils/Pagination";
 import usePagination_Search from "hooks/layout/usePagination_Search";
 import { I_Pagination } from "utils/Interface_Type";
 
-
-
 import { sort_Data_By_CreatedDate } from "utils/data/sort_data"
-
 
 // 資料列
 import Customers_Rows from "components/customers/Customers_Rows";
@@ -60,18 +57,17 @@ const Customers = () => {
     
     // --------------------------
 
-
     const page_Config : I_Pagination = {
         api_Num        : "/customers/show_customers_relatives_pets/0/50" ,   // 僅搜尋部分筆數資料的 api
         api_All        : "/customers/show_all_customers_relatives_pets/0" ,  // 搜尋全部筆數資料的 api
         data_Type      : "customer" ,                                        // 資料類型 ( Ex. customer,pet,services,lodge,care )
-        sort_Data_Type : sort_Data_By_CreatedDate                        // 資料排序方式
+        sort_Data_Type : sort_Data_By_CreatedDate                            // 資料排序方式
     }
   
+
     // 取得 _ 分頁資料
     const { pageOfItems , filteredItems , click_Pagination , is_All_Data_Done } = usePagination_Search( page_Config ) ;
   
-
     // 篩選資料 ( 依搜尋框輸入關鍵字 )
     const { data , dataSum } = useSearch_Bar( filteredItems , filter_Data , searchKeyword ) ;
  
@@ -92,40 +88,39 @@ const Customers = () => {
 
               </div>  
 
-              
               { /* 資料筆數 */ } 
-              <Data_List_Sum data_Sum={ dataSum } is_All_Data_Done = { is_All_Data_Done } />   
+              <Data_List_Sum data_Sum={ dataSum } is_All_Data_Done={ is_All_Data_Done } />   
 
 
               { /* 資料列表 */ }  
               <table className="table is-fullwidth is-hoverable">
 
-                <thead>
-                    <tr>
-                        <th> 客戶姓名   </th>
-                        <th> 身分證字號 </th>
-                        <th> 手機號碼   </th>
-                        <th> 寵物資訊   </th>
-                        <th> 通訊地址   </th>
-                        <th style={{ width:"100px" }}> 消費歷史 </th>
-                        <th> 建檔日期 </th>
-                        <th> 封 存    </th>
-                    </tr>
-                </thead>
+                    <thead>
+                        <tr>
+                            <th> 客戶姓名   </th>
+                            <th> 身分證字號 </th>
+                            <th> 手機號碼   </th>
+                            <th> 寵物資訊   </th>
+                            <th> 通訊地址   </th>
+                            <th style={{ width:"100px" }}> 消費歷史 </th>
+                            <th> 建檔日期 </th>
+                            <th> 封 存    </th>
+                        </tr>
+                    </thead>
 
-                <tbody>
+                    <tbody>
 
-                    { Customer_isLoading ||
+                        { Customer_isLoading ||
 
-                       pageOfItems.map( ( item : any , index ) => {
+                            pageOfItems.map( ( item : any , index ) => {
 
-                          return <Customers_Rows key={ index } data={ item } /> ;
+                                return <Customers_Rows key={ index } data={ item } /> ;
 
-                       })
+                            })
 
-                    }
+                        }
 
-                </tbody>
+                    </tbody>
 
               </table>
 

@@ -14,7 +14,6 @@ export const delete_Plan_Service_Record = ( plan_Data : any ) => {
     // 刪除 _ 服務紀錄
     if( plan_Data['id'] ) axios.delete( `/plan_records/${ plan_Data['id'] }` ) ;
 
-
 }
 
 // # 點選 _ 提交異常 ( 服務轉異常 ) 
@@ -109,7 +108,7 @@ export const submit_Delete_Service = ( data : any , current_User_Name : string ,
                 // 取得 _ 服務單 id 、API Url
                 const { service_Id , service_Url } = switch_Service_Type_Id( data ) ;
 
-                // 銷單的服務若為 : 使用方案 
+                // 銷單的服務若為 : 使用 "方案" 
                 if( data[ 'payment_method' ] === "方案" && data[ 'plan' ] ){
                     
                     // 刪除 _ 使用方案的服務紀錄( 資料表 : plan_used_records )

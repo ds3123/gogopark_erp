@@ -22,7 +22,6 @@ import { IService } from "utils/Interface_Type" ;
 // Hook
 import { useSelector } from "react-redux" ;
 import { useRead_Species } from "hooks/ajax_crud/useAjax_Read";
-import { useEmployee_Validator , useLodge_Validator , usePrice_Validator } from "hooks/data/useForm_Validator"
 import { get_Validator_Schema } from "containers/data_components/get_Validator_Schema"
 import { useAdd_Data_Obj_Extra_Props } from "containers/data_components/Data_Obj_Extra_Props"
 import { useMatch_Obj } from "containers/data_components/Condition_for_Currnet_Tab"
@@ -44,6 +43,8 @@ import { useCreate_Service_Price  } from "hooks/crud/create/useCreate_Service_Pr
 import { useCreate_Species  } from "hooks/crud/create/useCreate_Species" ;
 import { useCreate_Employee  } from "hooks/crud/create/useCreate_Employee" ;
 
+// 欄位驗證
+import { extra_Validator } from "utils/validator/extra_validator"
 
 
 // 欲透過 Context 傳遞的 props 型別
@@ -73,20 +74,12 @@ const Create_Data_Container = () => {
     // * 新增提交按鈕 _ 是否有效啟用 ( 加上 : 自訂 _ 表單驗證邏輯 --> 因欲驗證值 / 邏輯，有些區塊無法僅透過 RHF 表單欄位值表示 )
     const [ disabled_Form , set_Disabled_Form ] = useState( true ) ;
 
-    // 住宿 : 條件不符合 
-    const lodge_Validator                       = useLodge_Validator() ;
-
+   
     // 方案 : 包月洗澡 _ 條件不符 
     const invalid_To_Plan                       = useSelector( ( state : any ) => state.Form.invalid_To_Plan ) ;
    
-    // 價格 : 條件不符合
-    const price_Validator                       = usePrice_Validator() ;
-
     // 員工
     const invalid_To_Employee                   = useSelector( ( state : any ) => state.Form.invalid_To_Employee ) ;
-
-    // 員工 : 工作人員 _ 條件不符
-    const employee_Validator                    = useEmployee_Validator() ;
 
     
     // -------------------------------
@@ -156,34 +149,10 @@ const Create_Data_Container = () => {
             data.pet_Species = pet['name'] ;
         }
 
-        // --------------------------------
+        // Yup schema 以外，額外新增的欄位驗證 : 寵物( 是否咬人 )、住宿、價格、員工
+        if( !extra_Validator( current , data , is_Obj ) ) return false ;
 
-        // 新增驗證 : 寵物欄位 ( 是否會咬人 )  2022.03.21 先取消
-        // if( is_Obj.is_Check_Pet_Bite_Column && data['bite'] === null ){
-        //     alert('請勾選 : 寵物是否會咬人選項') ;
-        //     return false ;
-        // }
-
-
-        // 新增驗證 : 住宿
-        if( current === '住宿' ){
-            const bool = lodge_Validator( data ) ;
-            if( !bool ) return false ;
-        }
-
-        // 新增驗證 : 價格 price_Validator
-        if( current === '價格' ){
-            const bool = price_Validator( data ) ;
-            if( !bool ) return false ;
-        }
-
-        // 新增驗證 : 員工 ( 工作人員 ) 欄位
-        if( current === '員工' && data['employee_Type'] === '工作人員' ){
-            const bool = employee_Validator( data ) ;
-            if( !bool ) return false ;
-        }
-
-
+    
         // 經處理後 ( 某些區塊，Ex. 基礎、洗澡... ，需額外附加 data 物件的屬性、屬性值 ) 提交新增的資料物件
         const submit_Data = add_Data_Obj_Extra_Props( current , data ) ;
 

@@ -125,6 +125,8 @@ export interface IService extends ICustomer_Relative {
     wait_Time       : string ;
     wait_Way        : string ;
 
+    beautician_Note : string ;   // 美容師備註
+
 }
 
 
@@ -482,7 +484,7 @@ export interface I_Pagination {
     api_All         : string ;     // 搜尋全部筆數資料的 api
     
     // 資料類型 
-    data_Type       : 'customer' | 'pet' | 'service' | 'care' | 'lodge' ;  
+    data_Type       : 'customer' | 'pet' | 'service' | 'care' | 'lodge' | 'plan' ;  
 
     // 資料排序方式 
     sort_Data_Type  : ( data : any[] , order : 'asc' | 'desc' )  => any[]  ;

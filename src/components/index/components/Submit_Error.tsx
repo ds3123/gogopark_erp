@@ -49,7 +49,7 @@ const Submit_Error = ( props : error ) => {
     // 點選 _ 提交異常
     const click_Submit_Error = ( data : any ) => {
  
-         if( !error_Cause ){ alert('請輸入 : 異常原因') ; return false ; }
+         if( !error_Cause ){ alert( "請輸入 : 異常原因" ) ; return false ; }
  
          dispatch( submit_Service_Error( data , error_Cause , current_User_Name , history ) ) ;
 
@@ -61,7 +61,7 @@ const Submit_Error = ( props : error ) => {
 
 
     // 變動處理
-    const hand_Error_Change = ( error : string ) => set_Error_Cause( error )  ;
+    const hand_Error_Change = ( error : string ) => set_Error_Cause( error ) ;
 
  
    return  <div className="columns is-mobile is-multiline">

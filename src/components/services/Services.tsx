@@ -19,7 +19,7 @@ import { useForm } from "react-hook-form" ;
 import { ICustomer } from "utils/Interface_Type";
 import Date_Picker from "templates/form/Date_Picker";
 
-import { sort_Data_By_ServiceDate } from "utils/data/sort_data";
+import { sort_Data_By_CreatedDate } from "utils/data/sort_data";
 
 
 const serviceArr = [
@@ -96,7 +96,7 @@ const Services = () => {
         api_Num        : "/services/show_with_cus_relative_pet/0/50" ,   // 僅搜尋部分筆數資料的 api
         api_All        : "/services/show_all_with_cus_relative_pet/0" ,  // 搜尋全部筆數資料的 api
         data_Type      : "service" ,                                     // 資料類型 ( Ex. customer,pet,services,lodge,care )
-        sort_Data_Type : sort_Data_By_ServiceDate                        // 資料排序方式
+        sort_Data_Type : sort_Data_By_CreatedDate                        // 資料排序方式
     }
 
     // 取得 _ 分頁資料
@@ -104,6 +104,7 @@ const Services = () => {
 
     // 取得 _ 搜尋資料
     const { data } = useSearch_Bar( filteredItems , filter_Data , searchKeyword ) ;
+
 
     // -------------------------------------
     
@@ -247,8 +248,8 @@ const Services = () => {
                         { Service_isLoading &&
 
                             <div className="has-text-centered" >
-                                <br/><br/><br/><br/><br/><br/>
-                                <button className="button is-loading is-white"></button>
+                                
+                                <button className="button is-loading is-white m_Top_100"></button>
                             </div>
 
                         }

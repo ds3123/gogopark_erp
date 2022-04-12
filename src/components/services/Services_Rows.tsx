@@ -1,4 +1,4 @@
-import { useEffect , useState } from "react"
+import { useEffect , useState } from "react" ;
 import useServiceType from "hooks/layout/useServiceType";
 import usePet_Button from "hooks/layout/usePet_Button";
 import { set_Side_Panel } from "store/actions/action_Global_Layout";
@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import cookie from "react-cookies";
 import moment from "moment";
 import { click_Show_Edit_Customer } from "store/actions/action_Customer" ;
-import { switch_Service_Url_Id } from "utils/data/switch"
+import { switch_Service_Url_Id } from "utils/data/switch" ;
 import Service_Sign from "./components/Service_Sign";
 
 
@@ -42,6 +42,8 @@ const Services_Rows = ( props : any ) => {
                                               pickup       : 0 ,  // 接送費 
 
                                               plan_Price   : 0 ,  // 使用方案( Ex. 包月洗澡、美容 )費用
+
+                                              payable      : 0     // 應收金額小計 
                                            }) ;
 
                                            
@@ -116,7 +118,7 @@ const Services_Rows = ( props : any ) => {
     } ;
 
 
-    // 取得 _ 服務價格
+    // 取得 _ 洗澡：服務價格 ( 初次、是否有自訂 )
     const get_Bath_Service_Price = ( data : any ) => {
 
         const pet = data['pet'] ;
@@ -132,57 +134,74 @@ const Services_Rows = ( props : any ) => {
 
     }
 
+
     useEffect( () => {
 
           const pet = data['pet'] ;
 
-          // 取得洗澡價格
-          const bath_Service_Price = get_Bath_Service_Price( data ) ; 
-
-
           // 有些服務單，沒有寵物 ( null ) 2021.06.10 再確認查詢式
           if( data['pet'] ) set_Pet( data['pet'] ) ;
 
+
+          // 各種價格 :
+          const basic_Service_Price  = data['basic_fee'] ;                                                                // 基礎價格
+          const bath_Service_Price   = get_Bath_Service_Price( data ) ;                                                   // 洗澡價格
+          const beauty_Service_Price = pet['single_beauty_price'] ? pet['single_beauty_price'] : data['beauty_fee'] ;     // 美容價格 
+          
+          const month_Bath_Price     = pet['month_bath_price'] ? pet['month_bath_price'] : data['bath_month_fee'] ;       // 包月洗澡
+          const month_Beauty_Price   = pet['month_beauty_price'] ? pet['month_beauty_price'] : data['beauty_month_fee'] ; // 包月美容 
+
+          const extra_Item           = data['extra_service_fee'] ;  // 加價項目    
+          const extra_Beauty         = data['extra_beauty_fee'] ;   // 加價美容 
+
+          const self_Adjust          = data['self_adjust_amount'] ; // 自行調整  
+          const pickup               = data['pickup_fee'] ;         // 接送費
+
+
           // 設定 _ 不同服務下，該次服務價格
           if( data['service_type'] === '基礎' ){
+            
+              set_Price({ ...price , service     : basic_Service_Price ,
 
-              set_Price({ ...price ,
-                                   service     : data['basic_fee'] ,
-                                   self_adjust : data['self_adjust_amount'] ,
-                                   pickup      : data['pickup_fee']
+                                     self_adjust : self_Adjust ,
+                                     pickup      : pickup ,
+
+                                     payable     : basic_Service_Price + self_Adjust + pickup
                         })
 
           }
 
           if( data['service_type'] === '洗澡' ){
 
-              set_Price({ ...price ,
-                                   service      : bath_Service_Price ,
+              set_Price({ ...price , service      : bath_Service_Price ,
 
-                                   self_adjust  : data['self_adjust_amount'] ,
+                                     self_adjust  : self_Adjust ,
                            
-                                   extra_Item   : data['extra_service_fee'] ,
-                                   extra_Beauty : data['extra_beauty_fee'] ,
+                                     extra_Item   : extra_Item ,
+                                     extra_Beauty : extra_Beauty ,
 
-                                   pickup       : data['pickup_fee'] ,
+                                     pickup       : pickup ,
 
-                                   plan_Price   : pet['month_bath_price'] ? pet['month_bath_price'] : data['bath_month_fee']  
+                                     plan_Price   : month_Bath_Price ,
+                                   
+                                     payable      : bath_Service_Price + self_Adjust + extra_Item + extra_Beauty + pickup  
                         })
 
           }
 
           if( data['service_type'] === '美容' ){
 
-              set_Price({ ...price ,
-                                   service     : pet['single_beauty_price'] ? pet['single_beauty_price'] : data['beauty_fee'] ,
+              set_Price({ ...price , service     : beauty_Service_Price ,
 
-                                   self_adjust : data['self_adjust_amount'] ,
+                                     self_adjust : self_Adjust ,
 
-                                   extra_Item  : data['extra_service_fee'] ,
+                                     extra_Item  : extra_Item ,
 
-                                   pickup      : data['pickup_fee'] ,
+                                     pickup      : pickup ,
 
-                                   plan_Price  : pet['month_beauty_price'] ? pet['month_beauty_price'] : data['beauty_month_fee'] 
+                                     plan_Price  : month_Beauty_Price , 
+                                   
+                                     payable     : beauty_Service_Price + self_Adjust + extra_Item + pickup
                         })
 
           }
@@ -193,7 +212,6 @@ const Services_Rows = ( props : any ) => {
     const t_L = { textAlign : "left" } as const ;
 
 
-   
     return <tr style = { ( data[ 'service_date' ] && data[ 'service_date' ].slice(0,10) === today ) ? { background:"rgb(160,160,160,.2)" }  : { lineHeight : "40px" } } >
 
              { /* 服務類別 */ } 
@@ -253,7 +271,7 @@ const Services_Rows = ( props : any ) => {
              <td> { data['self_adjust_amount'] ? data['self_adjust_amount'] : 0 }  </td>
             
              { /* 加價項目 */ }
-             <td> { price['extra_Item'] }                     </td>
+             <td>  { price['extra_Item'] }                    </td>
             
              { /* 加價美容 */ }
              <td> { price['extra_Beauty'] }                   </td>
@@ -278,7 +296,8 @@ const Services_Rows = ( props : any ) => {
                         
                       }
 
-                      { data['plan']  ? '包月' : price['service'] }
+                    
+                      { data['plan']  ? '包月' :  price['payable']  }
 
                   </span> 
 
@@ -292,19 +311,17 @@ const Services_Rows = ( props : any ) => {
              </td>
 
              { /* @ ---------- 價格欄位 _ END ---------- */ }
-
-
+             
              { /* 來店日期 */ }
              <td> 
                  
                   { 
                   
-                     // data[ 'service_date' ] ? data[ 'service_date' ].slice(5,10) : '' 
-                     data[ 'service_date' ]  
+                    // data[ 'service_date' ]?.slice(5,10) 
+                    data[ 'service_date' ]   
                     
                   } 
-             
-             
+                      
              </td>
 
              { /* 洗美頁面 : 封存 */ }

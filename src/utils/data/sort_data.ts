@@ -6,14 +6,14 @@ export const sort_Data_By_CreatedDate = ( data : any[] , order : 'asc' | 'desc' 
 
    const sorted_Arr = data.sort(( a : any , b : any ) : any => {
                                     
-        const _a = a['created_at'] ; 
-        const _b = b['created_at'] ; 
+                         const _a = new Date( a['created_at'] ) ; 
+                         const _b = new Date( b['created_at'] ) ; 
 
-        if( order === 'asc' ) return _a > _b ? 1 : -1  // 升冪
-       
-        return _a < _b ? 1 : -1                        // 降冪
+                         if( order === 'asc' ) return _a > _b ? 1 : -1  // 升冪
+                         
+                         return _a < _b ? 1 : -1                        // 降冪
 
-   }) ;   
+                      }) ;   
 
    return sorted_Arr    
 

@@ -1,5 +1,5 @@
 
-import React , { useState , useEffect } from  "react" ;
+import { useState , useEffect } from  "react" ;
 import { useForm , SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { get_H_M } from "utils/time/time"
@@ -33,7 +33,8 @@ type Inputs = {
 { /*  處理結果面板  */ }
 const Inform_Customer_Options = () => {
 
-    const dispatch = useDispatch() ;
+    const dispatch           = useDispatch() ;
+
 
     // 目前處理 _ 美容師姓名
     const current_Beautician = useSelector(( state : any ) => state.Beautician.Current_Beautician ) ;
@@ -59,7 +60,7 @@ const Inform_Customer_Options = () => {
 
 
     // 評分選項
-    const rating_Options = useRating_Options('美容師評分', 'beautician_Rating', register , setValue ) ;
+    const rating_Options = useRating_Options( '美容師評分', 'beautician_Rating', register , setValue ) ;
 
     // ---------------------------------------------------------------------
 
@@ -130,7 +131,7 @@ const Inform_Customer_Options = () => {
                           wait_time         : time ,
 
                           beautician_star   : data['beautician_Rating']  ,
-                          beautician_note   : data['beautician_Note'] === '請選擇' ? '' : data['beautician_Note'] ,
+                          beautician_note   : data['beautician_Note'] ,
 
                           shop_status       : '洗完等候中'
 
@@ -151,7 +152,7 @@ const Inform_Customer_Options = () => {
 
 
     // 若所點選 "所有檢查項目皆正常" -> 清除點選項目
-    useEffect( ( ) => {
+    useEffect( () => {
 
        if( is_All_Good ){
 
@@ -169,6 +170,15 @@ const Inform_Customer_Options = () => {
 
     } ,[ is_All_Good ] ) ;
 
+
+
+
+    // 預先填寫美容師備註
+    useEffect( () => {
+
+       if( Current_Pet?.beautician_note ) setValue( "beautician_Note" , Current_Pet.beautician_note ) ;   
+
+    } , [ Current_Pet ] )
 
 
    return <div className="relative">
@@ -291,30 +301,36 @@ const Inform_Customer_Options = () => {
                        { /* 評分選項 */ }
                        { rating_Options }
 
-                       <div className="column is-12-desktop" >
+                       <div className="column is-11-desktop" >
 
                            <i className="fas fa-pencil-alt"></i>&nbsp;<b className="tag is-medium is-white"> 美容師備註 : </b> &nbsp; &nbsp;
 
-                           <div className="select is-normal realtive" >
-                               <select { ...register( "beautician_Note" ) }>
-                                   <option value="請選擇"> 請選擇 </option>
-                                   <option value="會咬人"> 會咬人 </option>
-                                   <option value="廢毛太多"> 廢毛太多 </option>
-                                   <option value="過動、不好處理"> 過動、不好處理 </option>
-                               </select>
-                           </div>  &nbsp; &nbsp; &nbsp; &nbsp;
+                           {/* 
+                                <div className="select is-normal realtive" >
+                                    <select { ...register( "beautician_Note" ) }>
+                                        <option value="請選擇"> 請選擇 </option>
+                                        <option value="會咬人"> 會咬人 </option>
+                                        <option value="廢毛太多"> 廢毛太多 </option>
+                                        <option value="過動、不好處理"> 過動、不好處理 </option>
+                                    </select>
+                                </div> 
+                            */}
+
+                            <textarea  rows={8} cols={20} className="textarea relative" {...register("beautician_Note")} placeholder="備註事項"
+                                       style={{color: "rgb(0,0,180)", fontWeight: "bold" , left:"35px" }}/>
+
 
                        </div>
 
                    </div>
 
-                   <br/><br/><br/>
+                  
 
-                   <div className="has-text-centered" >
-                       <button  type="submit" className="button is-primary relative is-medium" style={{ top: "-10px" }} >
+                   <div className="has-text-centered m_Top_80 m_Bottom_50" >
+                       <button  type="submit" className="button is-primary relative is-medium"  >
                            提交表單
                        </button>
-                   </div> <br/>
+                   </div> 
 
                </form>
 

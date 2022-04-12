@@ -4,6 +4,11 @@ import { useDispatch , useSelector } from "react-redux";
 import { click_Reset_Use_Plan_Tag , set_Click_Use_Plan_Tag , get_Plan_Used_Amount , get_Plan_Used_Num  } from "store/actions/action_Plan" ;
 import { set_Modal } from "store/actions/action_Global_Layout" ;
 import Plan_Used_Records from "components/services/edit_components/summary_fee/plan_components/Plan_Used_Records" ;
+import { string_Short } from "utils/string/edit_string" 
+
+import Plan_Used_ExtraItem_Sign from "./plan_used/Plan_Used_ExtraItem_Sign";
+
+
 
 
 // 依照方案類型，回傳 _ 標籤樣式差異
@@ -85,12 +90,15 @@ const Plan_Used_Tag : FC< tag > = ( { current , plan , index } ) => {
     } ;
 
 
-
+    const num = { width:"20px" , height:"20px" , background:"red" ,top:"-10px" , left:"20px"} ;
 
 
    return  <b className = { tag_Style } style = { { boxShadow : "0px 1px 2px 1px rgba( 0 , 0 , 0 , .2 )" , borderRadius : "20px" } } >
 
-              { title_Type }方案 : { plan['plan_type'] } &nbsp; <span className="f_10"> (  { plan['created_at'].slice( 0 , 10 ) } ) </span> &nbsp;&nbsp;
+                   { title_Type }方案 :&nbsp; 
+                   {  string_Short( plan['plan_type'] , 5 ) } &nbsp; 
+                   <span className="f_10"> (  { plan['created_at'].slice( 0 , 10 ) } ) </span> &nbsp;&nbsp;
+
 
               { /*  # 使用 _ 【 未額滿 】  */ }
               { used_Num !== plan_Quota &&
@@ -100,14 +108,10 @@ const Plan_Used_Tag : FC< tag > = ( { current , plan , index } ) => {
                     { /* 點選 _ 使用該方案  */ }  
                     {
                       ( current_Tag_Index !== index && plan_Quota ) &&
-
-
                             <span>
                                 <b className="fBlue"> { current } </b> 使用情形 : <b className="fDblue"> { used_Num } / { plan_Quota } </b>  &nbsp;
                                 ( 餘額 : { plan['plan_fee_total'] - used_Amount } 元 ) &nbsp; &nbsp; <i className="fas fa-hand-point-up"></i> &nbsp;點選使用 &nbsp;
                             </span>
-
-
                     }
 
                     { /* 方案資料，已從自訂方案資料表 [ custom_plans ] 刪除 */ }  
@@ -121,14 +125,17 @@ const Plan_Used_Tag : FC< tag > = ( { current , plan , index } ) => {
 
               }
 
-
              { /*  # 使用 _ 【 已額滿 】  */ }
              { used_Num === plan_Quota && <b className="tag is-rounded is-danger f_10 m_Right_15"> { used_Num } / { plan_Quota } &nbsp; 額度使用完畢 </b> }
 
-
              { /* # 點選顯示 _ 已使用列表 ( Modal )  */ }
-             <span className="tag is-rounded is-primary" onClick = { () => click_Check_Used_Records( plan )  } > <i className="fas fa-list"></i>  </span>
+             <span className="tag is-rounded is-primary relative" onClick = { () => click_Check_Used_Records( plan )  } > 
+                 
+                 { /* 標示 : 方案是否有使用 "加價項目" */ }
+                 <Plan_Used_ExtraItem_Sign plan = { plan } /> 
+                 <i className="fas fa-list"></i>    
 
+             </span>
                       
            </b> ;
 

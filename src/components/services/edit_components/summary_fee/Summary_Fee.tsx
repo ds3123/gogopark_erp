@@ -114,7 +114,6 @@ const Summary_Fee : FC<TS> = ( { register , setValue , errors  , current, editTy
                 { /* 方案 ( 預設方案 : 包月洗澡、包月美容 ) */ }
                 <Apply_Plans current = { current } editType = { editType } register = { register } setValue = { setValue } /> 
                 
-
               </div>
 
               { /* # 櫃台經手資訊 */ }
@@ -130,7 +129,7 @@ const Summary_Fee : FC<TS> = ( { register , setValue , errors  , current, editTy
                     <div className="column is-4-desktop">
 
                        <span className="tag is-large is-white">
-                          <b> 建檔日期 : 
+                          <b> 建檔日期 :&nbsp; 
                             <span className="fDblue">
                               { /* for 新增  */ }
                               { editType !== '編輯' && <>&nbsp;{ get_Today() } </> }  
