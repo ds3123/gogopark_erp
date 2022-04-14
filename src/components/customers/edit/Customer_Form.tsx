@@ -1,6 +1,5 @@
 
-import { FC , useEffect , useState , useContext } from "react"
-import { ReachHookFormContext } from "containers/Create_Data_Container"
+import { FC , useEffect , useState  } from "react"
 import { Input } from "templates/form/Input";
 import { Edit_Form_Type } from "utils/Interface_Type"
 import { useRead_Customer_By_Column } from "hooks/ajax_crud/useAjax_Read"
@@ -8,14 +7,14 @@ import { useRead_Customer_By_Column } from "hooks/ajax_crud/useAjax_Read"
 import useSection_Folding from "hooks/layout/useSection_Folding";
 
 // Redux
-import { useDispatch , useSelector, useStore } from "react-redux";
+import { useDispatch  } from "react-redux";
 import { get_Current_Customer_Pets , set_Current_Customer_Pets , set_IsExisting_Customer ,
          set_Current_Customer_Name , set_Current_Customer_Id , get_Customer_Relatives 
        } from "store/actions/action_Customer";
 
 import { set_Is_Show_Section_Pet } from "store/actions/action_Global_Layout"
 import { get_Today } from "utils/time/date";
-import { get_RandomInt } from "utils/number/number";
+import { get_RandomInt , get_TimeStamp_5 } from "utils/number/number";
 import Customer_Services_Records from "components/customers/edit/info/Customer_Services_Records"
 import Customer_Types_Query from "components/customers/edit/info/Customer_Types_Query"
 import { useFetch_Customer_Service_Records } from "hooks/data/useCustomer_Records"
@@ -196,7 +195,7 @@ const Customer_Form : FC< ICustomer_Form >= ( { register , watch , setValue , er
     // 設定 _ 隨機身分證字號
     const set_Random_Id = () => {
 
-        const randomId = `C_${ get_Today() }_${ get_RandomInt(100) }` ;
+        const randomId = `C_${ get_Today() }_${ get_TimeStamp_5() }` ;
         setValue( "customer_Id" , randomId , { shouldValidate: true  } ) ;
 
     } ;
@@ -228,7 +227,6 @@ const Customer_Form : FC< ICustomer_Form >= ( { register , watch , setValue , er
     } , [ current , query['customer_Id'] ] ) ;
 
     
-
     const nS = { left:"730px" , top:"58px" , zIndex:555 } as const ;
 
 
@@ -238,9 +236,9 @@ const Customer_Form : FC< ICustomer_Form >= ( { register , watch , setValue , er
                 { is_Show_NumButton && num_Buttons } 
 
                 { /* 標題 */ }
-                <label className="label relative" style={{ fontSize : "1.3em" }} >
+                <label className="label relative m_Bottom_40" >
 
-                    <i className="fas fa-user"></i> &nbsp; 客戶資料
+                    <i className="fas fa-user"></i> &nbsp; 客戶資料 
 
                     { Folding_Bt } { /* 收折鈕 */ }
 
@@ -250,7 +248,7 @@ const Customer_Form : FC< ICustomer_Form >= ( { register , watch , setValue , er
                     { /*  顯示 _ 查詢客戶 : "身分證字號"、"手機號碼" 結果 ( 顯示 : 客戶姓名、新客戶 在標題列右上方 )  */ }
                     <Customer_Types_Query isQuerying={ isQuerying } query_Result_Id={ query_Result_Id } query_Result_CellPhone={ query_Result_CellPhone } set_Cus_Data={ set_Cus_Data } />
 
-                </label> <br/>
+                </label>
 
 
                 { /* 是否收折 : 客戶資料 */ }

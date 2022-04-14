@@ -1,6 +1,5 @@
 
 
-import React from "react" ;
 import axios from "utils/axios" ;
 import { useDispatch , useSelector } from "react-redux" ;
 import { useHistory } from "react-router-dom" ;
@@ -104,9 +103,7 @@ export const useUpdate_Data = ( ) => {
             if( api === '/employees' ) cookie.save( 'after_Created_Redirect' , '員工管理' , { path : '/' , maxAge : 5 } ) ;
 
 
-
             // 前往相對應頁面
-            // NOTE : 為避免在相同屬性頁面下新增資料，而導致沒有渲染頁面 --> 先前往任一錯誤路徑，再前往正確路徑 ( 2021.06.12 再看看是否有更好解決方式 )
             if( redirect ) history.push( "/wrongpath" );  // 錯誤路徑
             if( redirect ) history.push( redirect );      // 正確路徑
 

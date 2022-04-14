@@ -97,7 +97,7 @@ const Customer_Relatives_Columns : FC< cRel > = ( { current , register , setValu
 
     return <>
 
-                <label className="label" style={{ fontSize : "1.3em" }} >
+                <label className="label" >
 
                     <i className = "fas fa-users"></i> &nbsp; 關係人 &nbsp;
 

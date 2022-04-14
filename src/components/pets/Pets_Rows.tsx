@@ -90,13 +90,14 @@ const Pets_Rows = ( props : any ) => {
              <td> 
                  { data['serial'].slice( 16 ,22 ) ? data['serial'].slice( 16 ,22 ) : data['serial'] } 
              </td>
+
              <td style={ t_L }> { petButton } </td>
+
+             { /* 客戶姓名 */ }
              <td>
-                 { data['name'] &&
-                     <b className="tag is-medium pointer" onClick={ () => click_Customer( customer.id ) }>
-                         { customer ? customer['name'] : '' }
-                     </b>
-                 }
+                 <b className="tag is-medium pointer" onClick={  customer ? () => click_Customer( customer.id ) :  () => alert( '請先至寵物區塊，指定主人．' ) }>
+                         { customer ? customer['name'] : <b className="fRed"> 未指定 </b> }
+                 </b>
              </td>
 
              <td> { customer ? customer['mobile_phone'] : '' }   </td>

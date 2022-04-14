@@ -53,10 +53,10 @@ export const useCreate_Service_Plan = () => {
              history.push("/wrongpath");  // 錯誤路徑
              history.push("/services");   // 正確路徑
  
-         }).catch( error => {
+         }).catch( err => {
  
-             console.log( error )
- 
+             alert( `新增 "方案" 錯誤 ( ${ err } )，請稍候再試．` ) ;  
+            
          }) ;
  
      } ;

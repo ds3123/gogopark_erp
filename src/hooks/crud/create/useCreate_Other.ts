@@ -32,9 +32,9 @@ export const useCreate_Other = () => {
             history.push("/wrongpath");   // 錯誤路徑
             history.push("/management");  // 正確路徑
 
-        }).catch( error => {
+        }).catch( err => {
 
-            console.error( error.response.data ) ; // 顯示詳細錯誤訊息
+            alert( `新增 "其他收支" 錯誤 ( ${ err } )，請稍候再試．`  ) ;
          
         }) ;
 

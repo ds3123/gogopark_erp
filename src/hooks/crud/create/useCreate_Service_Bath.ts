@@ -60,7 +60,12 @@ export const useCreate_Service_Bath = () => {
             history.push( "/wrongpath" ) ;  // 錯誤路徑
             history.push( "/services" ) ;   // 正確路徑
 
+        }).catch( err => {
+
+            alert( `新增 "洗澡單" 錯誤 ( ${ err } )，請稍候再試．`  ) ;
+
         }) ;
+
 
     } ;
 

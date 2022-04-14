@@ -51,9 +51,9 @@ export const useCreate_Service_Care = () => {
              history.push("/wrongpath") ;  // 錯誤路徑
              history.push("/lodge") ;      // 正確路徑
  
-         }).catch( error => {
- 
-             console.log( error )
+         }).catch( err => {
+
+            alert( `新增 "安親單" 錯誤 ( ${ err } )，請稍候再試．` ) ;
  
          }) ;
  

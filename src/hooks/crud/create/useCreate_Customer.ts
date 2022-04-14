@@ -16,7 +16,6 @@ export const useCreate_Customer = () => {
     // 資料庫已有 : 該客戶紀錄
     const IsExisting_Customer = useSelector(( state : any ) => state.Customer.IsExisting_Customer ) ;
 
-
     const create_Customer = ( data : any ) => {
 
         // 轉換欄位
@@ -38,7 +37,11 @@ export const useCreate_Customer = () => {
                 history.push("/wrongpath") ;  // 錯誤路徑
                 history.push("/customers") ;  // 正確路徑
 
-            })
+            }).catch( err => {
+
+                alert( `新增 "客戶" 錯誤 ( ${ err } )，請稍候再試．`  ) ;
+
+            });
 
         }else{
 

@@ -4,12 +4,12 @@ import { useSelector , useDispatch } from "react-redux";
 
 // Styled Component
 import styled from '@emotion/styled';
-
-import { set_Current_Create_Tab } from "store/actions/action_Service"
+import { set_Current_Create_Tab } from "store/actions/action_Service" ;
 
 
 // Redux
 import { set_Side_Panel } from "store/actions/action_Global_Layout" ;
+import { set_Modal } from "store/actions/action_Global_Layout" ;
 import Side_Info from "components/services/Side_Info";
 import Debug_Info from "components/services/Debug_Info";
 import Modal from "templates/panel/Modal"
@@ -101,14 +101,20 @@ const Side_Panel = () => {
     const component = useSelector( ( state:any ) => state.Layout.Side_Panel_Component ) ; // 所包含元件
     const props     = useSelector( ( state:any ) => state.Layout.Side_Panel_Props ) ;     // 元件屬性
 
-    // 關閉 : 遮罩、滑動容器元件
+    // 關閉 : 遮罩、滑動容器等元件
     const close = () => {
-       
+  
+        // 關掉右側面板
         dispatch( set_Side_Panel( false , null , {} ) ) ;
+ 
+        // 關掉 Modal
+        dispatch( set_Modal( false , null , { modal_Style : { width : "50%"  , left : "25%" } } ) ) ;
+
 
         dispatch( set_Current_Create_Tab( '' ) ) ;
 
-        dispatch( set_Debug_Info( false ) ) ;             // 關掉除錯
+        // 關掉除錯
+        dispatch( set_Debug_Info( false ) ) ;             
 
     } ;
 

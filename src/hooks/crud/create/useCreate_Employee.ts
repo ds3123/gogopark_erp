@@ -36,7 +36,11 @@ export const useCreate_Employee = () => {
             history.push("/wrongpath");   // 錯誤路徑
             history.push("/management");  // 正確路徑
 
-        }) ;
+        }).catch( err => {
+
+            alert( `新增 "員工" 錯誤 ( ${ err } )，請稍候再試．`  ) ;
+
+        });
 
     } ;
 

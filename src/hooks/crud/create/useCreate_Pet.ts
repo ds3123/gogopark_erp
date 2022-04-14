@@ -42,6 +42,10 @@ export const useCreate_Pet = () => {
                 history.push("/wrongpath" ) ;  // 錯誤路徑
                 history.push("/pets" ) ;       // 正確路徑
 
+            }).catch( err => {
+
+                alert( `新增 "寵物" 錯誤 ( ${ err } )，請稍候再試．` ) ;
+
             }) ;
 
          }else{

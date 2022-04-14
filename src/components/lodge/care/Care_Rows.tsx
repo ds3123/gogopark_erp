@@ -123,9 +123,13 @@ const Care_Rows = ( props : any ) => {
                  
               </td>
              
+              { /* 客戶姓名 */ }    
               <td>
-                  <b className="tag is-medium pointer" onClick={ () => click_Customer( customer.id ) }>
-                      { customer['name'] }
+                  <b className="tag is-medium pointer" 
+                     onClick={  customer ? () => click_Customer( customer.id ) : () => alert( '此服務相對應客戶，已被刪除．' ) }>
+                     
+                     {  customer ? customer?.name : <b className="fRed"> 已刪除 </b> }
+
                   </b>
               </td>
               

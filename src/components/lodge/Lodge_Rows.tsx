@@ -1,4 +1,3 @@
-
 import {useEffect, useState} from "react"
 import {set_Side_Panel} from "store/actions/action_Global_Layout";
 import {useDispatch} from "react-redux";
@@ -111,7 +110,6 @@ const Lodge_Rows = ( props : any ) => {
 
     const t_L = { textAlign : "left" } as const ;
 
-
     const err = {top:"-7px", left:"1px" , color:"red" , zIndex : "344"} as any ;
     
    return <tr style = { ( data[ 'start_date' ] && data[ 'start_date' ].slice(0,10) === today ) ? { background:"rgb(160,160,160,.2)" }  : { lineHeight : "40px" } }>
@@ -127,10 +125,16 @@ const Lodge_Rows = ( props : any ) => {
               
             </td>
 
+            { /* 客戶姓名 */ }    
             <td>
-                <b className="tag is-medium pointer" onClick={ () => click_Customer( customer.id ) }>
-                    {  customer ? customer['name'] : '' }
+
+                <b className="tag is-medium pointer" 
+                   onClick={  customer ? () => click_Customer( customer.id ) : () => alert( '此服務相對應客戶，已被刪除．' ) }>
+
+                    { customer ? customer?.name : <b className="fRed"> 已刪除 </b> }
+
                 </b>
+
             </td>
 
             <td>

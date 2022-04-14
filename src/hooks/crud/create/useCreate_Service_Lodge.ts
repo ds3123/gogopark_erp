@@ -46,9 +46,9 @@ export const useCreate_Service_Lodge = () => {
             history.push("/wrongpath" ) ;  // 錯誤路徑
             history.push("/lodge" ) ;   // 正確路徑
 
-        }).catch( error => {
+        }).catch( err => {
 
-           console.log( error )
+           alert( `新增 "住宿單" 錯誤 ( ${ err } )，請稍候再試．` ) ;  
 
         }) ;
 

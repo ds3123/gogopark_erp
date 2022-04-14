@@ -39,7 +39,13 @@ export const useCreate_Customer_Relatives = ( ) => {
 
             } ;
 
-            if( !IsExisting_Customer ) axios.post( api , submitData ) ;
+            if( !IsExisting_Customer ){
+
+                axios.post( api , submitData )
+                     .catch( err =>  alert( `新增 "關係人" 錯誤 ( ${ err } )．`  )  ) ;
+
+            } 
+                 
 
         }
 

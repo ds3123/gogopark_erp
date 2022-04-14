@@ -4,6 +4,8 @@ import { Edit_Form_Type } from "utils/Interface_Type"
 import { Input } from "templates/form/Input";
 import { useRead_Sort_Species } from "hooks/ajax_crud/useAjax_Read";
 
+import { set_Modal } from "store/actions/action_Global_Layout" ;
+
 import useSection_Folding from "hooks/layout/useSection_Folding" ;
 
 // Redux
@@ -26,9 +28,15 @@ import { set_Pet_Service_Records } from "store/actions/action_Pet"
 
 import Pet_Prices_Status from "components/pets/edit/info/Pet_Prices_Status"
 
+import Update_Pet_Owner from "components/customers/change/Update_Pet_Owner"
+import axios from "utils/axios";
 
 
-type serviceType = '基礎' | '洗澡' | '美容' | '安親' | '住宿'
+
+
+
+type serviceType = '基礎' | '洗澡' | '美容' | '安親' | '住宿' ;
+
 
 
 { /* 寵物表單欄位  */ }
@@ -44,6 +52,15 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
 
     // 寵物品種名稱
     const [ pet_Species_Name , set_Pet_Species_Name ] = useState( '' ) ;
+
+
+    // 寵物及主人資料
+    const [ pet_Owner , set_Pet_Owner ] = useState<any>( null );
+
+
+
+
+
 
     // # 監看 _ 必填欄位
     useVerify_Required_Columns_Pet( watch ) ;
@@ -159,6 +176,14 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
     const click_Detail_Mode = ( bool : boolean ) => set_Is_Detial( !bool )
   
 
+    // 點選 _ 寵物的主人
+    const click_Check_Used_Records = ( cus_Data : any ) => {
+
+        dispatch( set_Modal( true , <Update_Pet_Owner /> , { data : cus_Data , modal_Style : { width : "84%" , left : "8%" , bottom : "0px" } } )) ;
+
+    } ;
+
+
     // 設定 _ 寵物編號 ( for【 新增 】 )
     useEffect( () => {
 
@@ -190,7 +215,7 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
     } , [ pet_Species_Name ] ) ;
 
     /*
-         # 【 編輯 】設定 : " 品種 " 下拉選項( Ajax 取得 )
+         # 【 編輯 】設定 : " 品種 " 下拉選項 ( Ajax 取得 )
            * 因 Pet_Form 載入時，Ajax 資料尚未取得( 若以 React Hook Form 的 defaultValues，無法成功設定 _ 預設值 )
            * 需取得資料後，再以 setValue() 單獨設定預設值
     */
@@ -210,13 +235,46 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
     } , [ pet_Species_id ] ) ;
 
 
+    // 取得 _ 主人資料
+    useEffect( () => {
+    
+       if( pet_Serial ){
+
+         axios.get( `/pets/show_pet_customer/${ pet_Serial}` )
+              .then( res => set_Pet_Owner( res.data ) )
+              .catch( err => console.log( err ) ) ;
+
+
+       } 
+
+    } , [ pet_Serial ] )
+
+
    return <>
-               <hr/>
+            
+               { current && <hr/> } 
 
                { /* 寵物基本資料 */ }
                <label className="label m_Top_70">
 
-                   <i className="fas fa-dog"></i> &nbsp; 寵物資料
+                   <i className="fas fa-dog"></i> &nbsp; 寵物資料 &nbsp;
+
+                   { /* 主人資料 */ } 
+                   { !current  && 
+                      <b className="tag is-medium is-rounded hover relative" onClick={ () => click_Check_Used_Records( pet_Owner ) }  style={{ top:"-3px" }}> 
+                         <i className="fas fa-user f_12" ></i> &nbsp; 主人 :&nbsp;
+                         <b className="fDred"> 
+ 
+                             { pet_Owner?.customer ? 
+
+                                     <b> { pet_Owner.customer.name } ( { pet_Owner?.customer?.mobile_phone } ) </b> : 
+                                    
+                                      <b className="fRed"> 尚未指定主人 </b>
+                                    }
+        
+                         </b> 
+                      </b>
+                   } 
 
                    { Folding_Bt } { /* 收折鈕 */ } &nbsp; &nbsp;
 
@@ -226,14 +284,14 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
                    { /* 客戶所有寵物 */ }
                    <Customer_Pets current={ current } current_Customer_Pets={ current_Customer_Pets } click_Pet_Button = { click_Pet_Button } />
 
-               </label> <br/>
+               </label> 
 
                { /* 是否收折 */ }
                { is_folding ||
 
                    <>
 
-                       <div className="columns is-multiline  is-mobile">
+                       <div className="columns is-multiline is-mobile">
 
                             { /* 名字 */ }
                             <Input type="text" name="pet_Name" label="名 字" register={register} error={errors.pet_Name}
