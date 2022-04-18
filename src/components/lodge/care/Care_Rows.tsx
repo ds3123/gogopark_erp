@@ -103,11 +103,7 @@ const Care_Rows = ( props : any ) => {
     } , [ data ]  ) ;
 
     const t_L = { textAlign : "left" } as const ;
-
-
-
     const err = {top:"-7px", left:"1px" , color:"red" , zIndex : "344"} as any ;
-
 
     return <tr style = { ( data[ 'start_date' ] && data[ 'start_date' ].slice(0,10) === today ) ? { background:"rgb(160,160,160,.2)" }  : { lineHeight : "40px" } } >
               
@@ -119,7 +115,12 @@ const Care_Rows = ( props : any ) => {
                   { data['is_error'] === 1 &&  <i className="fas fa-exclamation-triangle"></i> }
                </b> 
                   
-               { petButton }  
+
+               { 
+                    pet?.serial ?
+                      petButton :
+                      <b className="tag is-medium pointer fRed" onClick = { () => alert( '查無此服務相對應寵物' ) }> 已刪除 </b>  
+              } 
                  
               </td>
              

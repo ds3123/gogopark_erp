@@ -64,8 +64,10 @@ const usePagination_Search = ( { api_Num , api_All , data_Type , sort_Data_Type 
 
         axios.get( api_Num ).then( res => callBack( res.data , false ) ) ;
         axios.get( api_All ).then( res => callBack( res.data , true ) ).catch( err => { 
-           //console.log( err ) 
-           window.location.reload(); // 發生錯誤，Relaod 視窗，重新載入
+           
+            console.log( err ) 
+          // window.location.reload(); // 發生錯誤，Relaod 視窗，重新載入
+          
         }) ;
 
     } , [ ] )

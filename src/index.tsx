@@ -1,4 +1,3 @@
-import React from 'react';
 import ReactDOM from 'react-dom';
 import App from 'containers/App';
 import reportWebVitals from './reportWebVitals';
@@ -12,12 +11,14 @@ import { Provider } from 'react-redux' ;
 import thunk from 'redux-thunk';
 import root_Reducer from "store/reducers/root_Reducer";
 
+
 // # CSS
-import 'css/app.scss';
+import 'css/app.scss' ;
 import 'css/style.scss' ;
 
 
-const store = createStore( root_Reducer , applyMiddleware( thunk ) );
+const store = createStore( root_Reducer , applyMiddleware( thunk ) ) ;
+
 
 ReactDOM.render(
                   <Provider store = { store } >
@@ -35,7 +36,7 @@ ReactDOM.render(
                       />
 
                     { /* React Calendar 在嚴格模式中，有問題 2021.06.21 */ }
-                    {/*<React.StrictMode> <App /> </React.StrictMode > */}
+                    { /* <React.StrictMode> <App /> </React.StrictMode > */}
 
                       <App />
 

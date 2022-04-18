@@ -29,7 +29,8 @@ const get_Date_Data = (  _plan_Used_Records : any[] ) => {
 
 
 // @ 個別方案 _ 使用情形 
-const Plan_Used_Records = ( ) => {
+const Plan_Used_Records = () => {
+
 
     // 取得 _ 使用紀錄資料物件 ( 方案資料、方案類型、套用品種名稱、方案使用紀錄  )
     const { data , plan_Type , applied_Species_Name , _plan_Used_Records } = usePlan_Used_Records_Data() ;
@@ -52,7 +53,6 @@ const Plan_Used_Records = ( ) => {
 
   
 
-
     return <div>
 
                  { /* 標題列 */ }   
@@ -70,8 +70,9 @@ const Plan_Used_Records = ( ) => {
 
                     
                          { /* 申請退費 */ }
-                         <Apply_Plan_Return used_Records_Num={used_Records_Num} single_Bath_Price={single_Bath_Price} current_User_Name={current_User_Name}  />
+                         {/* <Apply_Plan_Return used_Records_Num={used_Records_Num} single_Bath_Price={single_Bath_Price} current_User_Name={current_User_Name}  /> */}
                          
+                         <br/> <br/>
                     </>
 
                   }

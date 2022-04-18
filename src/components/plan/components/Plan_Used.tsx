@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux" ;
 import { set_Side_Panel } from "store/actions/action_Global_Layout";
 import Plan_Used_Records from "components/services/edit_components/summary_fee/plan_components/Plan_Used_Records";
 import axios from "utils/axios";
+import zIndex from "@material-ui/core/styles/zIndex";
 
 
 // @ 方案使用情形
@@ -41,8 +42,6 @@ const Plan_Used = ( { data } : { data : any } ) => {
 
     }
 
-
-
   } , [] ) ;
 
 
@@ -51,9 +50,22 @@ const Plan_Used = ( { data } : { data : any } ) => {
             { /* # 預設方案 */ }  
             { data['plan_type'] === '包月洗澡' &&
 
-                <b className="tag is-medium is-success is-light is-rounded pointer" onClick={click_UsedRecords_Bath}>
-                    洗 澡 &nbsp; <b className="tag is-rounded is-success"> { used_Record['bath'] } / 4 </b>
-                </b>
+               <>  
+
+                    <b className="tag is-medium is-success is-light is-rounded pointer" onClick={click_UsedRecords_Bath}>
+                        洗 澡 &nbsp; <b className="tag is-rounded is-success"> { used_Record['bath'] } / 4 </b>
+                    </b>
+
+                  { /* 方案使用完畢  */ }
+                  { used_Record['bath'] === 4 &&
+
+                        <b className="tag is-warning absolute" style={{ top:"30px" , left:"145px"  }} >  
+                            <i className="fas fa-folder-open"></i> &nbsp; 已用完 
+                        </b>
+                
+                   } 
+
+                </>  
 
             }
 
@@ -67,6 +79,16 @@ const Plan_Used = ( { data } : { data : any } ) => {
                     <b className="tag is-medium is-danger is-light is-rounded pointer" onClick = { click_UsedRecords_Beauty } >
                         美 容 &nbsp; <b className="tag is-rounded is-danger"> { used_Record['beauty'] } / 1 </b>
                     </b>
+
+                    { /* 方案使用完畢  */ }
+                    { ( used_Record['bath'] === 3 && used_Record['beauty'] === 1 ) &&
+
+                        <b className="tag is-warning absolute" style={{ top:"30px" , left:"145px"  }} >  
+                            <i className="fas fa-folder-open"></i> &nbsp; 已用完 
+                        </b>
+                
+                     } 
+
                 </>
 
             }
@@ -75,23 +97,35 @@ const Plan_Used = ( { data } : { data : any } ) => {
             { /* # 自訂方案 */ }
             { ( data['plan_type'] !== '包月洗澡' && data['plan_type'] !== '包月美容' ) &&
 
-                    <>
+                <>
 
-                    { ( data['custom_plan'] && data['custom_plan']['bath_num'] > 0 ) && 
+                    { ( data['custom_plan'] && data?.custom_plan?.bath_num > 0 ) && 
 
                         <b className="tag is-medium is-success is-light is-rounded pointer m_Right_15 m_Bottom_10" onClick={click_UsedRecords_Bath}>
-                            洗 澡 &nbsp; <b className="tag is-rounded is-success"> { used_Record['bath'] } / { data['custom_plan']['bath_num'] } </b>
+                            洗 澡 &nbsp; <b className="tag is-rounded is-success"> { used_Record['bath'] } / { data?.custom_plan?.bath_num } </b>
                         </b>
 
                     } 
 
-                    { ( data['custom_plan'] && data['custom_plan']['beauty_num'] > 0 ) &&
+                    { ( data['custom_plan'] && data?.custom_plan?.beauty_num > 0 ) &&
 
                         <b className="tag is-medium is-danger is-light is-rounded pointer" onClick = { click_UsedRecords_Beauty } >
-                            美 容 &nbsp; <b className="tag is-rounded is-danger"> { used_Record['beauty'] } / { data['custom_plan']['beauty_num'] } </b>
+                            美 容 &nbsp; <b className="tag is-rounded is-danger"> { used_Record['beauty'] } / { data?.custom_plan?.beauty_num } </b>
                         </b>
 
                     }
+
+                    { /* 方案使用完畢 */ }
+                    { 
+                       ( used_Record['bath'] ===  data?.custom_plan?.bath_num && used_Record['beauty'] === data?.custom_plan?.beauty_num ) && 
+                        <b className="tag is-warning absolute" style={{ top:"30px" , left:"145px"  }} >  
+                          <i className="fas fa-folder-open"></i> &nbsp; 已用完 
+                       </b>
+                       
+                   }
+
+
+
 
                 </>
 

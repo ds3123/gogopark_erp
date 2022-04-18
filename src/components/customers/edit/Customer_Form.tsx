@@ -1,7 +1,6 @@
 
-import { FC , useEffect , useState  } from "react"
+import { useEffect , useState  } from "react"
 import { Input } from "templates/form/Input";
-import { Edit_Form_Type } from "utils/Interface_Type"
 import { useRead_Customer_By_Column } from "hooks/ajax_crud/useAjax_Read"
 
 import useSection_Folding from "hooks/layout/useSection_Folding";
@@ -14,7 +13,7 @@ import { get_Current_Customer_Pets , set_Current_Customer_Pets , set_IsExisting_
 
 import { set_Is_Show_Section_Pet } from "store/actions/action_Global_Layout"
 import { get_Today } from "utils/time/date";
-import { get_RandomInt , get_TimeStamp_5 } from "utils/number/number";
+import { get_TimeStamp_5 } from "utils/number/number";
 import Customer_Services_Records from "components/customers/edit/info/Customer_Services_Records"
 import Customer_Types_Query from "components/customers/edit/info/Customer_Types_Query"
 import { useFetch_Customer_Service_Records } from "hooks/data/useCustomer_Records"
@@ -41,18 +40,18 @@ const fetch_Data = ( current_Tab : string | undefined , customer_Id : string , f
 
 interface ICustomer_Form {
 
-    register  : any ;
-    watch     : any ;
-    setValue? : any ;
-    errors    : any ;
-
-    current?  : string ;
+    register     : any ;
+    watch        : any ;
+    setValue?    : any ;
+    errors       : any ;
+    current?     : string ;
+    customer_Id? : string ;
 
 }
 
 
 { /* 客戶表單欄位 */ }
-const Customer_Form : FC< ICustomer_Form >= ( { register , watch , setValue , errors , current } ) => {
+const Customer_Form = ( { register , watch , setValue , errors , current , customer_Id } : ICustomer_Form ) => {
 
     const dispatch = useDispatch() ;
 
@@ -230,6 +229,9 @@ const Customer_Form : FC< ICustomer_Form >= ( { register , watch , setValue , er
     const nS = { left:"730px" , top:"58px" , zIndex:555 } as const ;
 
 
+    // 目前為新增或編輯狀態
+    const is_Create = current ? true : false ;
+
     return <div className="relative">
 
                 { /* 數字按鈕( for 觸控輸入手機號碼 ) */ }  
@@ -255,20 +257,40 @@ const Customer_Form : FC< ICustomer_Form >= ( { register , watch , setValue , er
                 { is_folding ||
 
                    <>
+
                      { /* 顯示 : 數字按鈕  */ }  
-                     <b className={ `tag is-medium absolute pointer ${ is_Show_NumButton ? 'is-success is-light' : 'is-white'  }` }
-                       style={ nS } onClick = { () => set_Is_Show_NumButton( !is_Show_NumButton ) }> 
-                         <i className="far fa-keyboard"></i> 
-                     </b>
+                     { is_Create &&
+                        <b className={ `tag is-medium absolute pointer ${ is_Show_NumButton ? 'is-success is-light' : 'is-white'  }` }
+                            style={ nS } onClick = { () => set_Is_Show_NumButton( !is_Show_NumButton ) }> 
+                            <i className="far fa-keyboard"></i> 
+                        </b>
+                     }
 
                      <div className="columns is-multiline  is-mobile relative">
 
-                        <b className="tag is-light is-success absolute f_10 pointer" style={{ top:"8px",left:"180px" , zIndex:222 }} onClick={ set_Random_Id }>
-                            自動產生
-                        </b>
+                        { /* 編輯狀態 */ }
+                        { is_Create || 
+                        
+                            <div className="column is-3-desktop relative"> 
+                                <p className="relative"> 身份證字號 / 客戶系統編號 </p>
+                                <b className="fDblue f_13 relative" style={{ top:"6px" }}>  { customer_Id } </b>
+                            </div> 
+                         
+                        }
 
-                        <Input type="text" name="customer_Id"        label="身分證字號" register={register} error={errors.customer_Id}        icon="fas fa-id-card-alt" asterisk={true} columns="3" onChange={ handle_Change} />
-                        <Input type="text" name="customer_Name"      label="姓 名"      register={register} error={errors.customer_Name}      icon="fas fa-user" asterisk={true} columns="3" onChange={handle_Change} />
+                        { /* 新增狀態 */ }
+                        { is_Create &&
+                        
+                            <>    
+                                <b className="tag is-light is-success absolute f_10 pointer" style={{ top:"8px",left:"185px" , zIndex:222 }} onClick={ set_Random_Id }>
+                                    自動產生
+                                </b>
+                                <Input type="text" name="customer_Id" label="身分證字號 / 系統編號" register={register} error={errors.customer_Id} icon="fas fa-id-card-alt" asterisk={true} columns="3" onChange={ handle_Change } />
+                            </>
+
+                        }
+
+                        <Input type="text" name="customer_Name"      label="姓 名"     register={register} error={errors.customer_Name}      icon="fas fa-user" asterisk={true} columns="3" onChange={handle_Change} />
                         <Input type="text" name="customer_Cellphone" label="手機號碼"   register={register} error={errors.customer_Cellphone} icon="fas fa-mobile-alt" asterisk={true} columns="3" onChange={handle_Change} />
                         <Input type="text" name="customer_Telephone" label="家用電話"   register={register} error={errors.customer_Telephone} icon="fas fa-phone" asterisk={false} columns="3" />
                         <Input type="text" name="customer_Line"      label="Line ID"   register={register} error={errors.customer_Line}      icon="fab fa-line" asterisk={false} columns="3" />
@@ -277,7 +299,7 @@ const Customer_Form : FC< ICustomer_Form >= ( { register , watch , setValue , er
 
                         <div className="column is-2-desktop">
 
-                            <p> 性 別 &nbsp; <b style={{color: "red"}}> {errors.customer_Sex?.message} </b></p>
+                            <p> 性 別 &nbsp; <b className="fRed"> {errors.customer_Sex?.message} </b></p>
 
                             <div className="control has-icons-left">
 

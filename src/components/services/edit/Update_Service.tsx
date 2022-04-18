@@ -215,36 +215,46 @@ const Update_Service = ( ) => {
     const sign   = { background:"red" , color:"white" , width:"100%" } ;
 
 
+
     return <form onSubmit = { handleSubmit( onSubmit ) } >
 
-                <span className="tag is-medium is-white absolute" style={{ top:"10px" }}> 
-                   { service_Type } 資料表 ID : {  service_Id  } 
-                </span>
+            
+            
+                <span className="tag relative is-medium " style={{ top:"-20px" , fontSize:"10pt", float:"right" }}> 
+                   資料表 id :&nbsp;<b>{  service_Id  } </b>
+                </span> 
+                
+            
 
                 <b className={ color } >
 
                     <i className = { icon } ></i> &nbsp; &nbsp;
+
                     { ( service_Type === "基礎" || service_Type === "洗澡" || service_Type === "美容" ) &&  <> Q{ Q_code } &nbsp; </> }
-                    { pet.name } ( { pet.species } ) &nbsp; &nbsp;
+                    
+                    { pet?.name ? <> { pet.name } ( { pet.species } ) &nbsp; &nbsp;</> : <p className="fRed"> 寵物已刪除 </p> }
 
                     { pet.sex   && <> <b className="tag is-white is-rounded f_12"> { pet.sex }    </b> &nbsp; &nbsp; </> }
                     { pet.age   && <> <b className="tag is-white is-rounded f_12"> { pet.age } 歲 </b> &nbsp; &nbsp; </> }
                     { pet.color && <> <b className="tag is-white is-rounded f_12"> { pet.color }  </b>               </> } &nbsp;
 
-                </b>
+                </b> 
+                
+                <br/><br/>
 
                 { /*  for 今日處理碼 ( Q 碼 ) 清單  */ }
-                { source_Page &&
+                { 
+                  source_Page &&
                     <b className="tag is-large pointer hover" style={{ float:"right" }}  onClick = { () => back_To_Prev_Page( source_Page ) } >
                         <i className="fas fa-step-backward"></i> &nbsp; 回上一頁
                     </b>
                 }
 
-                <br/><br/>
-
+            
                 { /* 轉異常 */ }
                 <Submit_Error current_User_Name = { current_User['name'] } data = { data } /> 
     
+
                 { /* 顯示 : 異常案件 */ }
                 <div>
                     { data['is_error'] === 1 &&

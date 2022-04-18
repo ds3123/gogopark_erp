@@ -86,31 +86,30 @@ const Archive_List = ( ) => {
 
   const bar = { width:"100%", top:"-15px" , padding:"0px" , justifyContent : "left"  } ;
 
+
   return <>
 
-            <b className="tag is-large relative is-white" style={ bar } >
+            { /* 分類標籤 */ }    
+            <b className="tag is-large relative is-white m_Bottom_50" style={ bar } >
 
-              {
+               {
 
-                  tabs.map( ( x , y ) => {
+                  tabs.map( ( x , y ) => 
 
-                     return <b key={ y } className = { `tag pointer is-medium ${ current_Tab === x ? 'is-primary' : 'is-white' } `   }
-                                         style     = {{ marginRight : "35px" }}
-                                         onClick   = { () => click_Tab( x ) } >
+                     <b key = { y } className = { `tag pointer m_Right_30 is-medium ${ current_Tab === x ? 'is-primary' : 'is-white' }` }
+                                    onClick   = { () => click_Tab( x ) } >
 
                                { x }
 
-                            </b>
+                     </b>
 
-                  })
+                  )
 
-              }
-
+               }
 
             </b>
 
-            <br/><br/><br/>
-
+            { /* 點選標籤後，顯示相對應的列表 */ }
             { current_Element }
 
          </>

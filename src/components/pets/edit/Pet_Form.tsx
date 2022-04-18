@@ -59,9 +59,6 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
 
 
 
-
-
-
     // # 監看 _ 必填欄位
     useVerify_Required_Columns_Pet( watch ) ;
 
@@ -270,7 +267,7 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
                                      <b> { pet_Owner.customer.name } ( { pet_Owner?.customer?.mobile_phone } ) </b> : 
                                     
                                       <b className="fRed"> 尚未指定主人 </b>
-                                    }
+                             }
         
                          </b> 
                       </b>

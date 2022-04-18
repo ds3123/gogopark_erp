@@ -111,10 +111,12 @@ const Update_Customer  = ( ) => {
     // 欲傳遞屬性
     const props = {
 
-        register : register ,
-        watch    : watch ,
-        errors   : errors ,
-        isValid  : isValid ,
+        register    : register ,
+        watch       : watch ,
+        errors      : errors ,
+        isValid     : isValid ,
+
+        customer_Id : cus_Id      // 身分證字號
        
     }
 

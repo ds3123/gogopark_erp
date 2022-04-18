@@ -43,16 +43,16 @@ const Amount_Payable : FC< {  editType : any , current : any , receivable : numb
       // # 該寵物，有自訂價格 :
 
       // 單次洗澡下
-      if( payment_Type === '單次洗澡' && pet['single_bath_price'] )   return pet['single_bath_price'] + self_Adjust + extra_Item + extra_Beauty + pickup ;
+      if( payment_Type === '單次洗澡' && pet?.single_bath_price )   return pet?.single_bath_price + self_Adjust + extra_Item + extra_Beauty + pickup ;
 
       // 單次美容下
-      if( payment_Type === '單次美容' && pet['single_beauty_price'] ) return pet['single_beauty_price'] + self_Adjust + extra_Item + pickup ;
+      if( payment_Type === '單次美容' && pet?.single_beauty_price ) return pet?.single_beauty_price + self_Adjust + extra_Item + pickup ;
 
       // 包月洗澡下
-      if( plan_Type === '包月洗澡' && pet['month_bath_price'] )   return pet['month_bath_price'] + self_Adjust + pickup  ;
+      if( plan_Type === '包月洗澡' && pet?.month_bath_price )   return pet?.month_bath_price + self_Adjust + pickup  ;
     
       // 包月美容下
-      if( plan_Type === '包月美容' && pet['month_beauty_price'] ) return pet['month_beauty_price'] + self_Adjust + pickup ;
+      if( plan_Type === '包月美容' && pet?.month_beauty_price ) return pet?.month_beauty_price + self_Adjust + pickup ;
 
 
       return data.amount_payable  

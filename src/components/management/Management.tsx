@@ -1,5 +1,5 @@
 
-import { useEffect , useState } from "react" ;
+import { useEffect  } from "react" ;
 import useMulti_NavOptions from "hooks/layout/useMulti_NavOptions";
 
 // 各頁面元件
@@ -237,6 +237,17 @@ const Management = () => {
             click_Third('封存資料') ;
 
         }
+
+        // * 方案資料
+        const delete_CustomPlan = cookie.load('after_Delete_CustomPlan') ;
+
+        if( delete_CustomPlan && delete_CustomPlan === '方案資料' ){
+
+            click_Second('資料管理') ;
+            click_Third('方案資料') ;
+
+        }
+
 
     } , [] ) ;
 

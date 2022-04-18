@@ -122,7 +122,7 @@ const Plans = ( ) => {
                       <th> <b className="fDred">收款</b>  日期 </th>
                       <th> <b className="fDblue">開始</b> 日期 </th>
                       <th> <b className="fDblue">結束</b> 日期 </th>
-                      <th style={{ width:"100px" }}> 加價項目 </th> 
+                      <th style={{ width:"100px" }}> 使用情形 </th> 
                       { /* <th> 封 存  </th> */ }
                     </tr>
                 </thead>

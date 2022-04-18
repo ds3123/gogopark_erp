@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useState} from "react"
+import { FC , useEffect , useState} from "react"
 import {Edit_Form_Type} from "utils/Interface_Type";
 import {useDispatch} from "react-redux";
 import { set_current_care_type , set_care_ordinary_price , set_care_ahead_price , set_care_postpone_price , set_expect_care_end_time } from "store/actions/action_Care"

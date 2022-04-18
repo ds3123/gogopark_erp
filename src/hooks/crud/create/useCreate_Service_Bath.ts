@@ -42,7 +42,7 @@ export const useCreate_Service_Bath = () => {
 
             //  # 如果付款方式是 "方案"，再新增 _ 方案 "使用紀錄" ( 資料表 : plan_used_records )
             if( data['payment_Method'] === '方案' ){
-                console.log( 'aaaa' )
+               
                 dispatch( add_Plan_Used_Record( data , res , history ) ) ;
                
                 return false ;

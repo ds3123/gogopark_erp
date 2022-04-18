@@ -19,7 +19,6 @@ const Plan_Used_ExtraItem_Sign = ( { plan } : { plan : any } ) => {
       
       if( used_Records.length > 0 ){
 
-         
             used_Records.forEach( ( x : any ) => {
 
                 axios.get( `/plan_records/show_sigle_plan_used_record_with_service/${ x['id'] }` )
@@ -28,13 +27,13 @@ const Plan_Used_ExtraItem_Sign = ( { plan } : { plan : any } ) => {
                             const record = res.data ;
 
                             let extra_Item_Arr = null ;
-                            if( record['service_type'] === '洗澡' ) extra_Item_Arr = record.bath.extra_service?.split(',') ;
-                            if( record['service_type'] === '美容' ) extra_Item_Arr = record.beauty.extra_service?.split(',') ;
+                            if( record['service_type'] === '洗澡' ) extra_Item_Arr = record.bath?.extra_service?.split(',') ;
+                            if( record['service_type'] === '美容' ) extra_Item_Arr = record.beauty?.extra_service?.split(',') ;
 
                             // 若有使用加價項目
                             if( extra_Item_Arr && extra_Item_Arr.length > 0 ) set_Used_Num( ( n ) => n+1 ) ; // 使用 updater，取得最新 state
 
-                      }) ;
+                     }) ;
                     
             })
   
@@ -52,19 +51,16 @@ const Plan_Used_ExtraItem_Sign = ( { plan } : { plan : any } ) => {
 
    return <>
 
-            { 
-              used_Num > 0 && <b className="tag absolute fWhite" style={ num }> 
-            
-                  {/* 加價：{ used_Num }      */}
+             { 
+               used_Num > 0 && <b className="tag absolute fWhite" style={ num }> 
+                           
+                                 {/* 加價：{ used_Num }      */}
 
-                  ＋加價
+                                 ＋加價
                  
-               </b> 
-                  
-                  }
+                              </b> 
+             }
 
-             
- 
           </>
 } ;
 

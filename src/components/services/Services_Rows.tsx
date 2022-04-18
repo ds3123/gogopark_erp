@@ -127,7 +127,7 @@ const Services_Rows = ( props : any ) => {
         if( data['"初次洗澡優惠"'] ) return data['bath_fee'] ;
 
         // 單次洗澡下，有 _ 自訂洗澡價格
-        if( data['payment_type'] === '單次洗澡' && pet['single_bath_price'] ) return pet['single_bath_price']
+        if( data['payment_type'] === '單次洗澡' && pet?.single_bath_price ) return pet?.single_bath_price
 
         // 單次洗澡下，沒有 _ 自訂洗澡價格
         return data['bath_fee']
@@ -144,12 +144,12 @@ const Services_Rows = ( props : any ) => {
 
 
           // 各種價格 :
-          const basic_Service_Price  = data['basic_fee'] ;                                                                // 基礎價格
-          const bath_Service_Price   = get_Bath_Service_Price( data ) ;                                                   // 洗澡價格
-          const beauty_Service_Price = pet['single_beauty_price'] ? pet['single_beauty_price'] : data['beauty_fee'] ;     // 美容價格 
+          const basic_Service_Price  = data['basic_fee'] ;                                                          // 基礎價格
+          const bath_Service_Price   = get_Bath_Service_Price( data ) ;                                             // 洗澡價格
+          const beauty_Service_Price = pet?.single_beauty_price ? pet?.single_beauty_price : data['beauty_fee'] ;   // 美容價格 
           
-          const month_Bath_Price     = pet['month_bath_price'] ? pet['month_bath_price'] : data['bath_month_fee'] ;       // 包月洗澡
-          const month_Beauty_Price   = pet['month_beauty_price'] ? pet['month_beauty_price'] : data['beauty_month_fee'] ; // 包月美容 
+          const month_Bath_Price     = pet?.month_bath_price ? pet?.month_bath_price : data?.bath_month_fee ;       // 包月洗澡
+          const month_Beauty_Price   = pet?.month_beauty_price ? pet?.month_beauty_price : data?.beauty_month_fee ; // 包月美容 
 
           const extra_Item           = data['extra_service_fee'] ;  // 加價項目    
           const extra_Beauty         = data['extra_beauty_fee'] ;   // 加價美容 
@@ -212,6 +212,7 @@ const Services_Rows = ( props : any ) => {
     const t_L = { textAlign : "left" } as const ;
 
 
+
     return <tr style = { ( data[ 'service_date' ] && data[ 'service_date' ].slice(0,10) === today ) ? { background:"rgb(160,160,160,.2)" }  : { lineHeight : "40px" } } >
 
              { /* 服務類別 */ } 
@@ -227,13 +228,15 @@ const Services_Rows = ( props : any ) => {
              </td>
              
              { /* 寵物資訊 */ }
-             <td style = { t_L } >  { data['pet'] ? petButton : "" }  </td>
+             <td style = { t_L } >  
+                   { data['pet'] ? petButton : <b className="tag is-medium fRed pointer" onClick = { () => alert( '查無此服務相對應寵物' ) }  > 已刪除 </b> }  
+             </td>
              
              { /* 客戶姓名 */ }
              <td>
 
                  <b className = "tag is-medium pointer" 
-                    onClick   = { customer ? () => click_Customer( customer.id ) : () => alert( '此服務相對應客戶，已被刪除．' ) } >
+                    onClick   = { customer ? () => click_Customer( customer.id ) : () => alert( '查無此服務相對應客戶' ) } >
 
                     { data?.customer ? data.customer.name : <b className="fRed"> 已刪除 </b> }
 
@@ -244,12 +247,12 @@ const Services_Rows = ( props : any ) => {
              { /* 服務說明 */ } 
              <td className="f_10" style = { t_L } >
 
-                 { !data['plan'] && 
+                 { data?.payment_method === "方案" || 
                        <> <b className="f_12">現金支付</b> : { data[ 'payment_type' ] } </> 
                  }
 
                  { /* 屬於某方案  */ }
-                 { data['plan'] && <> <b className="f_12">方案</b> : { data['plan'][ 'service_note' ] }</>   }
+                 { data?.payment_method === "方案" && <> <b className="f_12">方案</b> : { data?.plan?.service_note }</>   }
 
              </td>
              

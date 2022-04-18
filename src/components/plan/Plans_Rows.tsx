@@ -53,10 +53,10 @@ const Plans_Rows = ( props : any ) => {
 
     
         // 包月洗澡下，有自訂價錢
-        if( plan_Type === '包月洗澡' && pet['month_bath_price'] )   return pet['month_bath_price'] + self_Adjust + pickup ;
+        if( plan_Type === '包月洗澡' && pet?.month_bath_price )   return pet?.month_bath_price + self_Adjust + pickup ;
         
         // 包月美容下，有自訂價錢
-        if( plan_Type === '包月美容' && pet['month_beauty_price'] ) return pet['month_beauty_price'] + self_Adjust + pickup ;
+        if( plan_Type === '包月美容' && pet?.month_beauty_price ) return pet?.month_beauty_price + self_Adjust + pickup ;
         
         return data['plan_fee_total']
           
@@ -68,8 +68,7 @@ const Plans_Rows = ( props : any ) => {
     
         set_Plan_Fee( get_Plan_Price( data ) ) ;
       
-    } , [ data ] )
-
+    } , [ data ] ) ;
 
     return  <tr className="m_Top_20" >
 
@@ -90,17 +89,33 @@ const Plans_Rows = ( props : any ) => {
 
             
                </td>
+
+               { /* 客戶 */ }
                <td>
 
-                   { customer['name'] &&
+                   { customer['name'] ?
+
                      <b className="tag is-medium pointer" onClick = { click_Customer_Name } >
                          { customer['name'] } ( { customer['mobile_phone'] } )
-                     </b>
+                     </b> :
+
+                     <b className="tag is-medium fRed pointer" onClick = { () => alert( '查無此方案相對應客戶' ) }> 已刪除 </b>
+
                    }
 
                </td>
             
-               <td style={left}> { petButton }                                    </td>
+               { /* 寵物 */ }
+               <td style={left}> 
+                    
+                  {  
+                     data?.pet?.serial ? 
+                          petButton : 
+                          <b className="tag is-medium fRed pointer" onClick = { () => alert( '查無此方案相對應寵物' ) }>   已刪除 </b> 
+                  }
+
+               </td>
+               
                <td style={{ width:"100px" }}> { plan_Fee } 元                     </td>
                <td style={{ width:"120px" }}> { data['created_at'].slice(0,10) }  </td>
 

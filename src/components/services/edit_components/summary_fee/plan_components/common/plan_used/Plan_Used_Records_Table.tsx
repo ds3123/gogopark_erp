@@ -24,14 +24,13 @@ type Plan_Used_Records_Table = {
 // @ 方案使用列表
 const Plan_Used_Records_Table = ( { _plan_Used_Records , data } : Plan_Used_Records_Table  ) => {
 
-
-
+    
 
    return <table className="table is-fullwidth is-hoverable">
-
          
                 <thead>
                     <tr>
+                        <th>  服務類型 </th>  
                         <th>  服務說明  </th>
                         {/* <th>  服務價格  </th> */}
                         <th>  加價項目  </th>

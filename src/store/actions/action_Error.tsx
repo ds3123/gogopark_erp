@@ -108,6 +108,7 @@ export const submit_Delete_Service = ( data : any , current_User_Name : string ,
                 // 取得 _ 服務單 id 、API Url
                 const { service_Id , service_Url } = switch_Service_Type_Id( data ) ;
 
+
                 // 銷單的服務若為 : 使用 "方案" 
                 if( data[ 'payment_method' ] === "方案" && data[ 'plan' ] ){
                     
@@ -117,8 +118,6 @@ export const submit_Delete_Service = ( data : any , current_User_Name : string ,
                 }
 
              
-
-
                 // 更新 _ 異常狀態
                 if( service_Id && service_Url ){
         

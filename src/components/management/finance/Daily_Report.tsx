@@ -22,7 +22,7 @@ type Title_Bar = {
     tag_Color        : string ; 
     service_Type     : string ;
     amount_Type      : string ;
-    amount_Total     : number ;
+    amount_Total     : number  | string  ;
     Folding_Bt_Type  : any    ;
 }
 
@@ -48,10 +48,16 @@ const Section_Title_Bar : FC< Title_Bar > = ( { tag_Color , service_Type , amoun
                 </div>
 
                 <div className={ col_3 }>
-                    <b className={ w_Tag }> 小計 :&nbsp;<span className= { amount_Color } > { amount_Total } </span>&nbsp;元  </b>
-                    { Folding_Bt_Type }
-                </div>
 
+                     { /* 先隱藏扣_預收款的小計 */ }
+                     { ( amount_Total === 0 || amount_Total > 0 ) &&
+                        <b className={ w_Tag }> 小計 :&nbsp;<span className= { amount_Color } > { amount_Total } </span>&nbsp;元  </b>
+                     } 
+                        
+                     { Folding_Bt_Type }
+
+                 </div>
+                
             </div>
 
 } ;
@@ -69,7 +75,11 @@ const Daily_Report = () => {
 
     // # 總計金額
     const service_Amount_Total     = useSelector( ( state : any ) => state.Service.service_Amount_Total ) ;     // 洗澡美容 _ 應收帳款
-    const deduct_Plan_Amount_Total = useSelector( ( state : any ) => state.Plan.deduct_Plan_Amount_Total ) ;    // 洗澡美容 _ 扣 _ 預收帳款
+  
+    // 方案扣預收款的計算方式，再確認 ( 2022.04.14 )
+    // const deduct_Plan_Amount_Total = useSelector( ( state : any ) => state.Plan.deduct_Plan_Amount_Total ) ;    // 洗澡美容 _ 扣 _ 預收帳款
+    const deduct_Plan_Amount_Total = '' ;    // 洗澡美容 _ 扣 _ 預收帳款
+   
     const buy_Plan_Amount_Total    = useSelector( ( state : any ) => state.Plan.buy_Plan_Amount_Total ) ;       // 洗澡美容 _ 預收款  
     const lodge_Amount_Total       = useSelector( ( state : any ) => state.Service.care_Lodge_Amount_Total )  ; // 住宿安親 _ 應收款                                      
     
@@ -134,7 +144,7 @@ const Daily_Report = () => {
                 </div>
 
             </div>
-            
+                    
             { /* 洗澡美容 : 應收款 */ }
             <Section_Title_Bar tag_Color='is-success' service_Type='洗澡美容' amount_Type='應收款' amount_Total={ service_Amount_Total } Folding_Bt_Type={ Folding_Bt_Receivable } />
             { is_folding_Receivable && <div className="m_Bottom_100"> <Service_Receivable_Table  data={ service_Data } /> </div>  }

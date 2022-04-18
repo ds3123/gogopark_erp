@@ -83,8 +83,8 @@ const Plan_Form : FC< IPlan > = ( { register , setValue , errors , current, edit
           const beauty_Month = species_Service_Prices.filter( ( x : any ) => x['service_type'] === '美容' && x['service_plan'] === '包月美容' )[0] ;
 
           // * 設定 _ 包月洗澡、美容價格
-          dispatch( set_month_bath_price( bath_Month['service_price'] ) ) ;
-          dispatch( set_month_beauty_price( beauty_Month['service_price'] ) ) ;
+          dispatch( set_month_bath_price( bath_Month?.service_price ) ) ;
+          dispatch( set_month_beauty_price( beauty_Month?.service_price ) ) ;
 
      }
 
@@ -98,10 +98,10 @@ const Plan_Form : FC< IPlan > = ( { register , setValue , errors , current, edit
          const plan_Type = data[ 'plan_type' ] ;  // 方案類型( Ex. 包月洗澡、包月美容... )
  
          // 包月洗澡下，有自訂價錢
-         if( plan_Type === '包月洗澡' && pet['month_bath_price'] )   return pet['month_bath_price'] ;
+         if( plan_Type === '包月洗澡' && pet?.month_bath_price )   return pet?.month_bath_price ;
          
          // 包月美容下，有自訂價錢
-         if( plan_Type === '包月美容' && pet['month_beauty_price'] ) return pet['month_beauty_price'] ;
+         if( plan_Type === '包月美容' && pet?.month_beauty_price ) return pet?.month_beauty_price ;
          
          return data['plan_basic_price'] ;
 
@@ -140,7 +140,7 @@ const Plan_Form : FC< IPlan > = ( { register , setValue , errors , current, edit
                 { !editType && <span className="absolute" style={{ top:"-30px" }}> <i className="fas fa-exclamation-circle"></i> &nbsp;需先新增客戶及其寵物，才能購買方案 。 </span> }
  
                 { /* 標題 */ }
-                <label className="label " style={{ fontSize : "1.3em" }} >
+                <label className="label m_Bottom_50" style={{ fontSize : "1.3em" }} >
 
                     <b className="tag is-large is-danger" > <i className="fas fa-file-alt"></i> &nbsp; 方 案 </b> &nbsp; &nbsp;
 
@@ -149,8 +149,7 @@ const Plan_Form : FC< IPlan > = ( { register , setValue , errors , current, edit
 
                 </label>
 
-                <br/>
-
+            
                 <div className="columns is-multiline is-mobile">
 
                      { /* 方案類型 ( 下拉選單 ) */ }

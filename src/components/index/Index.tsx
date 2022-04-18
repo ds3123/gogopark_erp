@@ -28,7 +28,7 @@ const Index = () => {
     const numObj_4 = useShopStatus_Sum( "已回家( 房 )" , pet_Arr ) ;
 
 
-    // 每隔 3 秒，取得即時資料 ( 以使美容師資料與櫃台新增資料一致 )
+    // 每隔 1 秒，取得即時資料 ( 以使美容師資料與櫃台新增資料一致 )
     useEffect( () => { 
 
        let is_Mounted    = true ; 
@@ -39,7 +39,7 @@ const Index = () => {
            
                               if( is_Mounted ) dispatch( get_Service_Records_By_Date( today ) ) ;
                 
-                           } , 3000 )  
+                           } , 1000 )  
         
        return () => {
 

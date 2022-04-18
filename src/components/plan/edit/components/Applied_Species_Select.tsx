@@ -104,7 +104,7 @@ const Applied_Species_Select : FC< sType > = ( { register , errors , editType , 
                 { 
                     editType === '編輯' &&  
                             <div className="column is-3-desktop f_14"> 寵物品種 : 
-                                <b className="fDblue"> { serviceData.pet ? serviceData.pet.species : ''  }  </b> 
+                                <b className="fDblue"> { serviceData.pet ? serviceData.pet.species :  <span className="fRed"> 已刪除 </span>  }  </b> 
                             </div>  
                 }
 

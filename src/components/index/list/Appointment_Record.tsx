@@ -111,7 +111,7 @@ const Appointment_Records = ( ) => {
                         <th> 預約類別  </th>
                         <th> 預約狀態  </th>
                         <th className="relative" style={{ width:"80px" }} > 應付 </th>
-                        <th> 已付     </th>
+                        {/* <th> 已付     </th> */}
                         <th> 狀態調整 </th>
                         <th> 寵物資訊 </th>
                         <th> 主人     </th>
@@ -141,8 +141,9 @@ const Appointment_Records = ( ) => {
                                            { x['shop_status'] === '尚未到店' || <b className="fDblue f_11"> { x['shop_status'] } </b> }
                                        </td>
                                        <td> { x['amount_payable'] }  </td>     
-                                       <td> 
+                                       {/* <td> 
                                            
+                                        
                                          <input type="number" 
                                                 className="input is-small f_10" 
                                                 value={ x['amount_paid'] }
@@ -150,7 +151,7 @@ const Appointment_Records = ( ) => {
                                                 min={ 0 }  
                                                 style={{width:"85px",padding:"3px"}} /> 
                                            
-                                       </td>    
+                                       </td>     */}
                                        <td>
 
                                            { x['shop_status'] === '尚未到店' &&

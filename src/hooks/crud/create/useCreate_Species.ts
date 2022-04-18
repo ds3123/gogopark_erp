@@ -10,10 +10,8 @@ import cookie from 'react-cookies' ;
 // @ 新增 _ 品種
 export const useCreate_Species = () => {
 
-
     const history  = useHistory() ;
     const dispatch = useDispatch() ; 
-
 
     const create_Pet_Species = ( data  : any ) => {
 
@@ -30,7 +28,7 @@ export const useCreate_Species = () => {
             toast(`🦄 已新增 : 品種`, { position: "top-left", autoClose: 1500 , hideProgressBar: false,});
 
             // 關掉右側面板
-            dispatch( set_Side_Panel(false , null ,{} ) ) ;
+            dispatch( set_Side_Panel( false , null ,{} ) ) ;
 
             // 設定 cookie ( for 前往 : 系統設定 > 寵物品種 / 5 秒後銷毀 )
             cookie.save( 'after_Created_Redirect' , '系統設定_寵物品種'  ,  { path : '/' , maxAge : 5 } ) ;

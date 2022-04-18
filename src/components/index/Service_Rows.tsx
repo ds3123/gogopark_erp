@@ -1,5 +1,5 @@
 
-import { FC , useEffect } from "react" ;
+import { useEffect } from "react" ;
 import { string_Short } from "utils/string/edit_string"
 import {useDispatch, useSelector} from "react-redux";
 import { set_Side_Panel } from "store/actions/action_Global_Layout";
@@ -7,14 +7,17 @@ import Update_Pet from "components/pets/edit/Update_Pet";
 import { useRating_Sign }  from "hooks/layout/useRating";
 import { Service_Type } from "utils/Interface_Type"
 import Update_Service from "components/services/edit/Update_Service";
-
 import { click_Show_Edit_Customer } from "store/actions/action_Customer";
+import Service_Sign from "components/index/components/Service_Sign"
+
 
 interface IService {
     data : any
 }
 
-const Service_Rows : FC<IService> = ( { data } ) => {
+
+
+const Service_Rows = ( { data } : IService ) => {
 
     const dispatch = useDispatch() ;
 
@@ -62,28 +65,14 @@ const Service_Rows : FC<IService> = ( { data } ) => {
 
     // ------------------------------------------------------------------------------------------------------
 
-    let tagStyle = 'tag '+style+' is-medium is-light is-rounded pointer f_11 relative' ;
+    let tagStyle = 'tag '+style+' is-medium is-light is-rounded pointer f_11 relative m_Right_15' ;
     const rating = { top:"-3px" , left : "-5px" , fontSize:"9pt" } as const ;
-    const sign   = { top:"5px" , right:"0px" , color:"red" } ;
-    const dollar = { top:"17px", left:"0px" , color:"red" , zIndex:2 } as const ;
-
+    
 
     return <div className="title is-6 relative" style={{ marginBottom : "20px" }} >
 
-               { /* 異常標示 */ }
-               <b className="absolute" style={sign}>
-                  { data['is_error'] === 1 &&  <i className="fas fa-exclamation-triangle"></i> }
-               </b>
-
-               { /* 銷單標示 */ }
-               <b className="absolute" style={sign}>
-                  { data['is_delete'] === 1 &&  <i className="fas fa-trash-alt"></i> }
-               </b>
-
-               { /* 是否付費標示 */ }
-               <b className="absolute f_14" style={dollar}>
-                  { data['amount_payable'] !== data['amount_paid'] &&  <i className="fas fa-dollar-sign"></i> }
-               </b>
+               { /* 服務相關標示 ( 異常、銷單、是否付費 )  */ }
+               <Service_Sign is_error = { data['is_error'] } is_delete = { data['is_delete'] } amount_paid = { data['amount_paid'] } amount_payable = { data['amount_payable'] }   />
 
                <span className={ tagStyle } onClick={ click_Qcode } > Q{ q_Code }
                
@@ -92,14 +81,14 @@ const Service_Rows : FC<IService> = ( { data } ) => {
                     { data['service_status'] === '已到店' ? '' : '預' } 
                  </b>
                
-               </span> &nbsp;
+               </span> 
 
-               <span className="relative tag is-medium pointer f_11" onClick={ click_Pet } >
+               <span className="relative tag is-medium pointer f_11 m_Right_15" onClick={ click_Pet } >
 
                  { is_Detail_Mode && <span className="absolute" style={ rating }>  { rating_1 } </span> }
                  { string_Short( pet_Name ) } ( { string_Short( pet_Species ) } )
 
-               </span> &nbsp; &nbsp; 
+               </span>
 
                <span className="relative tag is-medium pointer f_11"  onClick={ () => click_Customer( customer.id ) } >
 

@@ -213,11 +213,11 @@ export const cal_Deduct_Plan_Amount_Total = ( data : any[] , dispatch : any  ) =
     let total_Amount = 0 ;
     _data.forEach( ( x : any ) => {
 
-      const plan_Type = x['plan']['plan_type'] ; // 方案類型 ( Ex. 預設方案 : 包月洗澡 / 包月美容 ; 自訂方案 )
+      const plan_Type = x?.plan?.plan_type ; // 方案類型 ( Ex. 預設方案 : 包月洗澡 / 包月美容 ; 自訂方案 )
 
       if( plan_Type === '包月洗澡' )                            total_Amount += x['bath_month_fee'] ;
       if( plan_Type === '包月美容' )                            total_Amount += x['beauty_month_fee'] ;
-      if( plan_Type !== '包月洗澡' && plan_Type !== '包月美容' ) total_Amount += x['plan']['service_price'] ; 
+      if( plan_Type !== '包月洗澡' && plan_Type !== '包月美容' ) total_Amount += x?.plan?.service_price ; 
 
     }) 
 
