@@ -82,7 +82,7 @@ const Amount_Payable : FC< {  editType : any , current : any , receivable : numb
                 }
 
                 { /* @ 編輯資料  */ }   
-                { ( editType && data.payment_method === '現金' ) &&
+                { ( editType && data?.payment_method === '現金' ) &&
 
                     <span className="tag is-large is-white">
                                                                     

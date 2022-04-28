@@ -1,14 +1,13 @@
 
 import Counter from "utils/calculate/Counter";
-
 import { addTwoNumbers } from "utils/calculate/math";
+
 
 // 製作 math 的替身 
 jest.mock( "utils/calculate/math" ) ; 
 
 // 斷言 addTwoNumbers 函式的型別
 const mock_addTwoNumbers = addTwoNumbers as jest.MockedFunction<typeof addTwoNumbers>;
-
 
 
 // test( 'The Default Value of count property would be 0' , ()=>{

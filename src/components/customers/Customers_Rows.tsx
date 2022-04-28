@@ -7,7 +7,7 @@ import { set_Side_Panel } from "store/actions/action_Global_Layout" ;
 import { useDispatch } from "react-redux";
 
 import usePet_Button from "hooks/layout/usePet_Button" ;
-import Update_Customer from "components/customers/edit/Update_Customer";
+import Update_Customer from "components/customers/edit/Update_Customer" ;
 
 import axios from "utils/axios";
 import {toast} from "react-toastify";
@@ -91,7 +91,7 @@ const Customers_Rows = ( props : any ) => {
             cookie.save('after_Delete_Archive' , '客戶' , { path : '/' , maxAge : 5 } ) ;
 
             history.push("/wrongpath");  // 錯誤路徑
-            history.push("/management");  // 正確路徑
+            history.push("/management"); // 正確路徑
 
         }) ;
 
@@ -119,7 +119,15 @@ const Customers_Rows = ( props : any ) => {
 
 
    return <tr>
-             <td style={ t_L } >
+             <td style={ t_L } className="relative">
+
+                 { /* 拒接標示 */ }
+                 { data?.is_rejected === 1 && 
+                      <b className="fRed absolute" style={{ left : "-12px" , top : "12px" }}> 
+                         <i className="fas fa-ban"></i> 
+                      </b>
+                 }
+
                  <b className="tag is-medium pointer" onClick={ click_Customer }>
                      { data['name'] }
                  </b>

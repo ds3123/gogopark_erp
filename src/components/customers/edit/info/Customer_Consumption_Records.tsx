@@ -1,11 +1,11 @@
-import { useEffect , useState , FC } from "react"
+import { useEffect , useState  } from "react"
 import axios from "utils/axios";
 import Pet_Service_Card from "templates/card/Pet_Service_Card"
 import Service_Info_Tab from "templates/tab/Service_Info_Tab"
 
 
 type cus_Records = {
-  customer_Id : string ; // 客戶身分證字號
+  customer_Id : string | undefined ; // 客戶身分證字號
 }
 
 type sType = 'basics' | 'bathes' | 'beauties' | 'cares' | 'lodges' | 'plans' ;
@@ -13,7 +13,7 @@ type sType = 'basics' | 'bathes' | 'beauties' | 'cares' | 'lodges' | 'plans' ;
 
 
 // @ 客戶所有消費紀錄 ( for 列表點選 _ 消費歷史，右側滑動面板 )
-const Customer_Consumption_Records : FC< cus_Records > = ( { customer_Id } ) => {
+const Customer_Consumption_Records = ( { customer_Id } : cus_Records ) => {
 
     // # 各類服務資料
     const [ basics , set_Basics ]     = useState([]) ; // 基礎
@@ -37,7 +37,6 @@ const Customer_Consumption_Records : FC< cus_Records > = ( { customer_Id } ) => 
               if( service_Type === 'beauties' ) set_Beauties( sData ) ;
               if( service_Type === 'cares' )    set_Cares( sData ) ;
               if( service_Type === 'lodges' )   set_Lodges( sData ) ;
-
               if( service_Type === 'plans' )    set_Plans( sData ) ;
 
           }) ;

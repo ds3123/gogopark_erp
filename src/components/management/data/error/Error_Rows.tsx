@@ -21,10 +21,8 @@ const Error_Rows = (  props : any ) => {
         const customer      = data['customer'] ;
         const service_error = data['service_error'] ;
 
-        // 異常狀態，是否已處理
-        const [ is_Error_Handled , set_Is_Error_Handled ] = useState( false );   
-
-
+        
+       
         try{
             customer.customer_relation = [ data['customer_relative'] ] ; // 配合 <Update_Customer />，關係人屬性名稱，改為 'customer_relation'
         }catch(e){
@@ -72,6 +70,9 @@ const Error_Rows = (  props : any ) => {
 
         return <tr style = { { lineHeight : "40px" } } >
 
+                      <td> 251 ( 淡水 ) </td>
+                      <td> 01  </td>
+
                       <td className="td_Left">
 
                          { /* for 基礎、洗澡、美容、安親 */ } 
@@ -106,6 +107,7 @@ const Error_Rows = (  props : any ) => {
 
                       <td className="td_Left"> 
 
+                          { /* 有處理紀錄  */ } 
                           { service_error.length > 0 &&
             
                              <b className="tag is-medium is-success pointer" onClick = { () => click_Switch_Error_Status( data ) } >
@@ -114,6 +116,7 @@ const Error_Rows = (  props : any ) => {
 
                           }  
 
+                          { /* 沒有處理紀錄  */ } 
                           { service_error.length > 0 ||
 
                              <b className = { `tag is-medium is-danger pointer` } onClick   = { () => click_Switch_Error_Status( data ) } >

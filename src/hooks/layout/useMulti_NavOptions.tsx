@@ -19,7 +19,7 @@ const Second_Nav : ISecond_Nav[] = [
 
     { title : "員工管理" , icon : "fas fa-user" , third_nav : [] } ,
     //{ title : "資料管理" , icon : "fas fa-database" , third_nav : ["服務異常" , "銷單資料" ,"封存資料","方案資料" , "方案逾期" ,"方案退費"] } ,
-    { title : "資料管理" , icon : "fas fa-database" , third_nav : ["服務異常" , "銷單資料" ,"封存資料","方案資料" ] } , // 原始版本
+    { title : "資料管理" , icon : "fas fa-database" , third_nav : [ "拒接客戶" , "拒接寵物" ,  "服務異常" , "銷單資料" ,"封存資料","方案資料" ] } , // 原始版本
 
     // { title : "系統設定" , icon : "fas fa-cog" , third_nav : ["寵物品種","權限管理","品牌分店"] } , // 原始版本
     { title : "系統設定" , icon : "fas fa-cog" , third_nav : ["寵物品種"] } ,

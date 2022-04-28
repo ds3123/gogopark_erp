@@ -20,6 +20,11 @@ import { useHistory } from "react-router-dom" ;
 import { get_Customer_Relatives } from "store/actions/action_Customer";
 import{ useLocation } from "react-router" ;
 
+import Data_Table_Id from 'templates/note/Data_Table_Id'
+import Update_Submit_Button from 'templates/button/Update_Submit_Button'
+
+
+
 
 
 { /*  編輯客戶 */ }
@@ -27,7 +32,6 @@ const Update_Customer  = ( ) => {
 
     const dispatch    = useDispatch() ;
     const current_Url = useLocation().pathname ;    // 取得目前 url  例如 :  ~ /customers
-
 
     // 取得 context 值
     const value    = useContext( SidePanelContext ) ;  
@@ -51,7 +55,6 @@ const Update_Customer  = ( ) => {
         customer_P_Note    : customer.note ,
 
     }
-
 
 
     // 預先填寫欄位 : 關係人         
@@ -123,18 +126,15 @@ const Update_Customer  = ( ) => {
 
     return <form onSubmit = { handleSubmit( onSubmit ) } >
 
-             { /* 客戶表單欄位  */ }
+             { /* 資料表 id */ }       
+             <Data_Table_Id id = { customer?.customer_id } />
+               
+             { /* 客戶表單欄位 */ }
              <Customer_Form  { ...props } />
 
              { /* 提交按鈕 */ }
-             <div className="has-text-centered m_Top_30 m_Bottom_100" >
-
-                <button disabled={ !isValid } type="submit" className="button is-primary relative is-medium"  >
-                    提交表單
-                </button>
-
-             </div>
-
+             <Update_Submit_Button  name = "提交表單" isValid = { isValid } />
+                        
            </form>
 
 } ;

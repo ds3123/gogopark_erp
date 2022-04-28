@@ -47,7 +47,7 @@ const usePagination = ( api : string , type? : string ) => {
 
         }) ;
 
-    } ,[ api ] ) ;
+    } , [ api ] ) ;
 
 
     return { pageOfItems , filteredItems , click_Pagination } ;

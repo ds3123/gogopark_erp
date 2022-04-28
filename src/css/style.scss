@@ -10,6 +10,27 @@ body{
 
 
 
+  /* 標示 */
+  .redDot{
+
+    position      : absolute ;
+    top           : -8px ;
+    right         : -9px ;
+
+    display       : inline-block !important; 
+    width         : 19px !important; 
+    height        : 19px !important; 
+    line-height   : 19px !important; 
+    background    : red !important; 
+    border-radius : 20px !important; 
+    color         : white !important; 
+    text-align    : center !important; 
+    font-size     : 8pt !important;
+
+  }
+
+
+
   /* 寬、高 */
 
   .w-full{ width:100% !important ; }

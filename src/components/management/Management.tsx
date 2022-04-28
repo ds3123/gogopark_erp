@@ -23,7 +23,16 @@ import Plan_Expire_List from "./data/plan_expire/Plan_Expire_List";
 import Plans from "components/plan/Plans"
 import Plan_Return_List from "components/management/data/plan_return/Plan_Return_List";
 import Delete_Service_List from "components/management/data/delete/Delete_Service_List";
+
+import Reject_Customer_List from "./data/reject_customer/Reject_Customer_List"
+import Reject_Pet_List from "./data/reject_pet/Reject_Pet_List";
+
 import cookie from 'react-cookies'     // 匯入 cookie
+
+
+import { useCustomer_Reject_Process_Num } from 'hooks/data/useCustomer'
+import { usePet_Reject_Process_Num } from 'hooks/data/usePet'
+import { useService_Error_In_Process_Num } from 'hooks/data/useService'
 
 
 
@@ -58,6 +67,8 @@ const Management = () => {
             case '員工管理' : return <Employees/> ;
 
             // # 資料管理
+            case '拒接客戶' : return <Reject_Customer_List /> ;
+            case '拒接寵物' : return <Reject_Pet_List /> ;
             case '服務異常' : return <Error_List /> ;
             case '銷單資料' : return <Delete_Service_List /> ;
             case '封存資料' : return <Archive_List /> ;
@@ -75,6 +86,18 @@ const Management = () => {
         }
 
     } ;
+
+
+    // # 紅點顯示待處理數量
+    const customer_Reject_Process_Num  = useCustomer_Reject_Process_Num() ;    // 客戶 ( 拒接 "處理中" : 數量 )   
+    const pet_Reject_Process_Num       = usePet_Reject_Process_Num();          // 寵物 ( 拒接 "處理中" : 數量 )    
+    const service_Error_In_Process_Num = useService_Error_In_Process_Num();    // 服務 ( 異常 "未處理" : 數量 )   
+    
+    // 資料管理( 第二層 )顯示待處理數量
+    const dataManagement_Note_Num      = customer_Reject_Process_Num + pet_Reject_Process_Num + service_Error_In_Process_Num ;       
+
+
+
 
     // 【 新增 】 資料後，藉由 cookie，重導向至相對應的區塊頁面
     useEffect( () : any => {
@@ -141,6 +164,7 @@ const Management = () => {
        // * 服務異常
        if( redirect && redirect === '資料管理_服務異常' ){
            click_Second( '資料管理' ) ;
+           click_Third( '服務異常' ) ;
        }
 
 
@@ -194,10 +218,26 @@ const Management = () => {
 
        // # 更新 _ 資料管理
 
-        // * 服務異常
+      
         const update_Data = cookie.load('after_Updated_Data') ;
 
-        if( update_Data && update_Data === '資料管理_服務異常' ) click_Second('資料管理' ) ;
+        // 拒接客戶
+        if( update_Data && update_Data === '資料管理_拒接客戶' ){
+            click_Second('資料管理') ;
+            click_Third('拒接客戶') ;
+        } 
+
+        // 拒接寵物
+        if( update_Data && update_Data === '資料管理_拒接寵物' ){
+            click_Second('資料管理') ;
+            click_Third('拒接寵物') ;
+        } 
+
+        // * 服務異常
+        if( update_Data && update_Data === '資料管理_服務異常' ){
+            click_Second('資料管理') ;
+            click_Third('服務異常') ;
+        } 
         
         // * 銷單資料  
         if( update_Data && update_Data === '資料管理_銷單資料' ){
@@ -210,6 +250,7 @@ const Management = () => {
             click_Second('資料管理') ;
             click_Third('方案資料') ;
         } 
+
 
         // * 封存資料
         const undo_Archive = cookie.load('after_Undo_Archive') ;
@@ -260,10 +301,18 @@ const Management = () => {
                     Second_Nav.map( ( item , index ) => {
 
                         return <b key       = {index}
-                                  className =  { "pointer tag is-medium is-success " + ( currentSecond === item.title ? "" : "is-light" )  }
-                                  style     = {{ marginRight:"30px" }}
+                                  className =  { "relative pointer tag is-medium is-success m_Right_30 " + ( currentSecond === item.title ? "" : "is-light" )  }
                                   onClick   = { () => click_Second( item.title ) } >
+                                  
+                                  { /* 紅點顯示 */ }
+                                  { 
+                                     ( item.title === '資料管理' && dataManagement_Note_Num > 0 ) && 
+                                         <b className='redDot'> { dataManagement_Note_Num } </b> 
+                                  }
+                               
+                                  { /* Icon、標題 */ }
                                   <i className = { item.icon }></i> &nbsp; { item.title }
+                               
                                </b>
 
                     })
@@ -275,21 +324,36 @@ const Management = () => {
 
                 <>
 
-                    <br/><br/>
-
                      { /* 第 3 層選項 */
                          Third_Nav.map( ( item , index ) => {
 
                             return <b key       = {index}
-                                      className = { "pointer tag is-medium " + ( currentThird === item ? "is-info" : "is-white" ) }
-                                      style     = {{ marginRight:"30px" }}
-                                      onClick   = { () => click_Third( item ) } >  { item　}
+                                      className = { "relative pointer tag m_Top_30 m_Bottom_20 m_Right_30 is-medium " + ( currentThird === item ? "is-info" : "is-white" ) }
+                                      onClick   = { () => click_Third( item ) } > 
+                                     
+                                      { /* 紅點顯示 */ }
+
+                                      { 
+                                        ( item === '拒接客戶' && customer_Reject_Process_Num > 0 ) && 
+                                           <b className="redDot"> { customer_Reject_Process_Num } </b> 
+                                      }
+
+                                      { 
+                                        ( item === '拒接寵物' && pet_Reject_Process_Num > 0 ) &&
+                                           <b className="redDot"> { pet_Reject_Process_Num } </b> 
+                                      }
+
+                                      { 
+                                        ( item === '服務異常' && service_Error_In_Process_Num > 0 ) && 
+                                          <b className="redDot"> { service_Error_In_Process_Num } </b> 
+                                      }
+                                      
+                                      { item　}
+
                                     </b>
 
                         })
                      }
-
-                    <br/>
 
                 </>
 

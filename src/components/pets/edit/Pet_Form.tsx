@@ -1,15 +1,12 @@
-import { FC , useEffect , useState } from "react"
-
+import { useEffect , useState } from "react"
 import { Edit_Form_Type } from "utils/Interface_Type"
-import { Input } from "templates/form/Input";
-import { useRead_Sort_Species } from "hooks/ajax_crud/useAjax_Read";
-
-import { set_Modal } from "store/actions/action_Global_Layout" ;
-
-import useSection_Folding from "hooks/layout/useSection_Folding" ;
+import { Input } from "templates/form/Input"
+import { useRead_Sort_Species } from "hooks/ajax_crud/useAjax_Read"
+import useSection_Folding from "hooks/layout/useSection_Folding" 
+import Pet_Birthday from "./info/Pet_Birthday"
 
 // Redux
-import { useDispatch , useSelector } from "react-redux";
+import { useDispatch , useSelector } from "react-redux"
 import { set_IsExisting_Pet , 
          set_Current_Species_Select_Id , 
          set_Current_Pet_Size , 
@@ -17,35 +14,35 @@ import { set_IsExisting_Pet ,
          set_Pet_Serial_Input ,
          get_Pet_Service_Records , 
          set_Current_Pet
-        } from "store/actions/action_Pet" ;
+        } from "store/actions/action_Pet" 
 
 import { set_Is_Show_Section_Services } from "store/actions/action_Global_Layout"
-import Customer_Pets from "components/pets/edit/info/Customer_Pets";
-import Pet_Services_Records from "components/pets/edit/info/Pet_Services_Records";
+import Customer_Pets from "components/pets/edit/info/Customer_Pets"
+import Pet_Services_Records from "components/pets/edit/info/Pet_Services_Records"
 import { useVerify_Required_Columns_Pet } from "hooks/layout/useVerify_Columns" 
 import { Service_Type } from "utils/Interface_Type"
 import { set_Pet_Service_Records } from "store/actions/action_Pet"
 
 import Pet_Prices_Status from "components/pets/edit/info/Pet_Prices_Status"
+import axios from "utils/axios"
+import Pet_Owner from 'components/pets/edit/info/Pet_Owner'
 
-import Update_Pet_Owner from "components/customers/change/Update_Pet_Owner"
-import axios from "utils/axios";
+import Pet_Is_Dead from 'components/pets/edit/info/Pet_Is_Dead'
+import Reject_Service from 'templates/note/Reject_Service'
 
+type serviceType = '基礎' | '洗澡' | '美容' | '安親' | '住宿'
 
-
-
-
-type serviceType = '基礎' | '洗澡' | '美容' | '安親' | '住宿' ;
 
 
 
 { /* 寵物表單欄位  */ }
-const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors , current  , pet_Species_id , pet_Serial } ) => {
+const Pet_Form = ( { register , watch , setValue , errors , current  , pet_Species_id , pet_Serial , control } : Edit_Form_Type ) => {
 
     const dispatch = useDispatch() ;
 
     // 是否顯示 : 詳細選項
-    const [ is_Detial , set_Is_Detial ] = useState( current ? false : true ) ;
+    const [ is_Detial , set_Is_Detial ] = useState( false ) ;
+
 
     // 寵物序號
     const [ pet_Num , set_Pet_Num ] = useState( '' ) ;
@@ -53,10 +50,8 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
     // 寵物品種名稱
     const [ pet_Species_Name , set_Pet_Species_Name ] = useState( '' ) ;
 
-
     // 寵物及主人資料
     const [ pet_Owner , set_Pet_Owner ] = useState<any>( null );
-
 
 
     // # 監看 _ 必填欄位
@@ -106,6 +101,7 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
         const _pet   = petSpecies.filter( x => x['name'] === pet['species'] )[0] ; 
         const config = { shouldValidate : true , shouldDirty : true } ;
 
+
         // 基本資料
         setValue( "pet_Serial"   , pet['serial']  , config ) ;
         setValue( "pet_Name"     , pet['name']    , config ) ;
@@ -115,8 +111,17 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
         setValue( "pet_Sex"      , pet['sex']     , config ) ;
         setValue( "pet_Color"    , pet['color']   , config ) ;
         setValue( "pet_Weight"   , pet['weight']  , config ) ;
-        setValue( "pet_Age"      , pet['age']     , config ) ;
+       
         setValue( "pet_Size"     , pet['size'] ? pet['size'] : '請選擇' , config ) ;
+
+        setValue( "pet_Age"      , pet?.birthday ? new Date( pet?.birthday ) : ''  , config ) ;
+        setValue( "pet_Chip"     , pet?.chip_code  , config ) ;
+
+        // 往來醫院
+        setValue( "pet_Hospital_Name"      , pet?.hospital_name      , config ) ;
+        setValue( "pet_Hospital_Telephone" , pet?.hospital_telephone , config ) ;
+        setValue( "pet_Hospital_Address"   , pet?.hospital_address   , config ) ;
+
 
         // 調查資料 ( 單選 )
         setValue( "injection" , pet['injection'] , config ) ;
@@ -173,14 +178,6 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
     const click_Detail_Mode = ( bool : boolean ) => set_Is_Detial( !bool )
   
 
-    // 點選 _ 寵物的主人
-    const click_Check_Used_Records = ( cus_Data : any ) => {
-
-        dispatch( set_Modal( true , <Update_Pet_Owner /> , { data : cus_Data , modal_Style : { width : "84%" , left : "8%" , bottom : "0px" } } )) ;
-
-    } ;
-
-
     // 設定 _ 寵物編號 ( for【 新增 】 )
     useEffect( () => {
 
@@ -211,8 +208,9 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
 
     } , [ pet_Species_Name ] ) ;
 
+
     /*
-         # 【 編輯 】設定 : " 品種 " 下拉選項 ( Ajax 取得 )
+         # 【 編輯 】設定 : "品種" 下拉選項 ( Ajax 取得 )
            * 因 Pet_Form 載入時，Ajax 資料尚未取得( 若以 React Hook Form 的 defaultValues，無法成功設定 _ 預設值 )
            * 需取得資料後，再以 setValue() 單獨設定預設值
     */
@@ -241,37 +239,28 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
               .then( res => set_Pet_Owner( res.data ) )
               .catch( err => console.log( err ) ) ;
 
-
        } 
 
-    } , [ pet_Serial ] )
+    } , [ pet_Serial ] ) ;
+
+
+    // 目前為新增或編輯狀態
+    const is_Create = current ? true : false ;
+
 
 
    return <>
             
-               { current && <hr/> } 
+               { is_Create && <hr/> } 
+
 
                { /* 寵物基本資料 */ }
                <label className="label m_Top_70">
 
                    <i className="fas fa-dog"></i> &nbsp; 寵物資料 &nbsp;
 
-                   { /* 主人資料 */ } 
-                   { !current  && 
-                      <b className="tag is-medium is-rounded hover relative" onClick={ () => click_Check_Used_Records( pet_Owner ) }  style={{ top:"-3px" }}> 
-                         <i className="fas fa-user f_12" ></i> &nbsp; 主人 :&nbsp;
-                         <b className="fDred"> 
- 
-                             { pet_Owner?.customer ? 
-
-                                     <b> { pet_Owner.customer.name } ( { pet_Owner?.customer?.mobile_phone } ) </b> : 
-                                    
-                                      <b className="fRed"> 尚未指定主人 </b>
-                             }
-        
-                         </b> 
-                      </b>
-                   } 
+                   { /* 主人資料 ( 分配、調整 ) */ } 
+                   { !current  && <Pet_Owner pet_Owner = { pet_Owner } />  } 
 
                    { Folding_Bt } { /* 收折鈕 */ } &nbsp; &nbsp;
 
@@ -279,7 +268,7 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
                    <Pet_Services_Records current = { current as Service_Type } />  
 
                    { /* 客戶所有寵物 */ }
-                   <Customer_Pets current={ current } current_Customer_Pets={ current_Customer_Pets } click_Pet_Button = { click_Pet_Button } />
+                   <Customer_Pets current = { current } current_Customer_Pets = { current_Customer_Pets } click_Pet_Button = { click_Pet_Button } />
 
                </label> 
 
@@ -288,7 +277,7 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
 
                    <>
 
-                       <div className="columns is-multiline is-mobile">
+                        <div className="columns is-multiline is-mobile m_Bottom_30">
 
                             { /* 名字 */ }
                             <Input type="text" name="pet_Name" label="名 字" register={register} error={errors.pet_Name}
@@ -349,7 +338,7 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
                             { /* 性別  */ }
                             <div className="column is-2-desktop">
 
-                               <p> 性 別 &nbsp; <b style={{color: "red"}}> {errors.pet_Sex?.message} </b></p>
+                               <p> 性 別 &nbsp; <b className="fRed"> {errors.pet_Sex?.message} </b></p>
 
                                <div className="control has-icons-left">
 
@@ -370,15 +359,26 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
 
                             </div>
 
-                            <Input type="text"   name="pet_Color"  label="毛 色"      register={register} error={errors.pet_Color}
-                                    icon="fas fa-eye-dropper" asterisk={false} columns="3" />
+                            <Input type="text"   name="pet_Color"  label="毛 色"  register={register} error={errors.pet_Color}
+                                    icon="fas fa-eye-dropper" asterisk={false} columns="2" />
 
-                            <Input type="number" name="pet_Age"    label="年 紀 (歲)" register={register} error={errors.pet_Age}
-                                    icon="fas fa-pager"       asterisk={false} columns="3" />
+                            { /* 
 
-                            <Input type="number" name="pet_Weight" label="體 重 (kg)" register={register} error={errors.pet_Weight}
-                                    icon="fas fa-weight"      asterisk={false} columns="3" />
+                                 <Input type="number" name="pet_Age" label="年 紀 (歲)" register={register} error={errors.pet_Age}
+                                        icon="fas fa-pager"  asterisk={false} columns="3" />
 
+                              */ }        
+
+                            <div className="column is-2-desktop">
+                                
+                                { /* 出生日期 ( 計算歲數 ) */ } 
+                                <Pet_Birthday control = { control } setValue = { setValue } pet_Serial = { pet_Serial } current = { current }/>
+
+                            </div>
+
+                           
+                            <Input type="number" name="pet_Weight" label="體 重 (kg)"    register={register} error={errors.pet_Weight}
+                                                                   icon="fas fa-weight" asterisk={false} columns="2" />
 
                             { /* 體型 */ }
                             <div className="column is-3-desktop">
@@ -405,9 +405,55 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
 
                             </div>
 
-                       </div>
+                            
+                            <Input type="text"   name="pet_Chip"  label="晶片號碼"  register={register} error={errors.pet_Chip}
+                                    icon="fas fa-sort-numeric-down" asterisk={false} columns="3" />    
 
-                       <br/>
+                        </div>
+
+                        <div className="columns is-multiline is-mobile m_Bottom_30">
+
+                             <Input type="text"   name="pet_Hospital_Name"  label="往來醫院"            register={register} error={errors.pet_Hospital}
+                                    icon="fas fa-clinic-medical" asterisk={false} columns="3" />
+                             
+                             <Input type="text"   name="pet_Hospital_Telephone"  label="往來醫院電話"   register={register} error={errors.pet_Hospital_Phone}
+                                    icon="fas fa-phone-alt" asterisk={false} columns="3" />
+                             
+                             <Input type="text"   name="pet_Hospital_Address"  label="往來醫院住址" register={register} error={errors.pet_Hospital_Address}
+                                    icon="fas fa-map-marked-alt" asterisk={false} columns="6" />
+
+                        </div>
+
+                        <div className="columns is-multiline is-mobile">
+
+                            { is_Create ||
+      
+                                <>
+
+                                    { /* 已過世 */ }  
+                                    <div className="column is-2-desktop"> 
+                                        <Pet_Is_Dead  pet_Serial = { pet_Serial } />   
+                                    </div>
+
+                                    { /* 拒接 */ }
+                                    <div className="column is-10-desktop">
+                                        <Reject_Service type = "寵物" id = { pet_Serial } />
+                                    </div> 
+
+                                </>
+
+                             }  
+                    
+                        </div>   
+
+                        { /* 寵物價格 ：標準、個別定價  */ }
+                        { pet_Serial && 
+                           <> 
+                              <Pet_Prices_Status register = { register } setValue = { setValue } /> <br/>
+                           </>  
+                        } 
+
+                     
                     
                        { /* Radio 單選 */}
                        <div className="columns is-multiline  is-mobile">
@@ -418,35 +464,24 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
                                    <b className="fRed absolute" style={{ top:"-25px" }}> {errors.bite?.message} </b>
                                    是否會咬人 :
                                </b> &nbsp;
-                               <input type="radio" value="會"     {...register("bite")} /> 會    &nbsp; &nbsp;
+                               <input type="radio" value="會"    {...register("bite")} /> 會    &nbsp; &nbsp;
                                <input type="radio" value="不會"   {...register("bite")} /> 不會  &nbsp; &nbsp;
                                <input type="radio" value="不一定" {...register("bite")} /> 不一定，須小心  &nbsp; &nbsp;
                                <input type="radio" value="不確定" {...register("bite")} /> 不確定
-
-                                
-
+                            
                            </div>
 
                            <div className="column is-1-desktop ">
 
-                           <b className="f_18 relative pointer" style={{  top:"-5px" }} onClick={ () => click_Detail_Mode( is_Detial ) }>
-                                { is_Detial  && <i className="fas fa-toggle-on"></i>   }
-                                { !is_Detial && <i className="fas fa-toggle-off"></i>  }
-                            </b>   
-                           
+                               <b className="f_18 relative pointer" style={{  top:"-5px" }} onClick={ () => click_Detail_Mode( is_Detial ) }>
+                                  { is_Detial  && <i className="fas fa-toggle-on"></i>   }
+                                  { !is_Detial && <i className="fas fa-toggle-off"></i>  }
+                               </b>   
                            
                            </div>
 
                        </div>
 
-
-                       { /* 寵物價格 ：標準、個別定價  */ }
-                       { pet_Serial && 
-                           <> 
-                              <Pet_Prices_Status register = { register } setValue = { setValue } /> <br/>
-                           </>  
-                       }
-                      
                        { is_Detial &&
                        
                             <>
@@ -550,12 +585,7 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
                                             <input type="checkbox" value="其他" {...register("ownerProvide")} /> 其他 &nbsp; &nbsp;
                                         </div>
 
-                                        <div className="column is-12-desktop">
-
-                                            <textarea rows="8" className="textarea" {...register("pet_Note")} placeholder="備註事項"
-                                                        style={{color: "rgb(0,0,180)", fontWeight: "bold"}}/>
-
-                                        </div>
+                                    
 
                                     </div>
 
@@ -563,7 +593,18 @@ const Pet_Form : FC< Edit_Form_Type > = ( { register , watch , setValue , errors
                        
                        }   
 
-                        
+                       { /* 備註事項 */ }
+                       <div className="columns is-multiline is-mobile">
+
+                          <div className="column is-12-desktop">
+
+                               <textarea rows="8" className="textarea" {...register("pet_Note")} placeholder="備註事項"
+                                        style={{color: "rgb(0,0,180)", fontWeight: "bold"}}/>
+
+                          </div>
+
+                       </div>    
+
                        <br/> 
 
                    </>

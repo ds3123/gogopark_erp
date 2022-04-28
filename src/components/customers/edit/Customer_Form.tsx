@@ -12,15 +12,18 @@ import { get_Current_Customer_Pets , set_Current_Customer_Pets , set_IsExisting_
        } from "store/actions/action_Customer";
 
 import { set_Is_Show_Section_Pet } from "store/actions/action_Global_Layout"
-import { get_Today } from "utils/time/date";
-import { get_TimeStamp_5 } from "utils/number/number";
+import { get_Today } from "utils/time/date"
+import { get_TimeStamp_5 } from "utils/number/number"
 import Customer_Services_Records from "components/customers/edit/info/Customer_Services_Records"
 import Customer_Types_Query from "components/customers/edit/info/Customer_Types_Query"
 import { useFetch_Customer_Service_Records } from "hooks/data/useCustomer_Records"
 import { Service_Type } from "utils/Interface_Type"
 import { useVerify_Required_Columns_Customer } from "hooks/layout/useVerify_Columns"
-import Customer_Relatives_Columns from "./info/Customer_Relatives_Columns";
+import Customer_Relatives_Columns from "./info/Customer_Relatives_Columns"
 import { useTocuh_Button_Numbers } from "hooks/layout/useTouch"
+
+import Reject_Service from 'templates/note/Reject_Service'
+
 
 
 // 取得 _ 客戶所有服務資料 ( 傳遞給子元件 : <Customer_Services_Records /> )
@@ -229,6 +232,7 @@ const Customer_Form = ( { register , watch , setValue , errors , current , custo
     const nS = { left:"730px" , top:"58px" , zIndex:555 } as const ;
 
 
+
     // 目前為新增或編輯狀態
     const is_Create = current ? true : false ;
 
@@ -237,12 +241,13 @@ const Customer_Form = ( { register , watch , setValue , errors , current , custo
                 { /* 數字按鈕( for 觸控輸入手機號碼 ) */ }  
                 { is_Show_NumButton && num_Buttons } 
 
+
                 { /* 標題 */ }
                 <label className="label relative m_Bottom_40" >
 
-                    <i className="fas fa-user"></i> &nbsp; 客戶資料 
-
-                    { Folding_Bt } { /* 收折鈕 */ }
+                    <i className="fas fa-user"></i> &nbsp; 客戶資料  &nbsp; 
+                    
+                    {  current && Folding_Bt } { /* 收折鈕 */ }
 
                     { /* 過去服務紀錄、資料數 ( 基礎、洗澡、美容 )  */ }
                     <Customer_Services_Records current={ current as Service_Type } cus_Records={ cus_Service_Records }  />
@@ -323,6 +328,16 @@ const Customer_Form = ( { register , watch , setValue , errors , current , custo
                         
                      </div> <br/>
 
+
+                     { /* 拒接 */ } 
+                     { is_Create ||
+                     
+                        <div className="m_Bottom_50" style={{ zIndex:3 , fontSize:"4pt" }}> 
+                              <Reject_Service type = "客人"  id={ customer_Id } /> 
+                        </div>
+
+                     }
+                  
 
                      { /* 關係人欄位 */ }
                      <Customer_Relatives_Columns  current = { current } register = { register } setValue = { setValue }  />

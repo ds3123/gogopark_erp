@@ -42,7 +42,17 @@ export const columns_Covert_Pet = ( data : any ) => {
                     color        : data['pet_Color'] ,
                     weight       : data['pet_Weight'] ,
                     size         : data['pet_Size'] === '請選擇' ? '' : data['pet_Size'] ,
-                    age          : data['pet_Age'] ,
+
+
+                    chip_code    : data['pet_Chip'] ,     // 晶片號碼
+
+                    // age       : data['pet_Age'] ,
+                    birthday     : data['pet_Age'] ? moment( data['pet_Age'] ).format( 'YYYY-MM-DD' ) : '' , 
+
+                    // 往來醫院
+                    hospital_name      : data[ 'pet_Hospital_Name' ] ,
+                    hospital_telephone : data[ 'pet_Hospital_Telephone' ] ,
+                    hospital_address   : data[ 'pet_Hospital_Address' ] ,
 
                     injection    : data['injection'] ,
                     flea         : data['flea'] ,

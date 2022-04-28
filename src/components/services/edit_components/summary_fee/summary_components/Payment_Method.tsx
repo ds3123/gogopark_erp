@@ -128,7 +128,7 @@ const Payment_Method : FC< paymentMethod >  = ( { editType , current , register 
                 }
 
                 { /*  for 編輯  */ }
-                { editType && <b className="fDblue"> { data.payment_method } </b>  }
+                { editType && <b className="fDblue"> { data?.payment_method } </b>  }
 
               </span>
 

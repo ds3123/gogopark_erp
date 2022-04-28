@@ -38,16 +38,19 @@ const filter_Data = ( source : any[] , searchKeyword : string ) => {
 
      return source.filter( ( x : any ) => {
 
+                const customer  = x['customer'] ;
+                const pet       = x['pet'] ;    
+
                 // # 設置 _ 多種查詢條件
                 let room_Type   = x['room_type'].match(new RegExp(searchKeyword, 'gi'));                // 房型
                 let room_Number = x['room_number'].match(new RegExp(searchKeyword, 'gi'));              // 房號
 
-                let pet_Name    = x['pet']['name'].match(new RegExp(searchKeyword, 'gi'));              // 寵物_名字
-                let pet_Species = x['pet']['species'].match(new RegExp(searchKeyword, 'gi'));           // 寵物_品種
+                let pet_Name    = pet?.name.match(new RegExp(searchKeyword, 'gi'));              // 寵物_名字
+                let pet_Species = pet?.species.match(new RegExp(searchKeyword, 'gi'));           // 寵物_品種
 
-                let cus_Name    = x['customer']['name'].match(new RegExp(searchKeyword, 'gi'));         // 客戶_姓名
-                let cus_Id      = x['customer']['id'].match(new RegExp(searchKeyword, 'gi'));           // 客戶_身分證號
-                let cus_Mobile  = x['customer']['mobile_phone'].match(new RegExp(searchKeyword, 'gi')); // 客戶_手機號碼
+                let cus_Name    = customer?.name.match(new RegExp(searchKeyword, 'gi'));         // 客戶_姓名
+                let cus_Id      = customer?.id.match(new RegExp(searchKeyword, 'gi'));           // 客戶_身分證號
+                let cus_Mobile  = customer?.mobile_phone.match(new RegExp(searchKeyword, 'gi')); // 客戶_手機號碼
     
                 return !!room_Type || !!room_Number || !!pet_Name || !!pet_Species || !!cus_Name || !!cus_Id || !!cus_Mobile ;
    

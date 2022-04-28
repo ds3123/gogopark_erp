@@ -12,7 +12,7 @@ type DType = {
 
     control          : any ;
     name             : string ;
-    default_Date     : any ;
+    default_Date?    : any ;
     handle_OnChange? : any ;      // 自訂 onChange 函式
 
 }

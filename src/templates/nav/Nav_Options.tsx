@@ -21,6 +21,11 @@ import { set_All_States_To_Default } from "store/actions/action_Global_Setting"
 import { get_Nav_Options } from "store/actions/action_Global_Layout"
 
 
+import { useCustomer_Reject_Process_Num } from 'hooks/data/useCustomer'
+import { usePet_Reject_Process_Num } from 'hooks/data/usePet'
+import { useService_Error_In_Process_Num } from 'hooks/data/useService'
+
+
 // # 導覽列 _ 選項
 const Nav_Options = () => {
 
@@ -48,7 +53,22 @@ const Nav_Options = () => {
     // 安親、住宿今日案件數                                                
     const [ care_Lodge_Num , set_Care_Lodge_Num ] = useState( 0 ) ;
 
-                                        
+                  
+    
+
+    
+    // # 紅點顯示待處理數量
+    const customer_Reject_Process_Num  = useCustomer_Reject_Process_Num() ;    // 客戶 ( 拒接 "處理中" : 數量 )   
+    const pet_Reject_Process_Num       = usePet_Reject_Process_Num();          // 寵物 ( 拒接 "處理中" : 數量 )    
+    const service_Error_In_Process_Num = useService_Error_In_Process_Num();    // 服務 ( 異常 "未處理" : 數量 )   
+    
+    // 資料管理( 第二層 )顯示待處理數量 ( for 管理區 )
+    const dataManagement_Note_Num      = customer_Reject_Process_Num + pet_Reject_Process_Num + service_Error_In_Process_Num ;       
+
+
+
+
+
     // 點選 _ 登出鈕
     const click_SignOut = () => {
 
@@ -125,20 +145,6 @@ const Nav_Options = () => {
     } , [ pet_Arr ] ) ;
 
 
-   const dot = {
-                  top:"-8px" , 
-                  right : "-13px" ,
-                  display:"inlieBlock" ,
-                  width:"21px" ,
-                  height:"21px" ,
-                  lineHeight:"21px" ,
-                  background:"red" ,
-                  borderRadius:"20px",
-                  color:"white",
-                  textAlign:"center"
-
-                } as const ;
-
 
    return  <div id="navbarExampleTransparentExample" className="is-hidden-mobile">
 
@@ -156,7 +162,16 @@ const Nav_Options = () => {
                                 
                                    <span style = { optionStyle } className = { "tag is-medium is-rounded relative pointer "+option.color } >
 
-                                         { ( option.title === '住 宿' && care_Lodge_Num > 0 ) && <b className="absolute f_9" style={ dot } > { care_Lodge_Num } </b>  }  
+                                         { /*  紅點顯示 ( 內有新增、待處理資料 ) */ }
+                                         { 
+                                            ( option.title === '住 宿' && care_Lodge_Num > 0 ) && 
+                                                <b className="redDot"> { care_Lodge_Num } </b>  
+                                         }  
+
+{ 
+                                         ( option.title === '管理區' && dataManagement_Note_Num > 0 ) && 
+                                                <b className="redDot"> { dataManagement_Note_Num }  </b>  
+                                         }  
 
                                          <i className = { option.icon }></i> &nbsp; { option.title }  
 

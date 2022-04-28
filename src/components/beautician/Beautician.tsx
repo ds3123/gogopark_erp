@@ -12,7 +12,7 @@ import {useDispatch, useSelector} from "react-redux";
 import { set_Current_Beautician } from 'store/actions/action_Beautician' ;
 import axios from "utils/axios" ;
 import cookie from "react-cookies";
-import moment from "moment";
+import moment from "moment" ;
 
 import { get_Service_Records_By_Date } from "store/actions/action_Service"
 

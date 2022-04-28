@@ -16,8 +16,6 @@ const Service_Receivable_Table : FC< { data : any } > = ( { data } ) => {
     const click_Service = ( service : any ) => dispatch( set_Side_Panel( true , <Update_Service /> , { service_Type : service['service_type'] ,  preLoadData : service } ) ) ;
 
 
-
-
     // 取得 _ 應收金額
     const get_Amount_Payable = ( data : any ) => {
 
@@ -73,10 +71,10 @@ const Service_Receivable_Table : FC< { data : any } > = ( { data } ) => {
                             const pet = x['pet'] ;
       
                             // 單次洗澡下，有調整價格 
-                            if( x['payment_type'] === '單次洗澡' && pet['single_bath_price'] ) amount_Payable = pet['single_bath_price'] ;
+                            if( x['payment_type'] === '單次洗澡' && pet?.single_bath_price ) amount_Payable = pet?.single_bath_price ;
                             
                             // 單次美容下，有調整價格  
-                            if( x['payment_type'] === '單次美容' && pet['single_beauty_price'] ) amount_Payable = pet['single_beauty_price'] ;
+                            if( x['payment_type'] === '單次美容' && pet?.single_beauty_price ) amount_Payable = pet?.single_beauty_price ;
                              
   
                             return <tr key = { y }>
@@ -88,10 +86,16 @@ const Service_Receivable_Table : FC< { data : any } > = ( { data } ) => {
                                   
                                          </b>
                                       </td>
-                                      <td> Q { x['q_code'] }                                                    </td>
-                                      <td className="td_Left"> { x['pet']['name'] } ( { x['pet']['species'] } ) </td>
-                                      <td> { amount_Payable }                                              </td>
-                                      <td> { amount_Payable - x['amount_paid'] }                                                                   </td>
+                                      <td> Q { x['q_code'] }                                                   </td>
+                                      <td className="td_Left"> 
+                                         { 
+                                            x?.pet?.name ?  
+                                              <span> { x?.pet?.name } ( { x?.pet?.species } )  </span>  : 
+                                              <span className="fRed"> 該寵物已刪除 </span>  
+                                         }
+                                      </td>
+                                      <td> { amount_Payable }                                                   </td>
+                                      <td> { amount_Payable - x['amount_paid'] }                                </td>
                                       <td> { x['amount_paid'] }                                                 </td>
                                       <td> { x['admin_service_note'] }                                          </td>
                                    </tr>

@@ -1,30 +1,36 @@
 
-import React , { useState , useContext, useEffect } from "react" ;
-import { useDispatch, useSelector } from "react-redux";
+import { useState , useContext, useEffect } from "react" 
+import { useDispatch , useSelector } from "react-redux"
 
 // useContext
-import { ModalContext } from "templates/panel/Modal" ;
+import { ModalContext } from "templates/panel/Modal" 
 
 // React Hook Form
-import { useForm , SubmitHandler , Controller } from "react-hook-form" ;
+import { useForm , SubmitHandler , Controller } from "react-hook-form" 
 import { IServiceError } from "utils/Interface_Type"
 
 // Redux
 import { add_ServiceError_Handle_Record , get_ServiceError_Handle_Record , delete_ServiceError_Handle_Record } from "store/actions/action_Service"
-import { set_Modal } from "store/actions/action_Global_Layout" ;
+import { set_Modal } from "store/actions/action_Global_Layout" 
 
 import useServiceType from "hooks/layout/useServiceType"
 import { switch_Service_Type_Id } from "utils/data/switch"
 
-
 // Cookie
 import cookie from 'react-cookies'  // 匯入 cookie
-import { useHistory } from "react-router-dom" ;
+import { useHistory } from "react-router-dom" 
 
 
 
-// 管理者處理 : 異常處理狀態 
+/*
+
+  ＠管理者處理 : 異常處理狀態 
+
+
+*/ 
+
 const Error_Handle = () => {
+
 
     const history  = useHistory() ;
     const dispatch = useDispatch();
@@ -44,12 +50,12 @@ const Error_Handle = () => {
     // 服務異常處理紀錄
     const handle_Records   = useSelector(( state : any ) => state.Service.service_Error_Handle_Records ) ;
 
+
     // 處理狀態
     const [ status , set_Status ] = useState( '' ) ;
 
     // 是否 _ 退費 ( for 現金 : 單次 _ 洗澡/美容 )
     const [ is_Return_By_Cash , set_Is_Return_By_Cash ] = useState< boolean >( false ) ;
-
 
     // 是否 _ 贈送 、退費 ( for 方案 : 包月 _ 洗澡/美容  )
     const [ return_By_Plan_Type , set_return_By_Plan_Type ] = useState< '' | '方案_贈送' | '方案_退費' >( '' ) ;
@@ -144,6 +150,7 @@ const Error_Handle = () => {
 
     } , [ service_Type , service_Id ] ) ;
 
+
     const box = {
                   width     : "100%" ,
                   maxHeight : "300px" ,
@@ -163,9 +170,8 @@ const Error_Handle = () => {
                 
                 </b>
 
-                <br/><br/><br/>
 
-                <div className="columns is-multiline is-mobile">
+                <div className="columns is-multiline is-mobile m_Top_50">
 
                     { /* 處理狀態 */ }
                     <div className="column is-2-desktop">

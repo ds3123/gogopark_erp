@@ -116,7 +116,7 @@ const Service_Records:FC< { type : sType } > = ( { type  }) => {
 
                             // # 寵物資訊
                             let pet_Info = ''
-                            if( type === '客戶' ) pet_Info =  `${ x['pet']['name'] } ( ${ x['pet']['species'] } )` ;
+                            if( type === '客戶' ) pet_Info =  `${ x?.pet?.name } ( ${ x?.pet?.species } )` ;
                             if( type === '寵物' ) pet_Info =  `${ cur_Pet_Name } ( ${ cur_Pet_Species } )` ;
 
 
@@ -135,7 +135,7 @@ const Service_Records:FC< { type : sType } > = ( { type  }) => {
 
                          
                                 return <tr key={y} >
-                                          <td style={tL}> { pet_Info }                      </td>
+                                          <td style={tL}> { x?.pet?.name ? pet_Info : <span className="fRed"> 已刪除 </span> }  </td>
                                           <td> { x['payment_method'] }                      </td>
                                           <td style={tL}> { x['payment_type'] }             </td>
                                           <td> <b className="fDblue">{ service_Price } </b> </td>

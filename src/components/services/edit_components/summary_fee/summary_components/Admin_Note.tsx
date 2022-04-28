@@ -34,7 +34,7 @@ const Admin_Note : FC< { editType : any , register : any } > = ( { editType , re
                 { editType !== '編輯' ||
 
                     <b className="absolute f_15" style={{ left : "-46px" , top:"17px" }} >
-                        <b className="fDblue"> { data.admin_service_note ? data.admin_service_note : '無'  }  </b>
+                        <b className="fDblue"> { data?.admin_service_note ? data?.admin_service_note : '無'  }  </b>
                     </b>
 
                 }

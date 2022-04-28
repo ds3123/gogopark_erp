@@ -89,7 +89,7 @@ const Customers = () => {
               </div>  
 
               { /* 資料筆數 */ } 
-              <Data_List_Sum data_Sum={ dataSum } is_All_Data_Done={ is_All_Data_Done } />   
+              <Data_List_Sum data_Sum = { dataSum } is_All_Data_Done = { is_All_Data_Done } />   
 
 
               { /* 資料列表 */ }  
@@ -110,15 +110,11 @@ const Customers = () => {
 
                     <tbody>
 
-                        { Customer_isLoading ||
+                      { Customer_isLoading ||
 
-                            pageOfItems.map( ( item : any , index ) => {
+                        pageOfItems.map( ( item : any , index ) => <Customers_Rows key={ index } data={ item } /> )
 
-                                return <Customers_Rows key={ index } data={ item } /> ;
-
-                            })
-
-                        }
+                      }
 
                     </tbody>
 

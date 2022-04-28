@@ -244,7 +244,16 @@ export interface IPet {
     pet_Color          : string ;
     pet_Weight         : string ;
     pet_Size           : string ;
-    pet_Age            : string ;
+   
+
+    pet_Chip           : string ;
+    pet_Age            : string | Date ;
+
+    pet_Hospital_Name      : string ;
+    pet_Hospital_Telephone : string ;
+    pet_Hospital_Address   : string ; 
+
+
 
     // * 調查資料 ( 單選 8)
     injection          : string ;

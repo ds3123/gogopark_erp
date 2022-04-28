@@ -12,6 +12,7 @@ import Pet_Consumption_Records from "./edit/info/Pet_Consumption_Records";
 
 
 
+
 const Pets_Rows = ( props : any ) => {
 
     const { data }  = props ;
@@ -87,7 +88,16 @@ const Pets_Rows = ( props : any ) => {
 
    return <tr>
 
-             <td> 
+             <td className="relative"> 
+
+                { /* 拒接標示 */ }
+                 { data?.is_rejected === 1 && 
+                      <b className="fRed absolute" style={{ left : "-12px" , top : "12px" }}> 
+                         <i className="fas fa-ban"></i> 
+                      </b>
+                 }
+
+
                  { data['serial'].slice( 16 ,22 ) ? data['serial'].slice( 16 ,22 ) : data['serial'] } 
              </td>
 

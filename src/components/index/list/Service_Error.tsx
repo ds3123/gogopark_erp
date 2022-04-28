@@ -1,17 +1,21 @@
 
-import { useEffect , useState } from "react";
-
-import { useSelector } from "react-redux";
-import Date_Picker from "templates/form/Date_Picker";
-import usePagination from "hooks/layout/usePagination";
-import Pagination from "utils/Pagination";
+import { useEffect , useState , useMemo } from "react"
+import { useSelector } from "react-redux"
+import Date_Picker from "templates/form/Date_Picker"
+import usePagination from "hooks/layout/usePagination"
+import Pagination from "utils/Pagination"
 
 // React Hook Form
-import { useForm } from "react-hook-form" ;
-import { IService } from "utils/Interface_Type";
-import Usage_Note from "templates/note/Usage_Note" ;
+import { useForm } from "react-hook-form" 
+import { IService } from "utils/Interface_Type"
+import Usage_Note from "templates/note/Usage_Note" 
+import { sort_Data_By_UpdatedDate } from 'utils/data/sort_data'
 
-import axios from "utils/axios" ;
+import { useService_Is_GoHome_Unpaid } from 'hooks/data/useService'
+import { usePet_Apply_Reject , usePet_Is_Rejected } from 'hooks/data/usePet'
+
+
+
 
 
 const note_Str = `此區塊列舉 :「轉異常」、「銷單」、「已回家( 房 ) 情況下，應收金額與實收金額不符合」資料` ;
@@ -26,37 +30,46 @@ const Service_Error = ( ) => {
     // 取得 _ 分頁資料
     const { pageOfItems , filteredItems , click_Pagination } = usePagination( `/services/show_services_is_delete_error_by_date/${service_Date}` , 'service' ) ;
 
+
     // React Hook Form
     const { control } = useForm<IService>({ mode : "all" }) ;
 
-    // 已回家( 房 ) 情況下，應付金額 與 實付金額 不符合  
-    const [ is_GoHome_UnPaid , set_Is_GoHome_UnPaid ] = useState( [] ) ;
-
+    
     // 所有異常資料
     const [ error_Data , set_Error_Data ] = useState<any[]>( [] )
 
+
+    // 取得資料 _ 已回家( 房 ) 情況下，應付金額 與 實付金額 不符合   
+    const is_GoHome_UnPaid = useService_Is_GoHome_Unpaid( service_Date ) ;
+
+
+    // 取得資料 _ 寵物：申請拒接中
+    const pet_Is_Apply_Reject = usePet_Apply_Reject() ;
+
+
+    // 取得資料 _ 寵物：拒接
+    const pet_Is_Rejected = usePet_Is_Rejected() ;
+
+
+    
+    console.log( 'zzzz' , pet_Is_Apply_Reject )
+
+    
+
+
+
+    // 設定 _ 資料
     useEffect( () => { 
     
-      axios.get( `services/show_services_is_gohome_by_date/${ service_Date }` ).then( res => {
+       // 加上額外取得資料 
+       const error_Arr = pageOfItems.concat( is_GoHome_UnPaid , pet_Is_Apply_Reject ) ;
 
-         // 篩選出 : 在 '已回家(房)' 情況下，'應付金額' 與 '實付金額' 不符合 ( 即 : 實付金額為 0，或僅付部分實付金額 )   
-         const is_GoHome_Unpaid = res.data.filter( ( x : any ) => x['amount_payable'] !== x['amount_paid'] ) ;
+       // 依據 _ 更新時間欄位( updated_at ) , 降冪( desc ) 排序
+       const _error_Arr = sort_Data_By_UpdatedDate( error_Arr , 'desc' ) ;
 
-         set_Is_GoHome_UnPaid( is_GoHome_Unpaid ) ;
-       
-      }) ;
-    
-    } , [ service_Date ] ) ;
+       set_Error_Data( _error_Arr ) ;
 
-
-    useEffect( () => { 
-    
-       const f_PageItems = pageOfItems.filter( ( x:any ) => x !== 3 ) ;  // 剔除 3 ( 確認 3 怎麼從 Pagination 套件得出 2020.06.10 )    
-       const error_Arr   = f_PageItems.concat( is_GoHome_UnPaid ) ;
-
-       set_Error_Data( error_Arr ) ;
-
-    } , [ pageOfItems , is_GoHome_UnPaid ] ) ;
+    } , [ pageOfItems , is_GoHome_UnPaid , pet_Is_Apply_Reject , pet_Is_Rejected ] ) ;
 
 
     return <>
@@ -86,7 +99,6 @@ const Service_Error = ( ) => {
                           <th> 主人手機 </th>
                           <th> 寵物資訊 </th>
                           <th> 經手人   </th>
-                          <th> 服務日期 </th>
                         </tr>
                     </thead>
 
@@ -95,16 +107,13 @@ const Service_Error = ( ) => {
                         {
                             error_Data.map( ( x : any , y : number ) => {
 
-
-                                   if( x === 3 ) return false ;  // 確認 3 怎麼從 Pagination 套件得出 2020.06.10
-
                                    let note = '' ;
 
                                    const is_Paid_Error = x['amount_payable'] !== x['amount_paid'] ;
 
                                    // * 異常原因
-                                   if( x['is_error'] === 1 )  note = x['error_cause'] ;  // 一般異常
-                                   if( x['is_error'] !== 1 )  note = '銷 單' ;
+                                   if( x['is_error'] === 1 ) note = x['error_cause'] ;  // 一般異常
+                                   if( x['is_error'] !== 1 ) note = '銷 單' ;
 
                                    if( is_Paid_Error && x['amount_paid'] === 0 ) note = '尚未付款' ;   
                                    if( is_Paid_Error && x['amount_paid'] > 0 )   note = '僅付部分金額' ; 
@@ -122,8 +131,7 @@ const Service_Error = ( ) => {
                                               { x['pet'] ? x['pet']['name'] : ''  }&nbsp;( { x['pet'] ? x['pet']['species'] : ''  } )
                                          </td>
                                          <td> { x['error_submitter'] ? x['error_submitter'] : x['admin_user'] } </td>
-                                         <td> { x['created_at'] ? x['created_at'].slice(0,10) : '' }            </td>
-
+                                      
                                        </tr>
 
                             })
@@ -134,7 +142,7 @@ const Service_Error = ( ) => {
                 </table>
 
                 { /* 分頁按鈕 */ }
-                <div style={{ marginTop:"70px", marginBottom:"150px" }}>
+                <div className="m_Top_50 m_Bottom_150" >
                     <Pagination items={ filteredItems } onChangePage={ click_Pagination } />
                 </div>
 

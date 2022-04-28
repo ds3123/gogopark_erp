@@ -36,9 +36,8 @@ const Self_Adjust_Amount: FC<ISelf> = ({ register, current, setValue, editType ,
     };
 
     // 載入後，設為預設值 0
-    useEffect(( ) => {
+    useEffect( ( ) => {
 
-     
        dispatch( set_Self_Adjust_Amount( 0 ) ) ;
 
     } , [] ) ;
@@ -52,9 +51,12 @@ const Self_Adjust_Amount: FC<ISelf> = ({ register, current, setValue, editType ,
 
                     <b className="tag is-large  is-light" style={{ background: "darkorange", color: "white" }} >
 
-                      <i className="fas fa-calculator"></i> &nbsp; &nbsp;
+                      <i className="fas fa-calculator"></i>
 
-                        <span className="tag is-medium is-white is-rounded"> { current } </span>
+                       { current && 
+                           <> &nbsp; &nbsp; <span className="tag is-medium is-white is-rounded"> { current } </span>  </>
+                       }
+                        
                         &nbsp; 個體調整金額
 
                     </b>

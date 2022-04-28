@@ -1,23 +1,26 @@
 
 
 // React Hook Form
-import { useForm , SubmitHandler } from "react-hook-form";
+import { useForm , SubmitHandler } from "react-hook-form"
 
 // 各表單驗證條件
 import { schema_Pet } from "utils/validator/form_validator"
-import { IPet } from "utils/Interface_Type";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { IPet } from "utils/Interface_Type"
+import { yupResolver } from "@hookform/resolvers/yup"
 
 // useContext
 import { useContext } from "react"
-import { SidePanelContext } from "templates/panel/Side_Panel";
+import { SidePanelContext } from "templates/panel/Side_Panel"
 
-import Pet_Form from "components/pets/edit/Pet_Form";
-import {useRead_Species} from "hooks/ajax_crud/useAjax_Read";
+import Pet_Form from "components/pets/edit/Pet_Form"
+import {useRead_Species} from "hooks/ajax_crud/useAjax_Read"
 
 // Hook
-import { useUpdate_Data } from "hooks/ajax_crud/useAjax_Update";
-import{ useLocation } from "react-router" ;
+import { useUpdate_Data } from "hooks/ajax_crud/useAjax_Update"
+import{ useLocation } from "react-router" 
+
+import Data_Table_Id from 'templates/note/Data_Table_Id'
+import Update_Submit_Button from 'templates/button/Update_Submit_Button'
 
 
 
@@ -39,7 +42,7 @@ const Update_Pet = () => {
 
 
     // React Hook Form
-    const { register , watch , setValue , handleSubmit , formState : { errors , isDirty , isValid } } =
+    const { register , watch , setValue , handleSubmit , control , formState : { errors , isDirty , isValid } } =
                 useForm<IPet>({
                     mode          : "all" ,
                     resolver      : yupResolver( schema_Pet ) ,
@@ -55,7 +58,19 @@ const Update_Pet = () => {
                                         pet_Color    : pet.color ,
                                         pet_Weight   : pet.weight ,
                                         pet_Size     : pet.size ,
-                                        pet_Age      : pet.age ,
+                                       
+
+                                        pet_Chip     : pet?.chip_code ,     
+
+                                       // pet_Age      : pet.age ,
+                                        pet_Age      : pet?.birthday ? new Date( pet?.birthday ) : ''  ,
+
+
+                                        // 往來醫院
+                                        pet_Hospital_Name      : pet?.hospital_name ,
+                                        pet_Hospital_Telephone : pet?.hospital_telephone ,
+                                        pet_Hospital_Address   : pet?.hospital_address ,
+
 
                                         // * 調查資料 ( 單選 )
                                         injection    : pet.injection ,
@@ -91,6 +106,7 @@ const Update_Pet = () => {
         setValue : setValue ,
         errors   : errors ,
         watch    : watch ,
+        control  : control ,
 
         pet_Serial     : pet.serial ,             // 寵物編號  
         pet_Species_id : _pet ? _pet['id'] : ''   // 寵物資料表( pet_species ) id
@@ -114,17 +130,20 @@ const Update_Pet = () => {
         
     } ;
 
+
+
     return <form onSubmit = { handleSubmit( onSubmit ) }>
 
+              { /* 資料表 id */ }   
+              <div className="relative" style={{ top:"-70px" }} > 
+                  <Data_Table_Id id = { pet?.pet_id  } />  
+              </div>   
+                                 
               { /* 寵物表單欄位  */ }
               <Pet_Form  { ...props }  />
 
               { /* 提交按鈕 */ }
-              <div className="has-text-centered m_Top_50 m_Bottom_100" >
-                  <button disabled={ !isValid } type="submit" className="button is-primary relative is-medium" style={{top: "-10px"}} >
-                       提交表單
-                  </button>
-              </div> 
+              <Update_Submit_Button  name = "提交表單" isValid = { isValid } />
 
            </form>
 

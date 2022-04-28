@@ -143,6 +143,7 @@ const Create_Data_Container = () => {
     const onSubmit : SubmitHandler<IService> = ( data : any ) => {
 
 
+
         // 將 "寵物品種 pet_species 資料表 id"， 改為 : "寵物品種名稱"
         if( data['pet_Species'] && data['pet_Species'] !== '請選擇' ){  // 有寵物區塊欄位
             const pet        = petSpecies.filter( x => x['id'] === parseInt( data['pet_Species'] ) )[0] ;

@@ -1,6 +1,6 @@
 
 import { FC , useContext , useEffect } from "react" ;
-import { useSelector, useStore } from "react-redux" ;
+import { useSelector , useStore } from "react-redux" ;
 
 // useContext
 import { SidePanelContext } from "templates/panel/Side_Panel" ;
@@ -57,7 +57,7 @@ const Amount_Paid : FC< { editType : any , receivable : number , register : any 
 
         setTimeout(() => {
 
-            setValue( 'amount_Paid' , data.amount_paid ) ;
+            setValue( 'amount_Paid' , data?.amount_paid ) ;
             
         } , 1000 );
 
@@ -123,7 +123,7 @@ const Amount_Paid : FC< { editType : any , receivable : number , register : any 
 
 
               { /*  @ 編輯資料  */ }
-              { ( editType && data.payment_method === '現金' )  &&  
+              { ( editType && data?.payment_method === '現金' )  &&  
               
                    <>
 

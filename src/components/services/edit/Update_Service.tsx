@@ -2,63 +2,57 @@
 import { useState , useEffect , useContext } from "react"
 
 // React Hook Form
-import { useForm , SubmitHandler } from "react-hook-form";
+import { useForm , SubmitHandler } from "react-hook-form"
 
 // 各表單驗證條件
 import { schema_Customer } from "utils/validator/form_validator"
-import { IService } from "utils/Interface_Type";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { IService } from "utils/Interface_Type"
+import { yupResolver } from "@hookform/resolvers/yup"
 
 // useContext
-import { SidePanelContext } from "templates/panel/Side_Panel";
+import { SidePanelContext } from "templates/panel/Side_Panel"
 
 // 各區塊表單元件
-import Service_Info from "components/services/edit_components/Service_Info";
-import Customer_Note from "components/services/edit_components/Customer_Note";
-import Basic_Form from "components/services/edit_components/Basic_Form";
-import Bath_Form from "components/services/edit_components/Bath_Form";
-import Beauty_Form from "components/services/edit_components/Beauty_Form";
-import Extra_Beauty from "components/services/edit_components/Extra_Beauty";
-import Extra_Item from "components/services/edit_components/Extra_Item";
-import Pickup_Fee from "components/services//edit_components/Pickup_Fee";
-import Summary_Fee from "components/services/edit_components/summary_fee/Summary_Fee";
-import useServiceType from "hooks/layout/useServiceType";
-import Lodge_Form from "components/lodge/edit/Lodge_Form";
-import Care_Form from "components/lodge/care/edit/Care_Form";
-import Nav_Qcode_List from "components/services/Nav_Qcode_List";
-import Appointment_Records from "components/index/list/Appointment_Record";
+import Service_Info from "components/services/edit_components/Service_Info"
+import Customer_Note from "components/services/edit_components/Customer_Note"
+import Basic_Form from "components/services/edit_components/Basic_Form"
+import Bath_Form from "components/services/edit_components/Bath_Form"
+import Beauty_Form from "components/services/edit_components/Beauty_Form"
+import Extra_Beauty from "components/services/edit_components/Extra_Beauty"
+import Extra_Item from "components/services/edit_components/Extra_Item"
+import Pickup_Fee from "components/services//edit_components/Pickup_Fee"
+import Summary_Fee from "components/services/edit_components/summary_fee/Summary_Fee"
+import useServiceType from "hooks/layout/useServiceType"
+import Lodge_Form from "components/lodge/edit/Lodge_Form"
+import Care_Form from "components/lodge/care/edit/Care_Form"
+import Nav_Qcode_List from "components/services/Nav_Qcode_List"
+import Appointment_Records from "components/index/list/Appointment_Record"
+import Customer_Consumption_Records from "components/customers/edit/info/Customer_Consumption_Records"
 
+import Is_Info_Sign from "../edit_components/info_sign/Is_Info_Sign"
 
 // Hook
-import {useUpdate_Data} from "hooks/ajax_crud/useAjax_Update";
-import {set_Side_Panel} from "store/actions/action_Global_Layout";
-import {useDispatch} from "react-redux";
+import { useUpdate_Data } from "hooks/ajax_crud/useAjax_Update"
+import { set_Side_Panel } from "store/actions/action_Global_Layout"
+import { useDispatch } from "react-redux"
 
 import { switch_Service_Type_Id } from "utils/data/switch"
-import Self_Adjust_Amount from "components/services/edit_components/Self_Adjust_Amount";
-import Beautician_Process from "components/index/components/Beautician_Process" ; 
-import Submit_Error from "components/index/components/Submit_Error";
+import Self_Adjust_Amount from "components/services/edit_components/Self_Adjust_Amount"
+import Beautician_Process from "components/index/components/Beautician_Process"  
+import Submit_Error from "components/index/components/Submit_Error"
+import cookie from 'react-cookies'
 
-import cookie from 'react-cookies' ;
+import { colCovert_Basic_UPDATE , colCovert_Bath_UPDATE , colCovert_Beauty_UPDATE } from "hooks/crud/process/convert_Columns_Update" 
+import { useMatch_Obj } from "containers/data_components/Condition_for_Currnet_Tab" 
+import To_Previous_Page from "templates/note/To_Previous_Page" 
+import Data_Table_Id from 'templates/note/Data_Table_Id'
 
-import { colCovert_Basic_UPDATE , colCovert_Bath_UPDATE , colCovert_Beauty_UPDATE } from "hooks/crud/process/convert_Columns_Update" ;
-import { useMatch_Obj } from "containers/data_components/Condition_for_Currnet_Tab" ;
+
+import Update_Submit_Button from 'templates/button/Update_Submit_Button'
 
 
-type preLoad = {
 
-   pet    : string 
-   q_code : string 
 
-}
-
-interface updateService {
-
-   preLoadData  : preLoad ;
-   service_Type : string ;
-   source_Page  : any
-    
-}
 
 
 { /* 編輯服務 */ }
@@ -178,14 +172,17 @@ const Update_Service = ( ) => {
 
 
     // 點選、回到上一個頁面
-    const back_To_Prev_Page = ( source : string ) => {
+    const back_To_Prev_Page = ( source : string , customer_Id? : string ) => {
 
-       if( !source ) return false      
+       if( !source ) return false   
+
        if( source === 'Q_Code_List' )     dispatch( set_Side_Panel( true , <Nav_Qcode_List />      , {} ) ) ;
        if( source === 'Appoint_Records' ) dispatch( set_Side_Panel( true , <Appointment_Records /> , {} ) ) ;
+       if( source === 'Customer_Service_Records' ) dispatch( set_Side_Panel( true , <Customer_Consumption_Records customer_Id = { customer_Id } /> , {} ) ) ;
 
     } ;
 
+    
     // 提交表單
     const onSubmit : SubmitHandler<IService> = submit_Data => {
 
@@ -212,21 +209,17 @@ const Update_Service = ( ) => {
 
     // # 依照目前服務類型 ( service_Type，例如：基礎、洗澡、美容... )，判斷 _ 是否顯示
     const is_Obj = useMatch_Obj( service_Type ) ;
-    const sign   = { background:"red" , color:"white" , width:"100%" } ;
-
-
+    
 
     return <form onSubmit = { handleSubmit( onSubmit ) } >
 
-            
-            
-                <span className="tag relative is-medium " style={{ top:"-20px" , fontSize:"10pt", float:"right" }}> 
-                   資料表 id :&nbsp;<b>{  service_Id  } </b>
-                </span> 
-                
-            
 
-                <b className={ color } >
+                { /* 資料表 id */ }   
+                <Data_Table_Id id = { service_Id } />
+
+
+                { /*  標題  */ }
+                <b className = { color } >
 
                     <i className = { icon } ></i> &nbsp; &nbsp;
 
@@ -242,40 +235,20 @@ const Update_Service = ( ) => {
                 
                 <br/><br/>
 
-                { /*  for 今日處理碼 ( Q 碼 ) 清單  */ }
-                { 
-                  source_Page &&
-                    <b className="tag is-large pointer hover" style={{ float:"right" }}  onClick = { () => back_To_Prev_Page( source_Page ) } >
-                        <i className="fas fa-step-backward"></i> &nbsp; 回上一頁
-                    </b>
-                }
+                { /*  回上一頁  */ }
+                { source_Page && <To_Previous_Page action = { () => back_To_Prev_Page( source_Page , data?.customer?.id ) } />  }
 
-            
+
                 { /* 轉異常 */ }
                 <Submit_Error current_User_Name = { current_User['name'] } data = { data } /> 
     
+                
+                { /* 顯示提示 ( 異常案件、銷單 ） */ }
+                <Is_Info_Sign is_error        = { data['is_error'] } 
+                              is_delete       = { data['is_delete'] } 
+                              error_submitter = { data['error_submitter'] } 
+                              error_cause     = { data['error_cause'] } />
 
-                { /* 顯示 : 異常案件 */ }
-                <div>
-                    { data['is_error'] === 1 &&
-                        <b className="tag is-large pointer" style={ sign } >
-                            <i className="fas fa-exclamation-triangle"></i> &nbsp; 異 常 案 件 &nbsp;
-                            <b className="tag is-medium is-white is-rounded"> &nbsp;
-                                <i className="fas fa-comment-dots"></i> &nbsp;
-                                { data['error_submitter'] } &nbsp; : &nbsp;  <b style={{color:"rgb(100,180,100)"}}> { data['error_cause'] } </b> &nbsp;
-                            </b>
-                        </b>
-                    }
-                </div>
-
-                { /* 顯示 : 銷單 */ }
-                <div>
-                    { data['is_delete'] === 1 &&
-                        <b className="tag is-large pointer" style={sign}  >
-                            <i className="fas fa-trash-alt"></i> &nbsp; 此筆服務資料已銷單 &nbsp;
-                        </b>
-                    }
-                </div>
 
                 <hr/>
 
@@ -338,20 +311,17 @@ const Update_Service = ( ) => {
                     <Beautician_Process  data={ data } register={ register } />
                 }
 
-                 <hr/> <br/>
+                <hr/> <br/>
  
                 { /* 費用結算 */ }
                 { ( service_Type === "基礎" || service_Type === "洗澡" || service_Type === "美容" || service_Type === "住宿" || service_Type === "安親" ) && 
-                       <Summary_Fee { ...props } /> 
+                    <Summary_Fee { ...props } /> 
                 }
 
                               
                 { /* 提交按鈕 */ }
-                <div className="has-text-centered m_Top_150 m_Bottom_100" >
-                    <button type="submit" className="button is-primary relative is-medium" style={{top: "-10px"}} >
-                        提交表單
-                    </button>
-                </div> 
+                <Update_Submit_Button  name = "提交表單" isValid = { true } />
+
 
            </form>
 

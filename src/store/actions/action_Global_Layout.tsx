@@ -62,7 +62,7 @@ export const set_Debug_Info = ( is_Open : boolean ) => {
 // * 屬性樣式
 type Props = {
 
-  modal_Style    : { width : string , height?: string , left : string , bottom? : string , top?:string , border?:string } , // Modal 樣式
+  modal_Style    : { width : string , height?: string , left : string , bottom? : string , top?:string , border?:string , padding? : string } , // Modal 樣式
   current_Tab?   : string                               // 目前所在服務標籤
   data?          : any                                  // 所傳遞主要資料
 

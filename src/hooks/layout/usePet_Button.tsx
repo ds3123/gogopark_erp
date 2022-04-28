@@ -1,6 +1,10 @@
 
-import { useDispatch } from "react-redux";
-import { click_Show_Edit_Pet } from "store/actions/action_Pet"
+import { useDispatch } from 'react-redux'
+import { click_Show_Edit_Pet } from 'store/actions/action_Pet'
+import is_Dead_Pic from 'imgs/is_dead_red.png'
+import { get_Pet_Age } from 'utils/time/date'
+
+
 
 
 
@@ -22,10 +26,32 @@ const usePet_Button = ( pets : any[] ) => {
 
             if( !x ) return null 
 
+
+            { /* 年齡標示 */ }
+            const birtyday_Str =  x?.birthday ? get_Pet_Age( x?.birthday ) : '' ;
+
+            let btStyle   = 'is-white' ;
+            let fontColor = { color : "rgb(0,0,150)" }
+
+            if( parseInt( birtyday_Str.slice( 0 , 2 ) ) > 12 || birtyday_Str === '未滿週歲' ){
+                btStyle   = 'is-danger' ;
+                fontColor = { color : 'white' } ;
+            } 
+
+
             return  <span key = { y }
                           className = "tag is-medium relative pointer"
                           style = {{ paddingTop:"4px" }}
                           onClick = { () => click_Pet( x )  } >
+
+
+                        { /* 死亡標示 */ }
+                        { x?.is_dead === 1 && 
+                            <b className="fRed absolute" style={{ left : "-15px" , top : "-11px" }}> 
+                                <img src={is_Dead_Pic}  width='30px'/>
+                            </b>
+                        }
+
 
                        <b> { x["name"] } ( { x["species"] } ) &nbsp;
 
@@ -36,18 +62,21 @@ const usePet_Button = ( pets : any[] ) => {
                                                                      </>
                            }
 
-                           { x["age"] && <>
-                                           <b className="tag is-rounded is-white" style={{ fontSize : "8pt" , color : "rgb(0,0,150)" }}>
-                                                { x["age"] } 歲
-                                           </b> &nbsp;
-                                         </>
+                           
+                           { x["color"] && <>
+                                                <b className="tag is-rounded is-white" style={{ color: "rgb(0,0,150)"}}>
+                                                    {x["color"]}
+                                                </b>   &nbsp;
+                                           </>
                            }
 
-                           { x["color"] && <>
-                                           <b className="tag is-rounded is-white" style={{fontSize: "8pt", color: "rgb(0,0,150)"}}>
-                                               {x["color"]}
-                                           </b>
-                                         </>
+                            { /* { x["age"] && <> */ }
+                            { birtyday_Str && <>
+                                                <b className={ `tag is-rounded ${ btStyle }` } style={ fontColor }>
+                                                        {/* { x["age"] } 歲 */}
+                                                        { birtyday_Str }
+                                                </b> &nbsp;
+                                              </>
                            }
 
                        </b>
@@ -62,6 +91,18 @@ const usePet_Button = ( pets : any[] ) => {
     if( pets.length > 1 ){
 
         pet_Button = pets.map( ( x , y) => {
+        
+            const birtyday_Str =  x?.birthday ? get_Pet_Age( x?.birthday ) : '' ;
+
+
+            let btStyle   = 'is-white' ;
+            let fontColor = { color : "rgb(0,0,150)" }
+
+            if( parseInt( birtyday_Str.slice( 0 , 2 ) ) > 12 || birtyday_Str === '未滿週歲' ){
+                btStyle   = 'is-danger' ;
+                fontColor = { color : 'white' } ;
+            } 
+
 
             // 有多隻寵物，僅顯示名字
             return  <span key = { y }
@@ -69,7 +110,24 @@ const usePet_Button = ( pets : any[] ) => {
                           style = {{ paddingTop:"4px" }}
                           onClick = { () => click_Pet( x )  } >
 
-                          <b> { x['name'] } </b>
+                          <b className="relative"> 
+
+                               { /* 死亡標示 */ }
+                               { x?.is_dead === 1 && 
+                                    <b className="fRed absolute" style={{ left : "-20px" , top : "-20px"  }}> 
+                                        <img src={is_Dead_Pic}  width='30px'/>
+                                    </b>
+                               }
+
+                               { /* 寵物名字 */ } 
+                               { x['name'] } &nbsp;
+
+                               { /* 年齡標示 */ } 
+                               { birtyday_Str && <b className={ `tag is-rounded ${ btStyle }`  } style={ fontColor }>
+                                                   { birtyday_Str }
+                                                </b>  }    
+                              
+                          </b>
 
                     </span> ;
 

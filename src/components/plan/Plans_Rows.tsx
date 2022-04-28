@@ -80,13 +80,10 @@ const Plans_Rows = ( props : any ) => {
                    { /* 方案類型  */ }        
                    <Plan_Type data = { data } />
 
+                   { /* 已使用方案服務中，有使用 "加價項目" */ } 
                    <div className="absolute" style={{ top:"24px" , left:"-52px" }}>
-
-                     { /* 已使用方案服務中，有使用 "加價項目" */ } 
-                     <Plan_Used_ExtraItem_Sign plan = { data } />
-
+                      <Plan_Used_ExtraItem_Sign plan = { data } />
                    </div>
-
             
                </td>
 

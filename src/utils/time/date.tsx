@@ -1,8 +1,8 @@
 
 /*  @ 日期處理   */
 
-import moment from  "moment";
-import { national_Holidays_Setting } from "components/lodge/edit/Lodge_Price";
+import moment from  "moment" 
+import { national_Holidays_Setting } from "components/lodge/edit/Lodge_Price" 
 
 
 // 取得 : 昨天、今天、明天、後天 的西元日期 ( num 數字參數 -1、0、1、2 )
@@ -216,5 +216,27 @@ export const get_Dates_STR = ( holiday_Arr : string[] , F_S_Arr : string[] , M_T
     return { "國定假日" : holiday_Dates , "假日" : F_S_Dates , "平日" : M_T_Dates } ;
 
 };
+
+
+
+// 計算 _ 寵物歲數( 依照 : 出生日期 )
+export const get_Pet_Age = ( birthday : string ) : string => {
+
+
+     const now_Timestamp      = new Date().getTime();             // 現在
+     const birthday_Timestamp = new Date( birthday ).getTime() ;  // 生日  
+ 
+
+     // 年齡天數
+     const age_Days           =  Math.round(  ( now_Timestamp - birthday_Timestamp ) / ( 60 * 60 * 24 * 1000 ) ) ;
+ 
+
+     if( age_Days < 360 ) return '未滿週歲'
+
+
+     return `${ Math.round( ( age_Days / 360 ) ) } 歲`
+    
+
+} ;
 
 

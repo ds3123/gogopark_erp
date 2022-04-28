@@ -81,7 +81,7 @@ const Admin_User : FC< { editType : any , register : any , setValue : any } > = 
                     { editType !== '編輯' ||
 
                         <b className="absolute" style={{ left : "122px" , top:"16px" }} >
-                            <b className="fDblue"> { data.admin_user ? data.admin_user : '測試員' }  </b>
+                            <b className="fDblue"> { data?.admin_user ? data?.admin_user : '測試員' }  </b>
                         </b>
 
                     }
