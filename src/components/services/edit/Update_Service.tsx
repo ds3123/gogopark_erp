@@ -28,13 +28,14 @@ import Care_Form from "components/lodge/care/edit/Care_Form"
 import Nav_Qcode_List from "components/services/Nav_Qcode_List"
 import Appointment_Records from "components/index/list/Appointment_Record"
 import Customer_Consumption_Records from "components/customers/edit/info/Customer_Consumption_Records"
+import Pet_Consumption_Records from "components/pets/edit/info/Pet_Consumption_Records"
 
 import Is_Info_Sign from "../edit_components/info_sign/Is_Info_Sign"
 
 // Hook
 import { useUpdate_Data } from "hooks/ajax_crud/useAjax_Update"
 import { set_Side_Panel } from "store/actions/action_Global_Layout"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 
 import { switch_Service_Type_Id } from "utils/data/switch"
 import Self_Adjust_Amount from "components/services/edit_components/Self_Adjust_Amount"
@@ -52,21 +53,23 @@ import Update_Submit_Button from 'templates/button/Update_Submit_Button'
 
 
 
-
-
-
 { /* 編輯服務 */ }
 const Update_Service = ( ) => {
 
-    const dispatch     = useDispatch();
-    const value        = useContext( SidePanelContext ) ;  // 取得 context 值
 
-    const service_Type = value.service_Type as any ;       // 服務類別 ( Ex. 基礎、洗澡、美容、安親、住宿 )
-    const data         = value.preLoadData ?  value.preLoadData : value.data ;   // 預先取得資料
+    const dispatch     = useDispatch();
+    const value        = useContext( SidePanelContext ) ;                      // 取得 context 值
+
+    const service_Type = value.service_Type as any ;                           // 服務類別 ( Ex. 基礎、洗澡、美容、安親、住宿 )
+    const data         = value.preLoadData ? value.preLoadData : value.data ;  // 預先取得資料
         
-    const pet          = data.pet ? data.pet : {}  ;       // 寵物資料
+    const pet          = data.pet ? data.pet : {}  ;                           // 寵物資料
     const Q_code       = data.q_code  ;
-    const source_Page  = value.source_Page as any ;        // 來源網頁 ( for 點選、回到上一個頁面  Ex. Nav_Qcode_List > Update_Service )
+    const source_Page  = value.source_Page as any ;                            // 來源網頁 ( for 點選、回到上一個頁面  Ex. Nav_Qcode_List > Update_Service )
+
+
+
+    
 
 
     // 目前登入使用者資訊
@@ -86,7 +89,7 @@ const Update_Service = ( ) => {
     const { register , setValue , control , handleSubmit , formState: { errors  , isValid } } =
                 useForm< IService >({
                                        mode          : "all" ,
-                                       //  resolver  : yupResolver( schema_Customer ) ,  // schema_Customer ? 再確認 ( 2021.08.13 )
+                                       // resolver  : yupResolver( schema_Customer ) ,  // schema_Customer ? 再確認 ( 2021.08.13 )
                                        defaultValues : {
 
                                                                // # 基本資料 ( Service_Info )
@@ -155,6 +158,7 @@ const Update_Service = ( ) => {
                                                          }
 
                                    }) ;
+                                   
 
     const props = {
                      register    : register ,
@@ -172,13 +176,14 @@ const Update_Service = ( ) => {
 
 
     // 點選、回到上一個頁面
-    const back_To_Prev_Page = ( source : string , customer_Id? : string ) => {
+    const back_To_Prev_Page = ( source : string , customer_Id? : string , pet_Data? : any ) => {
 
        if( !source ) return false   
 
-       if( source === 'Q_Code_List' )     dispatch( set_Side_Panel( true , <Nav_Qcode_List />      , {} ) ) ;
-       if( source === 'Appoint_Records' ) dispatch( set_Side_Panel( true , <Appointment_Records /> , {} ) ) ;
-       if( source === 'Customer_Service_Records' ) dispatch( set_Side_Panel( true , <Customer_Consumption_Records customer_Id = { customer_Id } /> , {} ) ) ;
+       if( source === 'Q_Code_List' )     dispatch( set_Side_Panel( true , <Nav_Qcode_List />      , {} ) ) ;                                                 // Qcode 列表      
+       if( source === 'Appoint_Records' ) dispatch( set_Side_Panel( true , <Appointment_Records /> , {} ) ) ;                                                 // 預約紀錄 
+       if( source === 'Customer_Service_Records' ) dispatch( set_Side_Panel( true , <Customer_Consumption_Records customer_Id = { customer_Id } /> , {} ) ) ; // 客戶消費歷史
+       if( source === 'Pet_Consumption_Records' ) dispatch( set_Side_Panel( true , <Pet_Consumption_Records pet_Data = { pet_Data } /> , {} ) ) ;             // 寵物服務紀錄
 
     } ;
 
@@ -186,13 +191,39 @@ const Update_Service = ( ) => {
     // 提交表單
     const onSubmit : SubmitHandler<IService> = submit_Data => {
 
+
        let updateObj : any = null ;  // 欲更改欄位
        
        if( service_Type === '基礎' ) updateObj = colCovert_Basic_UPDATE( submit_Data ) ;
        if( service_Type === '洗澡' ) updateObj = colCovert_Bath_UPDATE( submit_Data ) ;
        if( service_Type === '美容' ) updateObj = colCovert_Beauty_UPDATE( submit_Data ) ;
 
-       update_Data( service_Url , service_Id , updateObj , '/index' , `${ service_Type }單` ) ; 
+      
+       // 目前該單據：到店狀態
+       const shop_Status = data?.shop_status ;  
+
+       // 防禦性驗證，無 "到店狀態"
+       if( !shop_Status ){
+          alert( "此服務單 ' 到店狀態 ' 有誤，無法進行修改，請洽系統管理員" ) 
+          return false
+       }
+
+
+       // 提醒 _ 行政 : 若服務 “已進行處理” ( Ex. 到店美容中、洗完等候中、已回家( 房 ) ) --> 需提醒美容師或相關工作人員 : 重新點選
+       if( shop_Status && ( shop_Status === '到店美容中' || shop_Status === '洗完等候中' || shop_Status === '已回家( 房 )' ) ){
+
+          // 需點選 _ 確認視窗的 "確認" 鈕，才能進行修改        
+          if( window.confirm( `目前此服務處於 : < ${ shop_Status } > 階段，若修改服務內容，請通知美容師或相關工作人員，再次點選、刷新資料．` ) ) 
+                update_Data( service_Url , service_Id , updateObj , '/index' , `${ service_Type }單` ) ; 
+
+       }else{
+
+          // 若尚 "未進行處理" ( Ex. 尚未到店、到店等候中 )，預設上，可直接修改 
+          update_Data( service_Url , service_Id , updateObj , '/index' , `${ service_Type }單` ) ; 
+
+       }
+
+       
 
     } ;
 
@@ -213,6 +244,7 @@ const Update_Service = ( ) => {
 
     return <form onSubmit = { handleSubmit( onSubmit ) } >
 
+               
 
                 { /* 資料表 id */ }   
                 <Data_Table_Id id = { service_Id } />
@@ -221,11 +253,18 @@ const Update_Service = ( ) => {
                 { /*  標題  */ }
                 <b className = { color } >
 
-                    <i className = { icon } ></i> &nbsp; &nbsp;
+                    <i className = { icon } ></i> &nbsp;&nbsp;
 
-                    { ( service_Type === "基礎" || service_Type === "洗澡" || service_Type === "美容" ) &&  <> Q{ Q_code } &nbsp; </> }
-                    
-                    { pet?.name ? <> { pet.name } ( { pet.species } ) &nbsp; &nbsp;</> : <p className="fRed"> 寵物已刪除 </p> }
+                    { service_Type } &nbsp;
+
+
+                    { ( service_Type === "基礎" || service_Type === "洗澡" || service_Type === "美容" || service_Type === "安親" ) &&  
+                        <b className="tag is-white is-rounded f_11"> Q{ Q_code } </b> 
+                    }
+                 
+                    &nbsp;
+
+                    { pet?.name ? <> { pet.name } ( { pet.species } ) &nbsp; &nbsp; </> : <p className="fRed"> 寵物已刪除 </p> }
 
                     { pet.sex   && <> <b className="tag is-white is-rounded f_12"> { pet.sex }    </b> &nbsp; &nbsp; </> }
                     { pet.age   && <> <b className="tag is-white is-rounded f_12"> { pet.age } 歲 </b> &nbsp; &nbsp; </> }
@@ -236,10 +275,10 @@ const Update_Service = ( ) => {
                 <br/><br/>
 
                 { /*  回上一頁  */ }
-                { source_Page && <To_Previous_Page action = { () => back_To_Prev_Page( source_Page , data?.customer?.id ) } />  }
+                { source_Page && <To_Previous_Page action = { () => back_To_Prev_Page( source_Page , data?.customer?.id , data?.pet ) } />  }
 
 
-                { /* 轉異常 */ }
+                { /* 提交：轉異常 ＆ 銷單 */ }
                 <Submit_Error current_User_Name = { current_User['name'] } data = { data } /> 
     
                 

@@ -14,11 +14,12 @@ import { click_Show_Edit_Customer } from "store/actions/action_Customer" ;
 import { switch_Service_Url_Id } from "utils/data/switch" ;
 import Service_Sign from "./components/Service_Sign";
 
+import { switch_Service_Id } from "utils/data/switch"
 
 
-const Services_Rows = ( props : any ) => {
 
-    const { data } = props ;
+const Services_Rows = ( { data } : any ) => {
+
     const customer = data['customer'] ;
     const url      = useLocation().pathname;
     const history  = useHistory() ;
@@ -45,6 +46,7 @@ const Services_Rows = ( props : any ) => {
 
                                               payable      : 0     // 應收金額小計 
                                            }) ;
+    
 
                                            
     // 服務單欄位 _ 顏色、Icon
@@ -211,18 +213,21 @@ const Services_Rows = ( props : any ) => {
 
     const t_L = { textAlign : "left" } as const ;
 
-
-
-    return <tr style = { ( data[ 'service_date' ] && data[ 'service_date' ].slice(0,10) === today ) ? { background:"rgb(160,160,160,.2)" }  : { lineHeight : "40px" } } >
+    
+    return <tr style = { ( data?.service_date && data?.service_date?.slice(0,10) === today ) ? { background:"rgb(160,160,160,.2)" }  : { lineHeight : "40px" } } >
 
              { /* 服務類別 */ } 
-             <td className="relative">
+             <td className="relative td_Left">
 
-                 { /* 服務相關標示 : 異常、銷單、是否付費、申請退費  */ } 
+                 { /* 服務相關標示 : 異常、銷單、是否付費、申請退費 */ } 
                  <Service_Sign { ...data } />
 
                  <b className = { color+" pointer" } onClick = { click_Service } >
-                     <i className = { icon } ></i> &nbsp; { data[ 'service_type' ] } &nbsp; Q{ data['q_code'] }
+
+                   <i className = { icon } ></i> &nbsp; { data[ 'service_type' ] }       &nbsp;
+                   <b className="f_9"> ( { switch_Service_Id( data ) } )            </b> &nbsp;
+                   <b className="tag is-white is-rounded f_9">  Q{ data['q_code'] } </b>
+                    
                  </b>
 
              </td>
@@ -247,12 +252,25 @@ const Services_Rows = ( props : any ) => {
              { /* 服務說明 */ } 
              <td className="f_10" style = { t_L } >
 
-                 { data?.payment_method === "方案" || 
+                 { data?.payment_method === "現金" &&
                        <> <b className="f_12">現金支付</b> : { data[ 'payment_type' ] } </> 
                  }
 
                  { /* 屬於某方案  */ }
-                 { data?.payment_method === "方案" && <> <b className="f_12">方案</b> : { data?.plan?.service_note }</>   }
+                 { data?.payment_method === "方案" && 
+                      <> 
+                         <b className="f_12">方案</b> : { data?.plan?.service_note ? data?.plan?.service_note : <b className="fRed"> 已銷單 </b>  }
+                      </>   
+                 }
+
+                 { data?.payment_method === "信用卡" &&
+                       <> <b className="f_12">信用卡支付</b> : { data[ 'payment_type' ] } </> 
+                 } 
+
+                 { data?.payment_method === "第三方支付" &&
+                       <> <b className="f_12">第三方支付</b> : { data[ 'payment_type' ] } </> 
+                 } 
+ 
 
              </td>
              
@@ -265,12 +283,18 @@ const Services_Rows = ( props : any ) => {
                      {
                        /*
                            付款方式 :
-                            * 現金                -> 依品種，該項服務價格 price['service']
-                            * 包月洗澡 / 包月美容  -> 方案價格            price['plan_Price']
+                            * 現金              -> 依品種，該項服務價格 price['service']
+                            * 包月洗澡 / 包月美容 -> 方案價格           price['plan_Price']
                        */
                      }
 
-                     { data['plan'] ? price['plan_Price'] : price['service'] }
+                     {
+                     
+                       // data['plan'] ? price['plan_Price'] : price['service'] 
+                       // data['plan'] ? <b style={{ color:"rgb(150,0,0)" }} > 包月 </b> : price['service'] 
+                       data['payment_method'] === '方案' ? <b style={{ color:"rgb(150,0,0)" }} > 包月 </b> : price['service'] 
+                     
+                     }
 
                  </span>
              </td>
@@ -303,9 +327,8 @@ const Services_Rows = ( props : any ) => {
                         */ 
                         
                       }
-
                     
-                      { data['plan']  ? '包月' :  price['payable']  }
+                      {  data['payment_method'] === '方案' ? '包月' :  price['payable']  }
 
                   </span> 
 
@@ -314,23 +337,17 @@ const Services_Rows = ( props : any ) => {
              { /* 實收 */ }
              <td> 
                   <span className="fDred"> 
-                     { data['plan'] ? '包 月' : data['amount_paid'] }  
+                     { data['payment_method'] === '方案'  ? '包月' : data['amount_paid'] }  
                   </span> 
              </td>
 
              { /* @ ---------- 價格欄位 _ END ---------- */ }
-             
+
+             { /* 付款日期 */ }
+             <td>  { data?.payment_date?.slice(5,10) }  </td>
+
              { /* 來店日期 */ }
-             <td> 
-                 
-                  { 
-                  
-                    // data[ 'service_date' ]?.slice(5,10) 
-                    data[ 'service_date' ]   
-                    
-                  } 
-                      
-             </td>
+             <td>  { data?.service_date?.slice(5,10) }  </td>
 
              { /* 洗美頁面 : 封存 */ }
              { url === '/services' && <td>

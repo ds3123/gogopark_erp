@@ -76,10 +76,7 @@ const Update_Plan = ( ) => {
       console.log( data ) ;
 
     } ;
-
-
-
-    console.log( 'nn' , data?.id )
+    
 
    return <form onSubmit = { handleSubmit( onSubmit ) }>
 

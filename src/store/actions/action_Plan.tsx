@@ -1,11 +1,12 @@
 
 
-import { Dispatch } from "redux";
-import axios from "utils/axios";
+import { Dispatch } from "redux"
+import axios from "utils/axios"
 import cookie from 'react-cookies'
-import { toast } from "react-toastify";
-import { set_Modal } from "store/actions/action_Global_Layout" ;
-import { set_Side_Panel } from "store/actions/action_Global_Layout";
+import { toast } from "react-toastify"
+import { set_Modal } from "store/actions/action_Global_Layout" 
+import { set_Side_Panel } from "store/actions/action_Global_Layout"
+import { sort_Data_By_CreatedDate } from 'utils/data/sort_data'
 
 
 
@@ -218,18 +219,13 @@ export const get_Plans_By_Date = ( date : string , dispatch : any ) => {
                 axios.get( `/plans/show_plans_by_date/${ date }` ).then( res => {
 
                     // 排序 
-                    const data = res.data.sort( ( a : any , b : any ) : any => {            
-                                  return a['created_at'] < b['created_at'] ? 1 : -1
-                                }) ;
+                    const data = sort_Data_By_CreatedDate( res.data , 'desc' ) ; 
 
-
-                     
                     // 排除 _ 銷單 ( 待補 01.13 )                       
 
 
-
                     // # 計算 _ 小計金額 --------------------------------------- 
-                    cal_Buy_Plan_Amount_Total( data ,  dispatch ) ;    // 洗澡美容 "預收款" ( 購買方案 : 預設 / 自訂 )          
+                    cal_Buy_Plan_Amount_Total( data , dispatch ) ;    // 洗澡美容 "預收款" ( 購買方案 : 預設 / 自訂 )          
 
 
                     dispatch({

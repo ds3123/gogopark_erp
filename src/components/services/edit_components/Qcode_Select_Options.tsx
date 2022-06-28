@@ -1,5 +1,5 @@
 
-import { useEffect , useState , FC } from "react" ;
+import { useEffect , useState } from "react" ;
 import { useRead_Qcode_Service_Date } from "hooks/ajax_crud/useAjax_Read";
 
 // Redux
@@ -22,18 +22,18 @@ for( let i = 1 as any ; i <= 60 ; i++ ){
 *
 */
 
-const Qcode_Select_Options : FC = ( ) => {
+const Qcode_Select_Options = ( ) => {
 
     const dispatch = useDispatch();
 
-    // 特定日期 ( 日期由 Redux 取得 )，所有服務，已被使用的 Q 碼
+    // 特定日期 ( 日期由 Redux 取得 )，所有服務，"已被使用" 的 Q 碼
     const Qcodes_Used_By_Date                   = useRead_Qcode_Service_Date() as string[] ;
 
     // 可供使用的 Q_code
     let [ available_Qcode , set_Ava_Q ]         = useState<any[]>([] );
 
     // 目前所選擇 Qcode
-    const [ current_Qcode , set_Current_Qcode ] = useState('' ) ;
+    const [ current_Qcode , set_Current_Qcode ] = useState( '' ) ;
 
 
     // 變動處理
@@ -47,7 +47,7 @@ const Qcode_Select_Options : FC = ( ) => {
     useEffect( () => {
 
         // 取得 : 當天 /  目前可供使用 Q 碼
-        const avaiable_Q_Arr = default_Q_arr.filter(x => Qcodes_Used_By_Date.indexOf( x ) === -1 ) ;
+        const avaiable_Q_Arr = default_Q_arr.filter( x => Qcodes_Used_By_Date.indexOf( x ) === -1 ) ;
 
         set_Ava_Q( avaiable_Q_Arr ) ;
 
@@ -60,7 +60,7 @@ const Qcode_Select_Options : FC = ( ) => {
        set_Current_Qcode( available_Qcode[0] ) ;
 
        // 設定 _ Redux ( 供 Create_Data_Container 提交時，設定 shop_Q_Code 欄位用 )
-       if( current_Qcode) dispatch( set_Current_Q_Code( available_Qcode[0] ) );
+       if( current_Qcode ) dispatch( set_Current_Q_Code( available_Qcode[0] ) );
 
 
     } , [ available_Qcode ] ) ;

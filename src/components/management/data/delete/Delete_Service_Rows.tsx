@@ -1,17 +1,16 @@
 
-import React , {useEffect, useState} from "react" ;
+import { useEffect , useState } from "react" ;
 import useServiceType from "hooks/layout/useServiceType";
 import {set_Side_Panel} from "store/actions/action_Global_Layout";
 import Update_Service from "components/services/edit/Update_Service";
 import Update_Customer from "components/customers/edit/Update_Customer";
 import {useDispatch} from "react-redux";
 import usePet_Button from "hooks/layout/usePet_Button";
-import axios from "utils/axios";
-import {toast} from "react-toastify";
 import {useHistory} from "react-router-dom";
-import cookie from "react-cookies";
 
 import { submit_Undo_Delete_Service } from "store/actions/action_Error"
+import { switch_Service_Id } from "utils/data/switch"
+
 
 
 const Delete_Service_Rows = (  props : any ) => {
@@ -60,7 +59,11 @@ const Delete_Service_Rows = (  props : any ) => {
 
                       <td>
                           <b className = { color+" pointer" } onClick = { click_Service } >
-                             <i className = { icon } ></i> &nbsp; { data[ 'service_type' ] } &nbsp; Q{ data['q_code'] }
+
+                            <i className = { icon } ></i> &nbsp; { data[ 'service_type' ] }&nbsp;
+                            <b className="f_9"> ( { switch_Service_Id( data ) } ) </b>   &nbsp; 
+                            <b className="tag is-white is-rounded f_9">  Q{ data['q_code'] }  </b>
+
                           </b>
                       </td>
 

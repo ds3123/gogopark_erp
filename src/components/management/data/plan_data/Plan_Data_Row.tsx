@@ -56,8 +56,6 @@ const Plan_Data_Row = ( { data } : { data : any } ) => {
     const bt         = { background : 'white' , boxShadow : '0px 0px 4px 1px rgba(100,100,100,.1)' }  as const ;
 
 
-    console.log( 'bbbb' , data?.id )
-
 
 
     return <tr>

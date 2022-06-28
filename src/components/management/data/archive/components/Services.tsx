@@ -29,6 +29,7 @@ const Services = ( ) => {
                     <th>  接送費    </th>
                     <th>  應 收     </th>
                     <th>  實 收     </th>
+                    <th>  付 款     </th>
                     <th>  來 店     </th>
                     <th>  復 原     </th>
                     <th>  刪 除     </th>
@@ -37,17 +38,7 @@ const Services = ( ) => {
 
             <tbody>
 
-                {
-
-                    pageOfItems.map( ( item : any , index ) => {
-
-                        if( item === 3 ) return false ;  // 確認 3 怎麼從 Pagination 套件得出 2020.06.10
-
-                        return <Services_Rows key={ index } data={ item } /> ;
-
-                    })
-
-                }
+              { pageOfItems.map( ( item : any , index ) => <Services_Rows key={ index } data={ item } /> ) }
 
             </tbody>
 

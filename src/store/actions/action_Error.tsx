@@ -1,4 +1,3 @@
-
 import { Dispatch } from "redux";
 import axios from "utils/axios" ;
 import { switch_Service_Type_Id } from "utils/data/switch"
@@ -11,8 +10,15 @@ import cookie from "react-cookies";
 // 刪除 _ 使用方案的服務紀錄( 資料表 : plan_used_records )
 export const delete_Plan_Service_Record = ( plan_Data : any ) => {
 
-    // 刪除 _ 服務紀錄
-    if( plan_Data['id'] ) axios.delete( `/plan_records/${ plan_Data['id'] }` ) ;
+    
+   // 刪除 _ 服務紀錄
+   if( plan_Data ) 
+      axios.delete( `/plan_records/${ plan_Data.id }` ).then( res => {
+
+        toast( `🦄 已經刪除此方案使用紀錄` , { position: "top-left", autoClose: 1500 , hideProgressBar: false });
+        
+      }) ;
+
 
 }
 
@@ -100,6 +106,7 @@ export const submit_Undo_Service_Error = ( data : any , history : any ) => {
 
 } ;
 
+
 // # 點選 _ 銷單 ( 取消該單據 )
 export const submit_Delete_Service = ( data : any , current_User_Name : string , history : any ) => {
 
@@ -108,17 +115,8 @@ export const submit_Delete_Service = ( data : any , current_User_Name : string ,
                 // 取得 _ 服務單 id 、API Url
                 const { service_Id , service_Url } = switch_Service_Type_Id( data ) ;
 
-
-                // 銷單的服務若為 : 使用 "方案" 
-                if( data[ 'payment_method' ] === "方案" && data[ 'plan' ] ){
-                    
-                    // 刪除 _ 使用方案的服務紀錄( 資料表 : plan_used_records )
-                    delete_Plan_Service_Record( data[ 'plan' ] ) ;
-
-                }
-
-             
-                // 更新 _ 異常狀態
+                
+                // 更新 _ 銷單 ( is_delete )
                 if( service_Id && service_Url ){
         
                     const obj = {
@@ -128,6 +126,18 @@ export const submit_Delete_Service = ( data : any , current_User_Name : string ,
         
                     axios.put( `${ service_Url }/${ service_Id }` , obj ).then( res => {
         
+                       
+
+                        // # 銷單的服務若為 : 使用 "方案" 
+                        if( data[ 'payment_method' ] === "方案" ){
+                         
+                            // 刪除 _ 使用方案的服務紀錄( 資料表 : plan_used_records )
+                            delete_Plan_Service_Record( data?.plan ) ;
+
+                        }
+
+
+
                         toast(`🦄 已取消此服務單`, { position: "top-left", autoClose: 1500 , hideProgressBar: false,});
         
                         dispatch( set_Side_Panel(false , null ,{} ) ) ;
@@ -143,6 +153,7 @@ export const submit_Delete_Service = ( data : any , current_User_Name : string ,
            } ;
 
 } ;
+
 
 // # 點選 _ 回復 : 銷單 
 export const submit_Undo_Delete_Service = ( data : any , history : any ) => {

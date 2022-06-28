@@ -16,8 +16,12 @@ type Sign = {
 const Service_Sign = ( { is_error , is_delete , amount_paid , amount_payable } : Sign  ) => {
 
 
-    const sign   = { top:"5px" , right:"0px" , color:"red" } ;
-    const dollar = { top:"17px", left:"0px" , color:"red" , zIndex:2 } as const ;
+     const sign   = { top:"5px" , right:"0px" , color:"red" } ;
+     const dollar = { top:"17px", left:"0px" , color:"red" , zIndex:2 } as const ;
+
+
+     // 是否付費
+     const is_Unpaid = ( amount_payable !== null && amount_paid !== null ) && amount_payable !== amount_paid
 
 
      return <>
@@ -33,9 +37,9 @@ const Service_Sign = ( { is_error , is_delete , amount_paid , amount_payable } :
                </b>
 
                { /* 是否付費 */ }
-               {/* <b className="absolute f_14" style={dollar}>
-                  { amount_payable !== amount_paid &&  <i className="fas fa-dollar-sign"></i> }
-               </b> */}
+               <b className="absolute f_14" style={dollar}>
+                  { is_Unpaid &&  <i className="fas fa-dollar-sign"></i> }
+               </b> 
      
             </>
     

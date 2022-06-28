@@ -1,11 +1,19 @@
-import React , { FC , useContext } from "react" ;
+import { useContext } from "react" ;
 
 // useContext
 import { SidePanelContext } from "templates/panel/Side_Panel";
 
 
+type Note = {
+
+    editType : any ;
+    register : any ;
+
+}
+
+
 // @ 櫃台備註
-const Admin_Note : FC< { editType : any , register : any } > = ( { editType , register } ) => {
+const Admin_Note = ( { editType , register } : Note ) => {
 
     const value = useContext( SidePanelContext ) ;                      // 取得 context 值  
     const data  = value.preLoadData ?  value.preLoadData : value.data ; // 預先取得資料

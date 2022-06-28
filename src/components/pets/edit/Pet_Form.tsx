@@ -372,13 +372,13 @@ const Pet_Form = ( { register , watch , setValue , errors , current  , pet_Speci
                             <div className="column is-2-desktop">
                                 
                                 { /* 出生日期 ( 計算歲數 ) */ } 
-                                <Pet_Birthday control = { control } setValue = { setValue } pet_Serial = { pet_Serial } current = { current }/>
+                                <Pet_Birthday control = { control } setValue = { setValue } pet_Serial = { pet_Serial } current = { current } />
 
                             </div>
 
                            
                             <Input type="number" name="pet_Weight" label="體 重 (kg)"    register={register} error={errors.pet_Weight}
-                                                                   icon="fas fa-weight" asterisk={false} columns="2" />
+                                                                   icon="fas fa-weight" asterisk={false}    columns="2" />
 
                             { /* 體型 */ }
                             <div className="column is-3-desktop">

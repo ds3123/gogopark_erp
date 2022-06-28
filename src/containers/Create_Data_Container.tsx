@@ -88,7 +88,13 @@ const Create_Data_Container = () => {
     const petSpecies = useRead_Species() ;
 
     // 目前點選 _ 新增項目 : 頁籤 ( Ex. 基礎、洗澡、美容 )
-    const current    = useSelector( ( state : any ) => state.Service.current_Create_Tab  ) ;     
+    const current     = useSelector( ( state : any ) => state.Service.current_Create_Tab  ) ;     
+
+    // 目前點選 _ 客戶寵物 ( 過去新增 )
+    const current_Pet = useSelector( ( state : any ) => state.Pet.current_Pet  ) ; 
+
+
+
 
     // # 依照目前所點選 : 頁籤 ( current )，判斷 _ 是否顯示/符合條件
     const is_Obj     = useMatch_Obj( current ) ;
@@ -123,7 +129,6 @@ const Create_Data_Container = () => {
 
 
     // # 新增函式 --------------------
-
     const create_Customer      = useCreate_Customer() ;           // 客戶 
     const create_Cus_Relatives = useCreate_Customer_Relatives() ; // 客戶關係人
     const create_Pet           = useCreate_Pet() ;                // 寵物 
@@ -151,9 +156,9 @@ const Create_Data_Container = () => {
         }
 
         // Yup schema 以外，額外新增的欄位驗證 : 寵物( 是否咬人 )、住宿、價格、員工
-        if( !extra_Validator( current , data , is_Obj ) ) return false ;
+        if( !extra_Validator( current , data , is_Obj , current_Pet ) ) return false ;
 
-    
+
         // 經處理後 ( 某些區塊，Ex. 基礎、洗澡... ，需額外附加 data 物件的屬性、屬性值 ) 提交新增的資料物件
         const submit_Data = add_Data_Obj_Extra_Props( current , data ) ;
 

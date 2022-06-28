@@ -1,5 +1,5 @@
 
-import { FC } from "react" ;
+import { useState , useEffect } from 'react'
 import Plan_Price_Method from "components/plan/custom_plan/components/Plan_Price_Method";
 import { set_Show_Applied_Species  } from "store/actions/action_Plan"
 import { useDispatch , useSelector } from "react-redux";
@@ -17,7 +17,7 @@ type form_Type = {
     edit_Type : string ;
 }
 
-const Custom_Plan_Form : FC< form_Type > = ( { register , errors , setValue , isValid , edit_Type } ) => {
+const Custom_Plan_Form  = ( { register , errors , setValue , isValid , edit_Type } : form_Type ) => {
 
       const dispatch              = useDispatch() ;
       const show_Applied_Species  = useSelector( ( state : any ) => state.Plan.show_Applied_Species ) ;        // 是否顯示 : 套用寵物品種列表 
@@ -27,14 +27,24 @@ const Custom_Plan_Form : FC< form_Type > = ( { register , errors , setValue , is
       const all_Species_Data      = useRead_All_Species_With_Service_Prices() ;                                // 取得 _ 所有品種資料 ( species 資料表 )
       const click_Applied_Species = () => dispatch( set_Show_Applied_Species( !show_Applied_Species ) ) ;      // 點選 _ 套用寵物品種 
      
+
+      // 方案是否已存在
+      const [ is_Plan_Existed , set_Is_Plan_Existed ] = useState( false ) ;
+
+
+
+      // 取得 _ 方案狀態 ( 是否已存在 )
+      const get_Is_Plan_Existed = ( bool : boolean ) => set_Is_Plan_Existed( bool ) ;
+
       
     
       { /* 屬性 for 元件 : <Plan_Basic_Info /> */ }
       const info_Props = {
-        register  : register ,
-        setValue  : setValue ,
-        errors    : errors ,
-        edit_Type : edit_Type
+        register            : register ,
+        setValue            : setValue ,
+        errors              : errors ,
+        edit_Type           : edit_Type , 
+        get_Is_Plan_Existed : get_Is_Plan_Existed 
       }
 
 
@@ -89,7 +99,26 @@ const Custom_Plan_Form : FC< form_Type > = ( { register , errors , setValue , is
                   <Plan_Basic_Info { ...info_Props } /> 
 
                   { /*  個別消費 _ 計價方式 */ }     
-                  { ( plan_Price > 0 || edit_Type === "編輯" ) && <Plan_Price_Method { ...method_Props } />  } 
+                  { 
+                     ( plan_Price > 0 || edit_Type === "編輯" ) && <Plan_Price_Method { ...method_Props } /> 
+                  } 
+
+
+                { /* 提交鈕  */ } 
+                {
+
+                  is_Plan_Existed ||
+
+                                  <div className="has-text-centered"  >
+                                      <button disabled = { !isValid } type="submit" className="button is-primary relative is-medium" > 
+                                          { edit_Type === "新增" ? "新增" : "編輯" }包月方案  
+                                      </button>
+                                  </div>  
+
+                }  
+                
+
+
 
             </div>
 

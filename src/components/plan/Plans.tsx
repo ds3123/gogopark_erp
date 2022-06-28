@@ -111,19 +111,22 @@ const Plans = ( ) => {
             { /* 資料筆數 */ } 
             <Data_List_Sum data_Sum={ dataSum } is_All_Data_Done = { is_All_Data_Done } />       
 
-            <table className="table is-fullwidth is-hoverable relative" style={{ width:"110%" , left:"-5%" }}>
+            <table className="table is-fullwidth is-hoverable relative" style={{ width:"124%" , left:"-12%" }}>
 
                 <thead>
                    <tr>
-                      <th> 方案類型     </th>
-                      <th> 客戶資訊     </th>
-                      <th> 方案適用寵物 </th>
-                      <th> 小 計     </th>
-                      <th> <b className="fDred">收款</b>  日期 </th>
-                      <th> <b className="fDblue">開始</b> 日期 </th>
-                      <th> <b className="fDblue">結束</b> 日期 </th>
-                      <th style={{ width:"100px" }}> 使用情形 </th> 
-                      { /* <th> 封 存  </th> */ }
+                      <th> 類 型     </th>
+                      <th> 客 戶     </th>
+                      <th> 寵 物 </th>
+                      <th style={{ width:"250px" }}> 小 計 (元)     </th>
+                      <th style={{ width:"230px" }}> <b className="fDred">建檔</b>日期 </th>
+                      <th style={{ width:"230px" }}> <b className="fDred">收款</b>日期 </th>
+                      <th style={{ width:"250px" }}> <b className="fDblue">開始</b>日期 </th>
+                      <th style={{ width:"250px" }}> <b className="fDblue">結束</b>日期 </th>
+                      <th style={{ width:"340px" }}> 方案期限 (天)   </th>
+                      <th style={{ width:"100px" }}> 使用情形 </th>
+                      <th style={{ width:"90px" }}> 刪 除 </th> 
+                      { /* <th>  封 存  </th> */ }
                     </tr>
                 </thead>
 

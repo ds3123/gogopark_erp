@@ -68,12 +68,15 @@ const Submit_Error = ( props : error ) => {
                         <b className="tag is-large pointer hover" style={{width:"100%"}} onClick = { click_Is_Error } >
                             <i className="fas fa-exclamation-triangle"></i> &nbsp;  轉異常 
                         </b>
+
                     }
 
                     { is_Error &&
+
                         <b className="tag is-large pointer" style={{ background:"darkorange" , color:"white" }} onClick = { click_Is_Error } >
                             <i className="fas fa-exclamation-triangle"></i> &nbsp;  異常原因
                         </b>
+                        
                     }
 
                </div>
@@ -114,7 +117,7 @@ const Submit_Error = ( props : error ) => {
 
                 }
 
-            </div>
+           </div>
 
             
 } ;

@@ -1,5 +1,5 @@
 
-import { FC , useEffect, useState  } from "react"
+import { useEffect , useState  } from "react"
 import { Edit_Form_Type } from "utils/Interface_Type";
 import { useRead_Species } from "hooks/ajax_crud/useAjax_Read";
 import { useDispatch, useSelector} from "react-redux";
@@ -11,7 +11,7 @@ import Plan_Type_Columns from "./components/Plan_Type_Columns"
 
 import Applied_Species_Select from "./components/Applied_Species_Select"
 import Applied_Plan_Type from "./components/Applied_Plan_Type"
-
+import Plan_Bath_Beauty_Num from "./components/Plan_Bath_Beauty_Num"
 
 
 
@@ -24,7 +24,7 @@ interface IPlan extends Edit_Form_Type {
 
 
 { /* @ 方案表單欄位  */}
-const Plan_Form : FC< IPlan > = ( { register , setValue , errors , current, editType, serviceData  } ) => {
+const Plan_Form = ( { register , setValue , errors , current, editType, serviceData  } : IPlan ) => {
 
 
      const dispatch               = useDispatch() ;
@@ -89,13 +89,14 @@ const Plan_Form : FC< IPlan > = ( { register , setValue , errors , current, edit
      }
 
 
+
      // 取得 _ 基本價格
      const get_Edit_Plan_Basic_Price = ( data : any ) => {
 
          if( !data ) return 0 ;
 
          const pet       = data['pet'] ;
-         const plan_Type = data[ 'plan_type' ] ;  // 方案類型( Ex. 包月洗澡、包月美容... )
+         const plan_Type = data['plan_type'] ;  // 方案類型( Ex. 包月洗澡、包月美容... )
  
          // 包月洗澡下，有自訂價錢
          if( plan_Type === '包月洗澡' && pet?.month_bath_price )   return pet?.month_bath_price ;
@@ -110,7 +111,7 @@ const Plan_Form : FC< IPlan > = ( { register , setValue , errors , current, edit
 
     
      // 設定 _ 所選擇品種，其所有 ( 5種 ) 基本服務價格
-     useEffect( ( ) => {
+     useEffect( () => {
 
         if( current_Species_Id && current_Species_Id !== '請選擇' )
              dispatch( set_Species_Service_Prices( current_Species_Id ) ) ;
@@ -135,65 +136,79 @@ const Plan_Form : FC< IPlan > = ( { register , setValue , errors , current, edit
      } , [ serviceData ] ) ;
      
 
+
+
      return <div className="relative">
 
-                { !editType && <span className="absolute" style={{ top:"-30px" }}> <i className="fas fa-exclamation-circle"></i> &nbsp;需先新增客戶及其寵物，才能購買方案 。 </span> }
+                { /* 提醒 ( @ 新增 )*/ } 
+                { !editType && 
+                     <span className="absolute" style={{ top:"-45px" , fontSize:"10pt" }}> 
+                        <i className="fas fa-exclamation-circle"></i> &nbsp;需先新增客戶及其寵物，才能購買方案 。 
+                     </span> 
+                }
  
                 { /* 標題 */ }
-                <label className="label m_Bottom_50" style={{ fontSize : "1.3em" }} >
+                <label className="label m_Bottom_50" >
 
                     <b className="tag is-large is-danger" > <i className="fas fa-file-alt"></i> &nbsp; 方 案 </b> &nbsp; &nbsp;
 
-                    { /* 客戶所有寵物 ( 新增時顯示 ) */ }
-                    { !editType && <Customer_Pets current={ current } current_Customer_Pets={ current_Customer_Pets } click_Pet_Button={ click_Pet_Button } /> }
+                    { /* 客戶所有寵物 ( @ 新增 ) */ }
+                    { !editType && 
+                           <Customer_Pets current={ current } current_Customer_Pets={ current_Customer_Pets } click_Pet_Button={ click_Pet_Button } /> 
+                    }
 
                 </label>
 
             
                 <div className="columns is-multiline is-mobile">
 
-                     { /* 方案類型 ( 下拉選單 ) */ }
+                     { /* 方案類型  */ }
                      <Applied_Plan_Type register = { register } setValue = { setValue } editType = { editType} serviceData = { serviceData } /> 
 
 
-                     { /* 寵物品種 ( 下拉選單 ) */ }
+                     { /* 寵物品種  */ }
                      { ( current_Plan_Type && current_Plan_Type !== '請選擇' || editType === '編輯' ) &&  
                               <Applied_Species_Select register = { register } errors = { errors } editType = { editType } serviceData = { serviceData } /> }
 
-                     { /* # for 【 新增 】 */ }
-                     { ( current_Species_Id &&  current_Species_Id !== '請選擇' ) &&  
+                     { /* ＠ 新增  */ }
+                     { ( current_Species_Id &&  current_Species_Id !== '請選擇' && !editType ) &&  
                               <Plan_Type_Columns register = { register } errors = { errors }  /> }
-                    
-                        
-                     { /* # for 【 編輯 】 */ }
-                     { editType === '編輯' &&
 
-                        <>
+                     
+                     { /* ＠ 編輯 ( 該方案可洗澡、美容次數 )  */ }
+                     { editType && <Plan_Bath_Beauty_Num serviceData = { serviceData } /> }                     
 
-                            { /* 基本價格 */ }
-                            <div className="column is-6-desktop">
-                                <div className="f_14"> 基本價格 : 
-                                    <b className="fDred"> { plan_Fee } </b> 元 
-                                </div>
-                            </div>
-
-                            { /* 自訂 : 加 / 減 金額 */ }
-                            <div className="column is-3-desktop">
-                                <div className="f_14"> 自訂加 / 減 金額 : <b className="fDred"> { serviceData.plan_adjust_price } </b> 元 </div>
-                            </div>
-
-                            { /* 接送費 */ }
-                            <div className="column is-3-desktop">
-                                <div className="f_14"> 接送費 : <b className="fDred"> { serviceData.pickup_fee } </b> 元 </div>
-                            </div>
-
-                        </>
-
-                     }
 
                 </div>
 
-                 <br/>
+                { /* # for 【 編輯 】 */ }
+                { editType  &&
+
+                  <div className="columns is-multiline is-mobile">
+
+                    { /* 基本價格 */ }
+                    <div className="column  is-3-desktop">
+                        <div className="f_14"> 基本價格 : 
+                            <b className="fDred"> { plan_Fee } </b> 元 
+                        </div>
+                    </div>
+
+                    { /* 自訂 : 加 / 減 金額 */ }
+                    <div className="column is-3-desktop">
+                        <div className="f_14"> 自訂加 / 減 金額 : <b className="fDred"> { serviceData.plan_adjust_price } </b> 元 </div>
+                    </div>
+
+                    { /* 接送費 */ }
+                    <div className="column is-6-desktop">
+                        <div className="f_14"> 接送費 : <b className="fDred"> { serviceData.pickup_fee } </b> 元 </div>
+                    </div>
+
+                
+                  </div>
+
+                }
+
+                <br/>
 
             </div>
 

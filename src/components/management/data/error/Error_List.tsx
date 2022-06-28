@@ -20,16 +20,16 @@ const Error_List = ( ) => {
 
                   <thead>
                       <tr>
-                      <th> 區域別  </th> 
-                            <th> 店 別   </th>   
-                          <th> 服務類別 </th>
-                          <th> 寵物資訊 </th>
-                          <th> 客戶姓名 </th>
-                          <th> 異常原因 </th>
-                          <th> 提出人員 </th>
-                          <th> 提出時間 </th>
-                          <th> 處理狀態 </th>
-                          <th> 解除異常 </th>
+                         <th> 區域別  </th> 
+                         <th> 店 別   </th>   
+                         <th> 服務類別 </th>
+                         <th> 寵物資訊 </th>
+                         <th> 客戶姓名 </th>
+                         <th> 異常原因 </th>
+                         <th> 提出人員 </th>
+                         <th> 提出時間 </th>
+                         <th> 處理狀態 </th>
+                         <th> 解除異常 </th>
                       </tr>
                   </thead>
 

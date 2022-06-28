@@ -1,19 +1,16 @@
 
-import { Dispatch } from "redux";
-import axios from "utils/axios";
+import { Dispatch } from "redux"
+import axios from "utils/axios"
 
 // React-Toastify
-import { toast } from "react-toastify";
-import {set_Side_Panel} from "store/actions/action_Global_Layout";
+import { toast } from "react-toastify"
+import {set_Side_Panel} from "store/actions/action_Global_Layout"
 import { set_Index_isLoading } from "store/actions/action_Index"
 
-// Cookie
-import cookie from 'react-cookies'  // 匯入 cookie
 
 import { switch_Service_Type_Id } from "utils/data/switch"
-
-import Appointment_Record from "components/index/list/Appointment_Record";
-
+import Appointment_Record from "components/index/list/Appointment_Record"
+import { sort_Data_By_CreatedDate } from 'utils/data/sort_data'
 
 
 
@@ -263,18 +260,17 @@ export const get_Finance_Service_Records_By_Date = ( date : string , dispatch : 
                 axios.get( `/services/show_services/${ date }` ).then( res => {
 
                     // 排序 
-                    const data = res.data.sort( ( a : any , b : any ) : any => {            
-                                    return a['created_at'] < b['created_at'] ? 1 : -1
-                                 }) ;
+                    const data = sort_Data_By_CreatedDate( res.data , 'desc' ) ; 
 
+                    
                     // 排除 _ 銷單                 
                     const _data = data.filter( ( x : any ) => x['is_delete'] !== 1 ) ;    
                     
 
-                    // # 計算 _ 小計金額 --------------------------------------- 
+                    // # 計算 _ 小計金額 
                     cal_Service_Amount_Total( _data , dispatch ) ;      // 洗澡美容 "應收款" 
                     cal_Deduct_Plan_Amount_Total( _data , dispatch ) ;  // 洗澡美容 "扣 _ 預收款" ( 使用方案金額 )     
-                    cal_Care_Lodge_Amount_Total( _data , dispatch  ) ;  // 住宿安親 "應收款"      
+                    cal_Care_Lodge_Amount_Total( _data , dispatch ) ;   // 住宿安親 "應收款"      
 
 
                     dispatch({

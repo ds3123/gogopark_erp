@@ -4,7 +4,6 @@ import { useDispatch } from "react-redux" ;
 import { set_Side_Panel } from "store/actions/action_Global_Layout";
 import Plan_Used_Records from "components/services/edit_components/summary_fee/plan_components/Plan_Used_Records";
 import axios from "utils/axios";
-import zIndex from "@material-ui/core/styles/zIndex";
 
 
 // @ 方案使用情形
@@ -59,7 +58,7 @@ const Plan_Used = ( { data } : { data : any } ) => {
                   { /* 方案使用完畢  */ }
                   { used_Record['bath'] === 4 &&
 
-                        <b className="tag is-warning absolute" style={{ top:"30px" , left:"145px"  }} >  
+                        <b className="tag is-warning absolute" style={{ top:"53px" , left:"145px"  }} >  
                             <i className="fas fa-folder-open"></i> &nbsp; 已用完 
                         </b>
                 
@@ -83,7 +82,7 @@ const Plan_Used = ( { data } : { data : any } ) => {
                     { /* 方案使用完畢  */ }
                     { ( used_Record['bath'] === 3 && used_Record['beauty'] === 1 ) &&
 
-                        <b className="tag is-warning absolute" style={{ top:"30px" , left:"145px"  }} >  
+                        <b className="tag is-warning absolute" style={{ top:"53px" , left:"145px" }} >  
                             <i className="fas fa-folder-open"></i> &nbsp; 已用完 
                         </b>
                 
@@ -116,16 +115,13 @@ const Plan_Used = ( { data } : { data : any } ) => {
                     }
 
                     { /* 方案使用完畢 */ }
-                    { 
-                       ( used_Record['bath'] ===  data?.custom_plan?.bath_num && used_Record['beauty'] === data?.custom_plan?.beauty_num ) && 
-                        <b className="tag is-warning absolute" style={{ top:"30px" , left:"145px"  }} >  
+                    { ( used_Record['bath'] ===  data?.custom_plan?.bath_num && used_Record['beauty'] === data?.custom_plan?.beauty_num ) && 
+
+                        <b className="tag is-warning absolute" style={{ top:"53px" , left:"145px"  }} >  
                           <i className="fas fa-folder-open"></i> &nbsp; 已用完 
-                       </b>
-                       
-                   }
+                        </b>
 
-
-
+                    }
 
                 </>
 

@@ -23,7 +23,7 @@ const Pets_Rows = ( props : any ) => {
 
 
     // * 寵物按鈕 ( 無 / 單隻 、多隻 )
-    const petButton = usePet_Button([data]) ;
+    const petButton = usePet_Button([data]) ; 
     const customer  = data['customer'] ;
 
     // 點選 _ 客戶
@@ -97,7 +97,6 @@ const Pets_Rows = ( props : any ) => {
                       </b>
                  }
 
-
                  { data['serial'].slice( 16 ,22 ) ? data['serial'].slice( 16 ,22 ) : data['serial'] } 
              </td>
 
@@ -111,6 +110,7 @@ const Pets_Rows = ( props : any ) => {
              </td>
 
              <td> { customer ? customer['mobile_phone'] : '' }   </td>
+
              <td> 
                  
                  <b className="tag is-medium" onClick={ () => click_History( data ) }>
@@ -118,6 +118,7 @@ const Pets_Rows = ( props : any ) => {
                  </b>
              
              </td>
+             
              <td> { data['created_at'] ? data['created_at'].slice(0,10) : '' } </td>
            
                { /* 寵物頁面 : 封存 */ }

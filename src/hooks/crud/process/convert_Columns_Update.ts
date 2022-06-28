@@ -1,6 +1,7 @@
 
 /*
  
+
    @ 欄位轉換 ( for 【 修改 ( UPDATE ) 】 資料 )
      表單欄位 ---> 資料庫資料表欄位
 
@@ -10,11 +11,18 @@
       ＊ 以下僅更新服務表單，"部分欄位" ( for 首頁、 )
       ＊ 更新欄位的轉換，在 convert_Columns.ts 檔案( 更新 "全部欄位" ) 已有 --> 是否合併 ？  2022.04.11 
 
+      
 */
 
 
 // 取得 _ 所有服務，皆有的欄位
 const get_Common_Obj = ( data : any ) : any => {
+
+
+    
+    // 當服務為 "使用方案" 時， "實收金額" 採用欄位 : 'plan_Plus_Amount_Paid'
+    const plan_Plus_Amount_Paid = data?.plan_Plus_Amount_Paid ;   // 方案加價 : 已付金額
+    const amount_Paid           = plan_Plus_Amount_Paid ? plan_Plus_Amount_Paid : data['amount_Paid'] ;
 
 
     return {
@@ -35,7 +43,8 @@ const get_Common_Obj = ( data : any ) : any => {
               customer_note         : data['customer_Note'] ? data['customer_Note'].join(',') : '' ,     // 主人交代 ( 可複選選項 )
               admin_customer_note   : data['admin_Customer_Note'] ,  
              
-              amount_paid           : data['amount_Paid'] ? data['amount_Paid'] : 0   ,                  // 已付金額    
+             // amount_paid           : data['amount_Paid'] ? data['amount_Paid'] : 0   ,                // 實收金額    
+              amount_paid           : amount_Paid ? amount_Paid : 0   ,                                  // 實收金額    
 
               beautician_note	    : data['beautician_Note']                                            // 美容備註
 
@@ -65,8 +74,17 @@ export const colCovert_Bath_UPDATE = ( data : any ) => {
 
     let obj = get_Common_Obj( data ) ; 
     
+
     // # 增加 _ 洗澡單特有欄位
- 
+    
+    // 洗澡
+    obj.bath_1 = data['bath_Option_1'] ;
+    obj.bath_2 = data['bath_Option_2'] ;
+    obj.bath_3 = data['bath_Option_3'] ;
+    obj.bath_4 = data['bath_Option_4'] ;
+    obj.bath_5 = data['bath_Option_5'] ;
+    obj.bath_6 = data['bath_Option_6'] ;
+
 
     return obj
 
@@ -80,7 +98,23 @@ export const colCovert_Beauty_UPDATE = ( data : any ) => {
 
     // # 增加 _ 美容單特有欄位
 
+    // 洗澡
+    obj.bath_1 = data['bath_Option_1'] ;
+    obj.bath_2 = data['bath_Option_2'] ;
+    obj.bath_3 = data['bath_Option_3'] ;
+    obj.bath_4 = data['bath_Option_4'] ;
+    obj.bath_5 = data['bath_Option_5'] ;
+    obj.bath_6 = data['bath_Option_6'] ;
+
+    // 美容
+    obj.b_body  = data['beauty_Option_Body'] ;
+    obj.b_head  = data['beauty_Option_Head'] ;
+    obj.b_ear   = data['beauty_Option_Ear'] ;
+    obj.b_tail  = data['beauty_Option_Tail'] ;
+    obj.b_foot  = data['beauty_Option_Foot'] ;
+    obj.b_other = data['beauty_Option_Other'] ;
     
+
     return obj
     
 }

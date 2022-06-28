@@ -1,4 +1,4 @@
-import { FC , useEffect } from "react" ;
+import { useEffect } from "react" ;
 import { useDispatch, useSelector} from "react-redux";
 import { set_month_bath_price , set_month_beauty_price , set_current_plan_type , set_Self_Adjust_Amount , set_Service_Pickup_Fee , set_Custom_Plan_Basic_Price } from 'store/actions/action_Plan'
 import { usePlan_Query_Custom_Plan_By_Name } from "hooks/data/usePlan"
@@ -15,7 +15,7 @@ type sType = {
 
 
 // @ 方案類型 ( 下拉選單 )
-const Applied_Plan_Type : FC< sType > = ( { register , setValue , editType , serviceData } ) => {
+const Applied_Plan_Type = ( { register , setValue , editType , serviceData } : sType ) => {
 
      const dispatch          = useDispatch(); 
        
@@ -74,10 +74,13 @@ const Applied_Plan_Type : FC< sType > = ( { register , setValue , editType , ser
     } , [ custom_Plan ] ) ;
    
 
+    const is_Edit = editType === '編輯' ;
+
+
    return  <div className="column is-3-desktop">
 
                 { /* for 新增  */ }
-                { editType === '編輯' ||
+                { is_Edit ||
 
                     <>
 
@@ -104,7 +107,7 @@ const Applied_Plan_Type : FC< sType > = ( { register , setValue , editType , ser
                 
                 
                 { /* for 編輯 */ }
-                { editType === '編輯' &&  <div className="f_14"> 方案類型 : <b className="fDblue"> { serviceData.plan_type }  </b> </div>  }
+                { is_Edit &&  <div className="f_14"> 方案類型 : <b className="fDblue"> { serviceData.plan_type }  </b> </div>  }
 
           </div>
 

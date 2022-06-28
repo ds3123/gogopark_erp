@@ -1,4 +1,4 @@
-import { FC , useContext } from "react" ;
+import { useContext } from "react" ;
 import { ReachHookFormContext } from "containers/Create_Data_Container" ;
 
 // 各區塊表單元件
@@ -22,15 +22,12 @@ import { useRating_Options } from "hooks/layout/useRating"
 import { useMatch_Obj } from "containers/data_components/Condition_for_Currnet_Tab"
 
 
-interface TS extends Edit_Form_Type {
-   current : string ;
-}
 
 
 /* @ 新增 : 基礎單、洗澡單、美容單 */
-const Create_Service : FC = () => {
+const Create_Service = () => {
 
-    const props_RHF      = useContext( ReachHookFormContext ) ;  // 取得 context 值 : React Hook Form 屬性   
+    const props_RHF = useContext( ReachHookFormContext ) ;  // 取得 context 值 : React Hook Form 屬性   
     const { current , register , setValue } = props_RHF
 
     // # 依照目前所點選 : 頁籤 ( current )，判斷 _ 是否顯示/符合條件

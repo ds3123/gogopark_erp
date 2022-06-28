@@ -1,10 +1,37 @@
 
-import moment from "moment";
+import moment from 'moment' 
+import { get_Pet_Age } from 'utils/time/date'
+
 
 
 
 // @ Yup schema 以外，額外新增的欄位驗證
-export const extra_Validator = ( current : string , data : any , is_Obj : any ) : boolean => {
+export const extra_Validator = ( current : string , data : any , is_Obj : any , current_Pet : any ) : boolean => {
+
+
+    // 寵物過世
+    if( current_Pet && current_Pet?.is_dead ){
+        alert( `寵物已過世，無法新增 : ${ current }` ) ;
+        return false ;
+    }
+
+
+    // 寵物拒接
+    if( current_Pet && current_Pet?.is_rejected === 1 ){ 
+        const res = window.confirm( `寵物 ( ${ current_Pet?.name } ) 已設定為 "拒接"，確定仍要新增 : ${ current } ？`  ) ;
+        if( !res ) return false ;
+    }
+
+
+    // 年齡有風險 (  < 1 歲 或 > 12 歲  )
+    if( current_Pet && current_Pet?.birthday ){ 
+        // 年齡標示 
+        const birtyday_Str = get_Pet_Age( current_Pet?.birthday ) ;
+        if( parseInt( birtyday_Str.slice( 0 , 2 ) ) > 12 || birtyday_Str === '未滿週歲' ){
+            const res = window.confirm( `寵物 ( ${ current_Pet?.name } ) ${ birtyday_Str }，年齡上有風險，確定仍要新增 : ${ current } ？`  ) ;  
+            if( !res ) return false ;
+        }
+    }
 
 
     // 新增驗證 : 寵物欄位 ( 是否會咬人 )  2022.03.21 先取消

@@ -1,7 +1,9 @@
 
 
-import moment from "moment";
+import moment from "moment"
 
+
+const today = moment( new Date ).format('YYYY-MM-DD' ) ; // 今日
 
 // @  轉換欄位 ( 將提交表單欄位，轉為資料庫表單欄位 ) 
 
@@ -146,7 +148,7 @@ export const columns_Covert_Basic = ( data : any ) => {
                             pickup_fee            : pickup_fee ,                                                             // 接送費
 
 
-                            // * 行政、明細 ( 8 個 ) --------------------------------------------------------
+                            // * 行政、明細 ( 9 個 ) --------------------------------------------------------
 
                             amount_payable        : amount_payable ,                                                         // 應收金額
                             amount_paid           : data['amount_Paid'] ,                                                    // 實收金額
@@ -155,9 +157,11 @@ export const columns_Covert_Basic = ( data : any ) => {
                             payment_method        : data['payment_Method'] ,                                                 // 付款方式 ( Ex. 現金、贈送 ... )
                             payment_type          : '基礎小美容' ,
 
-                            admin_user            : data['admin_User'] === '請選擇' ? '' : data['admin_User'] ,               // 櫃台人員
+                            admin_user            : data['admin_User'] === '請選擇' ? '' : data['admin_User'] ,                // 櫃台人員
                             admin_star            : data['admin_Rating'] ,                                                    // 櫃台人員評分
                             admin_service_note    : data['admin_Service_Note'] ,                                              // 櫃台人員備註
+
+                            payment_date          : moment( data['payment_Date'] ).format( 'YYYY-MM-DD' ) ,                   // 收款日期
 
                             // * 美容師欄位 ( 6 個 ) ( NOTE : 美容師處理時，才會填寫 ) -------------------------
 
@@ -167,6 +171,7 @@ export const columns_Covert_Basic = ( data : any ) => {
                             wait_time             : '' ,                                                                      // 開始等候時間
                             beautician_star       : '' ,                                                                      // 評分
                             beautician_note       : '' ,                                                                      // 備註
+
 
                          } ;
 
@@ -178,28 +183,38 @@ export const columns_Covert_Basic = ( data : any ) => {
 // 洗澡單 ( 資料表 : bath )
 export const columns_Covert_Bath = ( data : any ) => {
 
+
+    const service_Date   = moment( data?.service_Date ).format('YYYY-MM-DD' ) ; // 服務( 到店 ) 日期
+    const payment_Method = data['payment_Method'] ;                             // 付款方式
+
+
     // * 服務付費類別 ( Ex. 初次洗澡優惠、單次洗澡、單次美容 )
     let payment_Type = data['current_Create_Service_Type'] ? data['current_Create_Service_Type'] : '' ;
 
     // 若付款方式為方案，付費類別改為 _ 方案備註 ( Ex. 包月洗澡 1 次 ... )
-    if( data['payment_Method'] === '包月洗澡' || data['payment_Method'] === '包月美容' ) payment_Type = data['current_Plan_Note'] ;
+    if( payment_Method === '包月洗澡' || payment_Method === '包月美容' ) payment_Type = data['current_Plan_Note'] ;
 
     // ------------------------------------------------------------------------------
 
-        const bath_fee           = data['bath_Fee'] ;  // 洗澡費用
-        const self_adjust_amount = data['self_Adjust_Amount'] ? data['self_Adjust_Amount'] : 0  ; // 個體自行調整費用 ( input --> 需驗證 )
+        const bath_fee           = parseInt( data['bath_Fee'] ) ;                                             // 洗澡費用
+        const self_adjust_amount = data['self_Adjust_Amount'] ? parseInt( data['self_Adjust_Amount'] ) : 0  ; // 個體自行調整費用 ( input --> 需驗證 )
 
-        const extra_service_fee  = data['extra_Service_Fee'] ;  // 加價項目 _ 費用
-        const extra_beauty_fee   = data['extra_Beauty_Fee'] ;   // 加價美容 _ 費用
+        const extra_service_fee  = parseInt( data['extra_Service_Fee'] ) ;  // 加價項目 _ 費用
+        const extra_beauty_fee   = parseInt( data['extra_Beauty_Fee'] ) ;   // 加價美容 _ 費用
 
-        const pickup_fee         = data['pickup_Fee'] ? data['pickup_Fee'] : 0  ;  // 接送費用   ( input --> 需驗證 )
+        const pickup_fee         = data['pickup_Fee'] ? parseInt( data['pickup_Fee'] ) : 0  ;  // 接送費用 ( input --> 需驗證 )
 
-        // 應收金額
-        const amount_payable     = parseInt( bath_fee ) +
-                                   parseInt( self_adjust_amount ) +
-                                   parseInt( extra_service_fee ) +
-                                   parseInt( extra_beauty_fee ) +
-                                   parseInt( pickup_fee ) ;
+        // 應收金額 ( 若為使用 "方案" ，應收金額不包含：洗澡預設價格 )
+        const amount_payable     = payment_Method === '方案' ?
+                                   ( self_adjust_amount + extra_service_fee + extra_beauty_fee + pickup_fee ) :
+                                   ( bath_fee + self_adjust_amount + extra_service_fee + extra_beauty_fee + pickup_fee  ) ;
+
+
+        // 實收金額
+        let amount_paid  = 0 ; 
+        if( payment_Method === '方案' && service_Date === today ) amount_paid = self_adjust_amount + extra_service_fee + extra_beauty_fee + pickup_fee  ;   // 當天 _ 使用方案  ( 個體調整 + 加價項目 + 加價美容 + 接送費 ) 
+        if( payment_Method === '方案' && service_Date > today )   amount_paid = data?.plan_Plus_Amount_Paid ;                                               // 預約 _ 使用方案
+        if( payment_Method !== '方案' )                           amount_paid = data['amount_Paid'];                                                        // 使用現金 ( 或其他付款方式 )
 
     // -----------------------------------------------------------------------------------
 
@@ -269,18 +284,20 @@ export const columns_Covert_Bath = ( data : any ) => {
 
                             pickup_fee            : pickup_fee ,                                                            // 接送費用
 
-                            // * 行政、明細 ( 8 個 ) --------------------------------------------------------
+                            // * 行政、明細 ( 9 個 ) --------------------------------------------------------
 
-                            amount_payable        : amount_payable ,                                                         // 應收金額
-                            amount_paid           : data['amount_Paid'] ,                                                    // 實收金額
-                            amount_discount       : data['amount_Discount'] ? data['amount_Discount'] : 0 ,                  // 優惠金額
+                            amount_payable        : amount_payable ,                                                          // 應收金額
+                            amount_paid           : amount_paid ,                                                             // 實收金額
+                            amount_discount       : data['amount_Discount'] ? data['amount_Discount'] : 0 ,                   // 優惠金額
 
-                            payment_method        : data['payment_Method'] ,                                                 // 付款方式 ( Ex. 現金、贈送 ... )
-                            payment_type          : payment_Type ,                                                           // 服務付費類別 ( Ex. 初次洗澡優惠、單次洗澡、單次美容 )
+                            payment_method        : data['payment_Method'] ,                                                  // 付款方式 ( Ex. 現金、贈送 ... )
+                            payment_type          : payment_Type ,                                                            // 服務付費類別 ( Ex. 初次洗澡優惠、單次洗澡、單次美容 )
 
-                            admin_user            : data['admin_User'] === '請選擇' ? '' : data['admin_User'] ,               // 櫃台人員
+                            admin_user            : data['admin_User'] === '請選擇' ? '' : data['admin_User'] ,                // 櫃台人員
                             admin_star            : data['admin_Rating'] ,                                                    // 櫃台人員評分
                             admin_service_note    : data['admin_Service_Note'] ,                                              // 櫃台人員備註
+
+                            payment_date          : moment( data['payment_Date'] ).format( 'YYYY-MM-DD' ) ,                   // 收款日期
 
                             // * 美容師欄位 ( 6 個 ) ( NOTE : 美容師處理時，才會填寫 ) ------------------------
 
@@ -301,26 +318,36 @@ export const columns_Covert_Bath = ( data : any ) => {
 // 美容單 ( 資料表 : beauty )
 export const columns_Covert_Beauty = ( data : any ) => {
 
+    const service_Date   = moment( data?.service_Date ).format('YYYY-MM-DD' ) ; // 服務( 到店 ) 日期
+    const payment_Method = data['payment_Method'] ;                             // 付款方式
+
     // * 服務付費類別 ( Ex. 初次洗澡優惠、單次洗澡、單次美容 )
     let payment_Type = data['current_Create_Service_Type'] ? data['current_Create_Service_Type'] : '' ;
 
     // 若付款方式為方案，付費類別改為 _ 方案備註 ( Ex. 包月洗澡 1 次 ... )
-    if( data['payment_Method'] === '包月洗澡' || data['payment_Method'] === '包月美容' )  payment_Type = data['current_Plan_Note'] ;
+    if( payment_Method === '包月洗澡' || payment_Method === '包月美容' )  payment_Type = data['current_Plan_Note'] ;
 
     // ----------------------------------------------------------------------------------
 
-        const beauty_fee         = data['beauty_Fee'] ;                                           // 美容費用
-        const self_adjust_amount = data['self_Adjust_Amount'] ? data['self_Adjust_Amount'] : 0 ;  // 個體自行調整費用 ( input --> 需驗證 )
-        const extra_service_fee  = data['extra_Service_Fee'] ;                                    // 加價項目 _ 費用
-        const pickup_fee         = data['pickup_Fee'] ? data['pickup_Fee'] : 0 ;                  // 接送費用        ( input --> 需驗證 )    
+        const beauty_fee         = parseInt( data['beauty_Fee'] ) ;                                           // 美容費用
+       
+        const self_adjust_amount = data['self_Adjust_Amount'] ? parseInt( data['self_Adjust_Amount'] ) : 0 ;  // 個體自行調整費用 ( input --> 需驗證 )
+        const extra_service_fee  = parseInt( data['extra_Service_Fee'] ) ;                                    // 加價項目 _ 費用
+        const pickup_fee         = data['pickup_Fee'] ? parseInt(  data['pickup_Fee'] ) : 0 ;                 // 接送費用        ( input --> 需驗證 )    
 
-        // 應收金額
-        const amount_payable     = parseInt( beauty_fee ) +
-                                   parseInt( self_adjust_amount ) +
-                                   parseInt( extra_service_fee ) +
-                                   parseInt( pickup_fee ) ;
+        // 應收金額 ( 若為使用 "方案" ，應收金額不包含：美容預設價格 )
+        const amount_payable     = payment_Method === '方案' ?
+                                   ( self_adjust_amount + extra_service_fee + pickup_fee ) :
+                                   ( beauty_fee + self_adjust_amount + extra_service_fee + pickup_fee ) ;
 
-                        
+         
+        // 實收金額                     
+        let amount_paid  = 0 ; 
+        if( payment_Method === '方案' && service_Date === today ) amount_paid = self_adjust_amount + extra_service_fee + pickup_fee  ;   // 當天 _ 使用方案  ( 個體調整 + 加價項目 + 接送費 ) 
+        if( payment_Method === '方案' && service_Date > today )   amount_paid = data?.plan_Plus_Amount_Paid ;                            // 預約 _ 使用方案
+        if( payment_Method !== '方案' )                           amount_paid = data['amount_Paid'];                                       
+
+
     // ----------------------------------------------------------------------------------
 
 
@@ -395,9 +422,9 @@ export const columns_Covert_Beauty = ( data : any ) => {
 
                             pickup_fee            : pickup_fee ,                                                             // 接送費用
 
-                            // * 行政、明細 ( 8 個 ) --------------------------------------------------------
-                            amount_payable        : amount_payable ,           // 應收金額
-                            amount_paid           : data['amount_Paid'] ,                                                    // 實收金額
+                            // * 行政、明細 ( 9 個 ) --------------------------------------------------------
+                            amount_payable        : amount_payable ,                                                         // 應收金額
+                            amount_paid           : amount_paid ,                                                            // 實收金額
                             amount_discount       : data['amount_Discount'] ? data['amount_Discount'] : 0 ,                  // 優惠金額
 
                             payment_method        : data['payment_Method'] ,                                                 // 付款方式 ( Ex. 現金、贈送 ... )
@@ -406,6 +433,8 @@ export const columns_Covert_Beauty = ( data : any ) => {
                             admin_user            : data['admin_User'] === '請選擇' ? '' : data['admin_User'] ,               // 櫃台人員
                             admin_star            : data['admin_Rating'] ,                                                    // 櫃台人員評分
                             admin_service_note    : data['admin_Service_Note'] ,                                              // 櫃台人員備註
+
+                            payment_date          : moment( data['payment_Date'] ).format( 'YYYY-MM-DD' ) ,                   // 收款日期
 
 
                             // * 美容師欄位 ( 6 個 ) ( NOTE : 美容師處理時，才會填寫 ) ------------------------
@@ -503,11 +532,14 @@ export const columns_Covert_Care = ( data : any ) => {
 
                             amount_paid            : data['amount_Paid'] ,                                                       // 實收金額小計
 
-                            payment_method         : data['payment_Method'] ,                                                     // 付款方式
+                            payment_method         : data['payment_Method'] ,                                                    // 付款方式
 
                             admin_user             : data['admin_User'] === '請選擇' ? '' : data['admin_User'] ,                  // 櫃台人員                                                        // 櫃台人員
-                            admin_star             : data['admin_Rating'] ,                                                       // 櫃台人員評分
-                            admin_service_note     : data['admin_Service_Note']                                                   // 櫃台人員服務備註
+                            admin_star             : data['admin_Rating'] ,                                                      // 櫃台人員評分
+                            admin_service_note     : data['admin_Service_Note'] ,                                                // 櫃台人員服務備註
+
+                            payment_date           : moment( data['payment_Date'] ).format( 'YYYY-MM-DD' ) ,                     // 收款日期
+
 
                           } ;
 
@@ -599,8 +631,11 @@ export const columns_Covert_Lodge = ( data : any ) => {
                                 admin_user             : data['admin_User'] === '請選擇' ? '' : data['admin_User'] ,          // 櫃台人員                                                        // 櫃台人員
                                 admin_star             : data['admin_Rating'] ,                                              // 櫃台人員評分
 
-                                admin_service_note     : data['admin_Service_Note']                                          // 櫃台人員服務備註
+                                admin_service_note     : data['admin_Service_Note'] ,                                        // 櫃台人員服務備註
 
+                                payment_date           : moment( data['payment_Date'] ).format( 'YYYY-MM-DD' ) ,             // 收款日期
+
+                                
     } ;
 
     return [ obj_Customer , obj_Pet , obj_Lodge ] ;
@@ -620,7 +655,7 @@ export const columns_Covert_Other = ( data : any ) => {
 }
 
 
-// 預設方案 _ 包月洗澡、包月美容 ( 資料表 : plans  )
+// 方案 ( 資料表 : plans  )
 export const columns_Covert_Service_Plans = ( data : any ) => {
 
     
@@ -665,13 +700,15 @@ export const columns_Covert_Service_Plans = ( data : any ) => {
                           lodge_coupon_number : data['plan_Lodge_Coupon_Number'] ? data['plan_Lodge_Coupon_Number'] : null ,        // 住宿券本數
                           lodge_coupon_price  : data['plan_Lodge_Coupon_Number'] ? data['plan_Lodge_Coupon_Number'] * 4000 : null , // 住宿金額
 
-                          // * 行政、明細 ( 5 個 ) --------------------------------------------------------
+                          // * 行政、明細 ( 6 個 ) --------------------------------------------------------
                           amount_payable      : plan_basic_price + plan_Adjust_Amount + plan_Pickup_Fee ,   // 應收金額 ( 同以上 : 方案價格共計 )
                           amount_paid         : data['amount_Paid'] ,                                       // 實收金額
                           payment_method      : data['payment_Method'] ,                                    // 付款方式 ( Ex. 現金、贈送 ... )
 
                           admin_user          : data['admin_User'] === '請選擇' ? '' : data['admin_User'] ,  // 櫃台人員
                           admin_service_note  : data['admin_Service_Note'] ,                                // 櫃台人員備註
+
+                          payment_date        : moment( data['payment_Date'] ).format( 'YYYY-MM-DD' ) ,     // 收款日期
 
                       }  ;
 

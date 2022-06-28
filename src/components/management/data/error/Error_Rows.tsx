@@ -10,6 +10,9 @@ import {useHistory} from "react-router-dom";
 import { set_Modal } from "store/actions/action_Global_Layout" ;
 import Error_Handle from "components/management/data/error/Error_Handle";
 import { submit_Undo_Service_Error } from "store/actions/action_Error"
+import { switch_Service_Id } from "utils/data/switch"
+
+
 
 
 const Error_Rows = (  props : any ) => {
@@ -78,7 +81,9 @@ const Error_Rows = (  props : any ) => {
                          { /* for 基礎、洗澡、美容、安親 */ } 
                          { data['service_type'] &&
                             <b className = { color+" pointer" } onClick = { click_Service } >
-                                <i className = { icon } ></i> &nbsp; { data[ 'service_type' ] } &nbsp; Q{ data['q_code'] }
+                                <i className = { icon } ></i> &nbsp; { data[ 'service_type' ] } &nbsp; 
+                                <b className="f_9"> ( { switch_Service_Id( data ) } ) </b>   &nbsp;
+                                <b className="tag is-white is-rounded f_9">  Q{ data['q_code'] }  </b>
                             </b>
                          }  
 

@@ -33,7 +33,7 @@ const Pet_Service_Card = ( { data , pet , type } : Card ) => {
        if( !service_Type && service_Status ) return Info_Administrator // 住宿
        if( !service_Type && plan_Type )      return Update_Plan        // 方案
 
-       return Update_Service
+       return Update_Service        // 編輯服務
 
     } ; 
 
@@ -43,10 +43,12 @@ const Pet_Service_Card = ( { data , pet , type } : Card ) => {
     const click_View_Detail = ( data : any ) => {
 
 
-      const Component = get_View_Component( data ) ;
+      const Component = get_View_Component( data ) ;                                               // 載入元件 
+      const s_Page    = type === '客戶' ? 'Customer_Service_Records' : 'Pet_Consumption_Records' ; // 來源頁面元件名稱
+
 
       dispatch( set_Side_Panel( true , <Component /> ,
-                                    { source_Page : 'Customer_Service_Records' , service_Type : data['service_type'] ,  preLoadData : data } as { service_Type : string }
+                                    { source_Page : s_Page , service_Type : data['service_type'] ,  preLoadData : data } as { service_Type : string }
                               )) ;
 
       // dispatch( set_Modal( true , <Componet /> , { data : data , modal_Style : { width:"90%" , left : "5%" } } ) ) ;

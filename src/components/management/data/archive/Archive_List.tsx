@@ -13,7 +13,7 @@ import cookie from "react-cookies";
 
 
 // 分類標籤
-const tabs = [ '客 戶' , '寵 物' , '洗 美' , '方 案' , '住 宿' , '安 親' ] ;
+const tabs = [ '客 戶' , '寵 物' , '洗 美'  , '住 宿' , '安 親' ] ;
 
 
 // @ 封存列表
@@ -37,9 +37,8 @@ const Archive_List = ( ) => {
            case tabs[0] : set_Current_Element( <Customers /> ) ; break ;
            case tabs[1] : set_Current_Element( <Pets /> ) ; break ;
            case tabs[2] : set_Current_Element( <Services /> ) ; break ;
-           case tabs[3] : set_Current_Element(  null ) ; break ;
-           case tabs[4] : set_Current_Element( <Lodge /> ) ; break ;
-           case tabs[5] : set_Current_Element( <Care /> ) ; break ;
+           case tabs[3] : set_Current_Element( <Lodge /> ) ; break ;
+           case tabs[4] : set_Current_Element( <Care /> ) ; break ;
 
        }
 

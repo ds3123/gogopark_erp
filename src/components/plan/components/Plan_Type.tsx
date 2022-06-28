@@ -31,7 +31,7 @@ const Plan_Type = ( { data } : { data : any } ) => {
                 { ( plan_Type === '包月洗澡' || plan_Type === '包月美容' ) &&
                 
                     <b className = { color+" pointer" } onClick = { click_Plan_Type } >
-                        <i className = { icon } ></i> &nbsp;  [ 預設 ]  { plan_Type }
+                        <i className = { icon } ></i> &nbsp;  [ 預設 :  { data['id'] } ]  { plan_Type }
                     </b>
                 
                 }
@@ -40,7 +40,7 @@ const Plan_Type = ( { data } : { data : any } ) => {
                 { ( plan_Type !== '包月洗澡' && plan_Type !== '包月美容' ) &&
                 
                     <b className="tag is-medium is-warning is-light pointer" onClick = { click_Plan_Type } >
-                        <i className="fas fa-ruler"></i> &nbsp; [ 自訂 ]  { plan_Type }
+                        <i className="fas fa-ruler"></i> &nbsp; [ 自訂 : { data['id'] } ]  { plan_Type }
                     </b>
                 
                 }

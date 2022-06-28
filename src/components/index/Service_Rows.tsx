@@ -93,7 +93,7 @@ const Service_Rows = ( { data } : IService ) => {
                <span className="relative tag is-medium pointer f_11"  onClick={ () => click_Customer( customer.id ) } >
 
                    { is_Detail_Mode &&  <span className="absolute" style={ rating }> { rating_2 } </span> }
-                   { cus_Name }
+                   { string_Short( cus_Name ) }
 
                </span>
 

@@ -27,6 +27,7 @@ import reducer_Test from "store/reducers/reducer_Test";
 import reducer_Cache from "store/reducers/reducer_Cache";
 
 import reducer_Price from "store/reducers/reducer_Price";
+import reducer_Finance from "store/reducers/reducer_Finance";
 
 
 const root_Reducer = combineReducers({
@@ -79,6 +80,9 @@ const root_Reducer = combineReducers({
                          // @ 管理區
                          "Management" : reducer_Management ,
 
+                         // @ 管理區 > 綜合報表
+                         "Finance"    : reducer_Finance , 
+
 
                          // @ 表單 ( 自訂驗證 )
                          "Form"       : reducer_Form_Validator ,
@@ -89,6 +93,9 @@ const root_Reducer = combineReducers({
 
                          //
                          "Price"      : reducer_Price ,
+
+
+
 
                          // @ 測試練習 ( 2022.03.06 ) 
                          "Test"       : reducer_Test

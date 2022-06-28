@@ -1,4 +1,4 @@
-import { FC , useEffect , useState , useContext } from "react" ;
+import { useEffect , useState , useContext } from "react" ;
 import { ReachHookFormContext } from "containers/Create_Data_Container"
 import { Edit_Form_Type } from "utils/Interface_Type"
 import {useDispatch, useSelector} from "react-redux";
@@ -37,7 +37,7 @@ interface IInfo extends Edit_Form_Type {
 
 
 /* 服務單( 基礎、洗澡、美容 ) _ 基本資訊 */
-const Service_Info : FC<IInfo> = ({ register , setValue , control , editType, serviceData  }) => { 
+const Service_Info = ({ register , setValue , control , editType, serviceData  } : IInfo ) => { 
 
     
     const dispatch     = useDispatch() ;
@@ -61,7 +61,9 @@ const Service_Info : FC<IInfo> = ({ register , setValue , control , editType, se
     // 點選 _ 已到店
     const click_Arrive_Shop   = () => set_serviceStatus({ ...serviceStatus , is_Arrived_Today : true , is_Appointed_Today : false }) ;
 
+
     // -----------------
+
 
     useEffect( () => {
 
@@ -84,6 +86,7 @@ const Service_Info : FC<IInfo> = ({ register , setValue , control , editType, se
         }
 
         //【 編輯 】 
+
 
 
     } , [ service_Date ] ) ;
@@ -124,7 +127,7 @@ const Service_Info : FC<IInfo> = ({ register , setValue , control , editType, se
                             <span> 服務性質 : </span> &nbsp;
 
                             { /* for 新增  */ }
-                            { editType === '編輯' ||
+                            { !editType &&
 
                                 <>
 
@@ -153,7 +156,7 @@ const Service_Info : FC<IInfo> = ({ register , setValue , control , editType, se
                             }
 
                             { /* for 編輯 */ }
-                            { editType === '編輯' && 
+                            { editType && 
                              
                                 <>
                                 
@@ -190,10 +193,11 @@ const Service_Info : FC<IInfo> = ({ register , setValue , control , editType, se
                             <span> 到店日期 : </span> &nbsp;
 
                             { /* for 新增  */ }
-                            { editType === '編輯' ||  <Date_Picker control={control} name="service_Date" default_Date={ new Date }/> }
+                            { !editType &&  <Date_Picker control={control} name="service_Date" default_Date={ new Date }/> } 
 
                             { /* for 編輯 */ }
-                            { editType === '編輯' &&  <b style={ blue } > { serviceData.service_date } </b> }
+                            { editType  &&  <b style={ blue } > { serviceData.service_date } </b> } 
+                            {/* { editType  &&  <Date_Picker control={control} name="service_Date" /> }  */}
 
                         </div>
 
@@ -203,11 +207,11 @@ const Service_Info : FC<IInfo> = ({ register , setValue , control , editType, se
                     <div className="column is-4-desktop">
 
                         { /* for 新增  */ }
-                        { editType === '編輯' || <Qcode_Select_Options /> }
+                        { !editType && <Qcode_Select_Options /> }
 
                         { /* for 編輯 */ }
-                        { editType === '編輯' &&  <div className="tag is-large is-white">   <> 到店處理碼 :&nbsp;<b style={ blue }> Q{ serviceData.q_code } </b>  </> &nbsp; </div> }
-
+                        { editType && <div className="tag is-large is-white">  <> 到店處理碼 :&nbsp;<b style={ blue }> Q{ serviceData.q_code } </b>  </> &nbsp; </div> } 
+                      
                     </div>
 
                     { /* 預計到店時間 */}
@@ -217,7 +221,6 @@ const Service_Info : FC<IInfo> = ({ register , setValue , control , editType, se
                         ( editType && !serviceStatus['is_Arrived_Today'] ) ||  
                         ( editType && serviceData['service_status'] === '預約_今天' ) ||
                         ( editType && serviceData['service_status'] === '預約_未來' ) 
-
                       ) &&
 
                         <div className="column is-4-desktop relative">
@@ -323,7 +326,7 @@ const Service_Info : FC<IInfo> = ({ register , setValue , control , editType, se
 
               }
 
-              <hr/><br/>
+              <hr/> <br/>
 
            </>
 

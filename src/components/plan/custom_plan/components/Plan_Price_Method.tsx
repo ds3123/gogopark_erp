@@ -143,12 +143,7 @@ const Plan_Price_Method : FC< price_Method > = ( { setValue , register , isValid
             
                 </div>
 
-                { /* 提交鈕 */ }   
-                <div className="has-text-centered"  >
-                    <button disabled = { !isValid } type="submit" className="button is-primary relative is-medium" > 
-                        { edit_Type === "新增" ? "新增" : "編輯" }包月方案 
-                    </button>
-                </div>
+               
 
             </div>   
 

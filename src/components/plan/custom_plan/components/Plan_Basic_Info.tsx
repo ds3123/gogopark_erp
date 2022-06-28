@@ -1,6 +1,5 @@
-import { FC , useState } from "react" ;
+import { useState , useEffect } from "react" ;
 import { useSelector } from "react-redux"
-
 import { Input } from "templates/form/Input";
 import { usePlan_isExisting } from "hooks/data/usePlan"
 import { useDispatch } from "react-redux";
@@ -15,10 +14,12 @@ type pInfo = {
     setValue  : any ;
     edit_Type : string ;
 
+    get_Is_Plan_Existed : ( bool : boolean ) => void
+
 }
 
 // 方案本訊息 : 名稱、洗澡 / 美容次數、期限、預設價格
-const Plan_Basic_Info : FC< pInfo > = ( { edit_Type , register , errors , setValue } ) => {
+const Plan_Basic_Info = ( { edit_Type , register , errors , setValue , get_Is_Plan_Existed } : pInfo ) => {
 
       const dispatch    = useDispatch();
      
@@ -27,8 +28,15 @@ const Plan_Basic_Info : FC< pInfo > = ( { edit_Type , register , errors , setVal
 
       const [ bath_Num , set_Bath_Num ]     = useState( 0 ) ;  // 洗澡次數
       const [ beauty_Num , set_Beauty_Num ] = useState( 0 ) ;  // 美容次數
+
+      // 方案是否存在
+      const { is_Plan_Name_Existing , set_Is_Plan_Name_Existing , get_Plan_By_Name  } = usePlan_isExisting() ;
   
-    
+
+      // 方案名稱
+      const [ plan_Name , set_Plan_Name ] = useState( '' ) ; 
+
+
       // 共同邏輯
       const handle_Common = ( e : any , type : "洗澡" | "美容" ) => {
 
@@ -51,9 +59,12 @@ const Plan_Basic_Info : FC< pInfo > = ( { edit_Type , register , errors , setVal
           const plan_Name = e.target.value ;
 
           if( !plan_Name ){
-            set_Is_Plan_Name_Existing( null )
+            set_Is_Plan_Name_Existing( false ) ;
+            set_Plan_Name('') ;
             return false
           }
+
+          set_Plan_Name( plan_Name ) ;
 
           // 查詢方案是否存在 
           get_Plan_By_Name( plan_Name ) ;  
@@ -92,18 +103,26 @@ const Plan_Basic_Info : FC< pInfo > = ( { edit_Type , register , errors , setVal
         
       } ;
 
+      
+      // 回傳 _ 方案是否存在
+      useEffect( () => {
+        
+         get_Is_Plan_Existed( is_Plan_Name_Existing ) ;
          
-      // 方案是否存在
-      const { is_Plan_Name_Existing , set_Is_Plan_Name_Existing , get_Plan_By_Name  } = usePlan_isExisting() ;
+      } , [ is_Plan_Name_Existing ] ) ;
+      
 
       const note = { top:"11px" , left:"90px" } as const ;  
+
+
 
   return  <div className="columns is-multiline is-mobile m_Bottom_40 relative">
 
                 { /* 方案名稱使用提示 */ } 
-                { is_Plan_Name_Existing  &&  <b className="fRed absolute" style={ note }> <i className="fas fa-exclamation"></i> &nbsp;此名稱已被使用 </b>  }
-                { ( is_Plan_Name_Existing !== null && !is_Plan_Name_Existing ) && <b className="fGreen absolute" style={ note }> <i className="fas fa-check"></i> &nbsp;此名稱可使用 </b> }
+                { ( plan_Name && is_Plan_Name_Existing )  && <b className="fRed absolute" style={ note }> <i className="fas fa-exclamation"></i> &nbsp;此名稱已被使用 </b>  }
+                { ( plan_Name && !is_Plan_Name_Existing ) && <b className="fGreen absolute" style={ note }> <i className="fas fa-check"></i> &nbsp;此名稱可使用 </b> }
 
+              
                 <Input type="text" name="plan_Type_Name" label="方案名稱" register={ register } error={ errors.plan_Type_Name } icon="fas fa-id-card-alt"  asterisk={true} columns="4" onChange = { handle_Plan_Name_Change } /> 
 
                 {

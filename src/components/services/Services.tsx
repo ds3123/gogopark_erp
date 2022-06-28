@@ -125,14 +125,17 @@ const Services = () => {
     } , [ show_Service_Date , service_Date , data ] ) ;
 
 
-    // 新增 "方案" 後，利用 Cookie 點選方案標籤
+    // 新增 / 刪除 "方案" 後，利用 Cookie 點選 : 方案標籤
     useEffect( () => {
 
         // Cookie
-        const redirect = cookie.load( 'after_Created_Plan' ) ;
+        const create_Plan = cookie.load( 'after_Created_Plan' ) ;  // 新增
+        const delete_Plan = cookie.load( 'after_Delete_Plan' ) ;   // 刪除
 
-        // * 服務價格
-        if( redirect && redirect === '洗美_方案' ) click_Second( '方 案' ) ;
+
+        // * 點選 _ 方案標籤
+        if(  ( create_Plan && create_Plan === '洗美_方案' ) || ( delete_Plan && delete_Plan === '洗美_方案' ) ) 
+               click_Second( '方 案' ) ;
         
 
     } , [] ) ;
@@ -201,7 +204,7 @@ const Services = () => {
                 { /* 洗美列表 */ }
                 { currentSecond === serviceArr[0].title &&
 
-                    <div className="relative" style={{width:"110%" , left:"-5%"}} >
+                    <div className="relative" style={{width:"124%" , left:"-12%"}} >
 
                         { /* 資料筆數 */ } 
                         <Data_List_Sum data_Sum = { fData.length } is_All_Data_Done = { is_All_Data_Done } /> 
@@ -223,6 +226,7 @@ const Services = () => {
                                 <th>  接送費    </th>
                                 <th>  應 收     </th>
                                 <th>  實 收     </th>
+                                <th>  付 款     </th>
                                 <th>  來 店     </th>
                                 <th>  封 存     </th>
                               </tr>
@@ -250,6 +254,7 @@ const Services = () => {
                             <div className="has-text-centered" >
                                 
                                 <button className="button is-loading is-white m_Top_100"></button>
+                                
                             </div>
 
                         }

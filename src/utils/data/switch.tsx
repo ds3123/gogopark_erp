@@ -21,6 +21,22 @@ type Service = {
 
 */
 
+
+// 轉換 : 服務 Url、服務資料表 ID
+export const switch_Service_Id = ( data : Service ) => { 
+
+    let id  = null ;  // 服務單 id
+
+    if( data['service_type'] === '基礎' ){ id = data['basic_id'] ; } ;
+    if( data['service_type'] === '洗澡' ){ id = data['bath_id'] ; } ;
+    if( data['service_type'] === '美容' ){ id = data['beauty_id'] ; } ;
+
+    return id  ;
+
+}
+
+
+
 // 轉換 : 服務 Url、服務資料表 ID
 export const switch_Service_Url_Id = ( data : Service ) => { 
 
@@ -34,6 +50,9 @@ export const switch_Service_Url_Id = ( data : Service ) => {
     return { url , id } ;
 
 }
+
+
+
 
 
 // 轉換 : 服務類型、服務資料表 ID 、服務 Url

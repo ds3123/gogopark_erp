@@ -19,6 +19,10 @@ const Service_Sign = ( { is_error , is_delete , amount_paid , amount_payable , i
    const tag = { top : "-7px", left : "5px" , color : "red" } ; 
    
 
+   // 是否付費
+   const is_Unpaid = ( amount_payable !== null && amount_paid !== null ) && amount_payable !== amount_paid
+
+
    return <>
 
                 { /* 異常 */ }
@@ -31,10 +35,10 @@ const Service_Sign = ( { is_error , is_delete , amount_paid , amount_payable , i
                      { is_delete === 1 &&  <i className="fas fa-trash-alt"></i> }
                  </b>
 
-                 { /* 是否付費 */ }
-                 {/* <b className="absolute f_14" style={{ top:"17px", left:"8px" , color:"red" }}>
-                     { amount_payable !== amount_paid  &&  <i className="fas fa-dollar-sign"></i> }
-                 </b> */}
+                 { /* 是否付費( 應付金額 !== 實付金額 ) */ }
+                 <b className="absolute f_14" style={{ top:"17px", left:"8px" , color:"red" }}>
+                     { is_Unpaid  &&  <i className="fas fa-dollar-sign"></i> }
+                 </b> 
 
                  { /* 申請退費標示  */ }
                  {/* <b className="absolute f_9" style={{top:"-10px", left:"-25px" , color:"red"}}>

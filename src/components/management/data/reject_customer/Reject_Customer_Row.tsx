@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { click_Show_Edit_Customer } from "store/actions/action_Customer" 
 import { set_Modal } from "store/actions/action_Global_Layout" 
-
 import Reject_Customer_Handle from './Reject_Customer_Handle'
 
 
@@ -25,7 +24,6 @@ const Reject_Customer_Row = ( { data } : { data : any } ) => {
     // * 寵物按鈕 ( 無 / 單隻 、多隻 )
     const petButton = usePet_Button( pets ) ;
 
-
  
     // 點選 _ 客戶
     const click_Customer = () => dispatch( click_Show_Edit_Customer( data.id , data ) ) ;
@@ -45,10 +43,6 @@ const Reject_Customer_Row = ( { data } : { data : any } ) => {
         if( status === '退回' ) return 'is-success'
         return 'is-warning'
     } ;
-
-
-
-
 
 
     return <tr>

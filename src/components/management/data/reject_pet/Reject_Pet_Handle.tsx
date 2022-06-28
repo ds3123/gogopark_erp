@@ -11,10 +11,6 @@ import { set_Modal } from 'store/actions/action_Global_Layout'
 
 
 
-
-
-
-
 type Status = '' | '通過' | '退回' | '審核中' ;
 
 
@@ -41,14 +37,12 @@ const Reject_Pet_Handle = () => {
    const get_Update_Obj = ( type : Status ) => {
    
       // 通過
-      if( type === '通過' ) return { is_rejected : 1 , rejected_status : type } ;
+      if( type === '通過' ) return { is_rejected : 1 , rejected_status : '通過' } ;
 
       // 退回
-      if( type === '退回' ) return { is_rejected : 0 , rejected_status : type } ;
+      if( type === '退回' ) return { is_rejected : 0 , rejected_options : null  , rejected_cause : null , rejected_status : null  } ;  // 回覆預設
 
-      // 審核中
-      return { is_rejected : 0 , rejected_status : type } ;
-   
+     
    } ;
 
 
@@ -87,9 +81,6 @@ const Reject_Pet_Handle = () => {
    } 
 
 
-
-
-
    // 設定 _ 拒接狀態
    useEffect( () => {
      
@@ -109,11 +100,11 @@ const Reject_Pet_Handle = () => {
 
             <div className="columns is-multiline is-mobile m_Bottom_70">
 
-               <div className="column is-3-desktop"> 寵 物 :    <b className="fDblue"> { pet?.name }  </b>         </div>
-               <div className="column is-3-desktop"> 品 種 :    <b className="fDblue">  { pet?.species }  </b>         </div>
-               <div className="column is-2-desktop"> 毛 色 :    <b className="fDblue">  { pet?.color }  </b>         </div>
-               <div className="column is-2-desktop"> 性 別 :    <b className="fDblue">  { pet?.sex }  </b>         </div>
-               <div className="column is-2-desktop"> 年 齡 :    <b className="fDblue">  { pet?.age }  </b>         </div>
+               <div className="column is-3-desktop"> 寵 物 :    <b className="fDblue"> { pet?.name }  </b>        </div>
+               <div className="column is-3-desktop"> 品 種 :    <b className="fDblue">  { pet?.species }  </b>    </div>
+               <div className="column is-2-desktop"> 毛 色 :    <b className="fDblue">  { pet?.color }  </b>      </div>
+               <div className="column is-2-desktop"> 性 別 :    <b className="fDblue">  { pet?.sex }  </b>        </div>
+               <div className="column is-2-desktop"> 年 齡 :    <b className="fDblue">  { pet?.age }  </b>        </div>
               
             </div> 
 
@@ -123,13 +114,12 @@ const Reject_Pet_Handle = () => {
              </label>
 
              <div className="columns is-multiline is-mobile m_Bottom_70">
-                <div className="column is-3-desktop">  提出人員 : <b className="fDblue"> 櫃檯 </b>              </div>
-                <div className="column is-3-desktop">  所屬區域 : <b className="fDblue"> 251 ( 淡水 ) </b>      </div>
-                <div className="column is-2-desktop">  所屬店別 : <b className="fDblue"> 01 </b>               </div>
-                <div className="column is-4-desktop">  提出時間 : <b className="fDblue"> 2022-04-25 11:20 </b> </div>
-                
+                <div className="column is-3-desktop">  提出人員 : <b className="fDblue"> 櫃檯 </b>                  </div>
+                <div className="column is-3-desktop">  所屬區域 : <b className="fDblue"> 251 ( 淡水 ) </b>          </div>
+                <div className="column is-2-desktop">  所屬店別 : <b className="fDblue"> 01 </b>                    </div>
+                <div className="column is-4-desktop">  提出時間 : <b className="fDblue"> { pet?.updated_at } </b>   </div>
                 <div className="column is-12-desktop"> 拒接類別 : <b className="fDblue"> { rejected_Options } </b>  </div>
-                <div className="column is-12-desktop"> 拒接理由 : <b className="fDblue"> { rejected_cause } </b>  </div>
+                <div className="column is-12-desktop"> 拒接理由 : <b className="fDblue"> { rejected_cause } </b>    </div>
              </div>  
 
              <label className="label relative m_Bottom_20" >
@@ -144,11 +134,6 @@ const Reject_Pet_Handle = () => {
                 <b className = { `tag is-medium m_Right_30 pointer is-success ${ status === '退回' ? '' : 'is-light' }` } 
                    onClick   = { () => { if( window.confirm('確認要退回 : 拒接申請 ?') ) click_Process( '退回' ) }  } > 
                    退 回 
-                </b>
-
-                <b className = { `tag is-medium pointer is-warning ${ status === '審核中' ? '' : 'is-light' }` } 
-                   onClick   = { () => { if( window.confirm('確認要轉為 : 拒接審核中 ?') ) click_Process( '審核中' ) }  } > 
-                   審核中
                 </b>
 
              </label> 

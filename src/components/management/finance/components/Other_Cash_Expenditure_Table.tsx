@@ -1,16 +1,25 @@
-import React , { useEffect , useState , FC } from "react" ;
+import { useEffect , useState } from "react" ;
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router";
 import { delete_Other_Item } from "store/actions/action_Other"
 
 
+
+
+type Table = {
+
+    data : any[] ;
+   
+ }
+
+
 // @ 表單 _ 其他收支表 : 支出  
-const Other_Cash_Expenditure_Table : FC< { data : any } > = ( { data }  ) => {
+const Other_Cash_Expenditure_Table = ( { data } : Table  ) => {
 
     const dispatch = useDispatch();
     const history  = useHistory();
 
-    const [ other_Data , set_Other_Data ] = useState( [] ) ;
+    const [ other_Data , set_Other_Data ] = useState< any[] >( [] ) ;
 
 
     // 點選 _ 刪除
@@ -21,8 +30,7 @@ const Other_Cash_Expenditure_Table : FC< { data : any } > = ( { data }  ) => {
     
       // 篩選出 _ 支出
       const f_Data = data.filter( ( x:any ) => x['type'] === "支出" ) ;
-      set_Other_Data( f_Data )  
-
+      set_Other_Data( f_Data ) ;  
 
     } , [ data ] ) ;
 

@@ -1,4 +1,4 @@
-import React , { FC , useContext , useState , useEffect } from "react" ;
+import { useContext , useState , useEffect } from "react" ;
 import { useSelector , useDispatch } from "react-redux";
 
 // useContext
@@ -6,116 +6,101 @@ import { SidePanelContext } from "templates/panel/Side_Panel";
 
 import { set_Plan_States_To_Default , set_Pet_All_Plans } from "store/actions/action_Plan"
 import { set_Current_Payment_Method } from "store/actions/action_Service"
+import { usePet_Is_Plans_Available } from 'hooks/data/usePet'
+
 
 
 type paymentMethod = {
-
     editType : any ; 
     current  : string ; 
     register : any ;
-    setValue : any
-
+    setValue : any ;
 }
 
 
 // @ 付款方式 ( Ex. 現金、包月洗澡、包月美容 )
-const Payment_Method : FC< paymentMethod >  = ( { editType , current , register , setValue } ) => {
-
+const Payment_Method = ( { editType , current , register , setValue } : paymentMethod ) => {
 
     const dispatch = useDispatch() ;
+
+    // for 編輯
     const value    = useContext( SidePanelContext ) ;                     // 取得 context 值  
     const data     = value.preLoadData ? value.preLoadData : value.data ; // 預先取得資料
 
 
-    // 特定寵物 _ 所有方案 ( 包月洗澡 + 包月美容 )
-    const pet_All_Plans                         = useSelector( ( state : any ) => state.Plan.pet_All_Plans ) ;
+    // for 新增
     
-    const [ is_Defautlt , set_Is_Default ]      = useState( true ) ;
+    // 特定寵物 _ 所有方案 
+    const pet_All_Plans = useSelector( ( state : any ) => state.Plan.pet_All_Plans ) ;
 
-    // 預設方案 
-    const [ default_Plans , set_Default_Plans ] = useState( [] ) ;
+    // 所點選寵物
+    const current_Pet   = useSelector( ( state : any ) => state.Pet.current_Pet ) ;
 
-    // 自訂方案 
-    const [ custom_Plans , set_Custom_Plans ]   = useState( [] ) ;
-    
+
+    // 判斷 _ 特定寵物，是否能有方案，可供使用
+    const is_Plans_Available = usePet_Is_Plans_Available( current_Pet?.serial ) ;
+
     
     // # 變動處理 : 付款方式 --------------
     const handle_PaymentMethod = ( method : string ) => {
   
-       if( method === '現金' ) set_Is_Default( false ) ;
-
-       dispatch( set_Current_Payment_Method( method ) ) ; // 設定 _ 付款方式 state　　　　　　　 　　　　　　
+       dispatch( set_Current_Payment_Method( method ) ) ;  // 設定 _ 付款方式 state　　　　　　　 　　　　　　
       
-      
-       // dispatch( set_Plan_States_To_Default() ) ;      // 回復 _ 方案 Store ( Plan ) 預設值            
-
     } 
 
 
+    // 依照是否仍有方案使用額度，設定 _ 預設上，是否先顯示方案
+    useEffect( () => {
 
-    // 預設付款方式 : 若有 "方案"，付款方式優先設定為該方案 ( 尚未完成 2021.12.30 )
-    useEffect( () => { 
-
-
-        // 篩選、設定 _ 自訂方案
-        const _default_Plans = pet_All_Plans.filter( ( x : any ) => ( x['plan_type'] === '包月洗澡' || x['plan_type'] === '包月美容' ) ) ;
-        set_Default_Plans( _default_Plans ) ;
-
-        
-        // 篩選、設定 _ 自訂方案
-        const _custom_Plans = pet_All_Plans.filter( ( x : any ) => ( x['plan_type'] !== '包月洗澡' && x['plan_type'] !== '包月美容' ) ) ;
-        set_Custom_Plans( _custom_Plans ) ;
+      setTimeout( () => {
 
 
-        // // 包月洗澡
-        // if( current === '洗澡' && is_Defautlt && pet_All_Plans.length > 0 ){
+          // 使用設定 "方案" 選項 （ 僅：洗澡、美容 ）
+          const is_Plan = is_Plans_Available && ( current === '洗澡' || current === '美容' )  ;
+         
+          // 設定 select 值
+          setValue( 'payment_Method' , is_Plan ? '方案' : '現金' ) ; 
 
-        //     setValue( 'payment_Method' , '包月洗澡' ) ;
-        //     dispatch( set_Current_Payment_Method( '包月洗澡' ) ) ;
+          // 設定 store
+          dispatch( set_Current_Payment_Method( is_Plan ? '方案' : '現金' ) ) ; 
 
-        // }
 
-        // // 包月美容
-        // if( current === '美容' && is_Defautlt && pet_All_Plans.length > 0 ){
+      } , 500 ) ;  
 
-        //     setValue( 'payment_Method' , '包月美容' ) ;
-        //     dispatch( set_Current_Payment_Method( '包月美容' ) ) ;
+    } , [ is_Plans_Available , current_Pet ] ) ;
 
-        // }
-
-        // // 現金 
-        // if( current === '洗澡' && is_Defautlt && pet_All_Plans.length === 0 ){
-
-        //     setValue( 'payment_Method' , '現金' ) ;
-        //     dispatch( set_Current_Payment_Method( '現金' ) ) ;  
-
-        // }
-    
-    } , [ pet_All_Plans ] ) ;
 
     
    return <div className="column is-4-desktop" >
 
-              <span className="tag is-large is-white" >
+              <span className="tag is-large is-white relative" >
 
-                <b> 付款方式 : </b> &nbsp;
+                <span className="absolute f_11" style={{ top:'-30px' , left:'15px' }}> 
+
+                {/*  ( 寵物 : { current_Pet?.name } / 方案 : { is_Plans_Available ? '有' : '無' } )  */}
+
+                </span>
+
+                <b> 付款方式 : </b> &nbsp; 
 
                 { /* for 新增 */ }
                 { !editType &&
 
-                    <div className="control has-icons-left">
+                    <div className = "control has-icons-left" >
 
-                        <div className="select is-small relative">
+                        <div className = "select is-small relative" >
 
-                            <select {...register("payment_Method")}
+                            <select { ...register( "payment_Method" ) }
                                         style    = {{ fontSize : "13pt" , top: "-7px" , fontWeight : "bold" }}
                                         onChange = { e => handle_PaymentMethod( e.target.value )} >
 
-                                <option value="現金"> 現金 </option>
+                                <option value="現金">      現金      </option>
 
-                                { ( default_Plans.length > 0 || custom_Plans.length > 0 ) && 
-                                   <option value="方案"> 方案 </option>
-                                }  
+                                { /* 該寵物有買方案 & 位於洗澡、美容  */ }
+                                {( pet_All_Plans.length > 0 && ( current === '洗澡' || current === '美容' ) ) && <option value="方案"> 方案 </option> }  
+
+                                <option value="信用卡">    信用卡     </option>
+                                <option value="第三方支付"> 第三方支付 </option>
 
                             </select>
 

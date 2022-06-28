@@ -20,10 +20,10 @@ export const useCustomer_Is_Process_Reject = () => {
         axios.get( `/customers/show_customers_pets` ).then( res => {
 
             const customers  = res.data ;
-            const _customers = customers.filter( ( x : any ) => 
-                                x?.rejected_status === '審核中' || 
-                                x?.rejected_status === '通過' || 
-                                x?.rejected_status === '退回' ) ; // 篩選出 _ 拒接 : 審核中、通過、退回
+
+            // 篩選出 _ 拒接 : 審核中、通過 ( 不顯示：退回 )
+            const _customers = customers.filter( ( x : any ) => x?.rejected_status === '審核中' || 
+                                                                x?.rejected_status === '通過' ) ; 
     
             set_Data( _customers ) ;
     

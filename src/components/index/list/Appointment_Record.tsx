@@ -10,10 +10,10 @@ import Update_Service from "components/services/edit/Update_Service";
 
 // React Hook Form
 import { useForm , SubmitHandler , Controller } from "react-hook-form" ;
-import { ICustomer } from "utils/Interface_Type" ;
+import { IService } from "utils/Interface_Type" ;
 import Update_Pet from "components/pets/edit/Update_Pet" ;
 import { useHistory } from "react-router" ;
-import { switch_Appointment_Status , change_Amount_Paid } from "store/actions/action_Service"
+import { switch_Appointment_Status  } from "store/actions/action_Service"
 import { string_Short } from "utils/string/edit_string"
 
 
@@ -35,7 +35,7 @@ const Appointment_Records = ( ) => {
     const data = useRead_Service_Reservations( service_Date ) ;
 
     // React Hook Form
-    const { control } = useForm<ICustomer>({ mode : "all" }) ;
+    const { control } = useForm<IService>({ mode : "all" }) ;
 
 
     type modal = '服務' | '客戶' | '寵物' ;
@@ -58,8 +58,7 @@ const Appointment_Records = ( ) => {
     // 切換 _ 預約狀態
     const click_Switch_Status = ( data : any ) => dispatch( switch_Appointment_Status( data , '到店等候中' , history ) ) ;
 
-    // 處理已付變動 change_Amount_Paid
-    const handle_Amount_Paid = ( data : any , e : any ) => dispatch( change_Amount_Paid( data , e ) ) ;  // 修改已付金額 
+   
              
     // 篩選、處理資料
     const handle_Data = ( data : any , service_Date : string ) => {
@@ -111,7 +110,7 @@ const Appointment_Records = ( ) => {
                         <th> 預約類別  </th>
                         <th> 預約狀態  </th>
                         <th className="relative" style={{ width:"80px" }} > 應付 </th>
-                        {/* <th> 已付     </th> */}
+                        <th> 已付     </th> 
                         <th> 狀態調整 </th>
                         <th> 寵物資訊 </th>
                         <th> 主人     </th>
@@ -125,6 +124,10 @@ const Appointment_Records = ( ) => {
                     {
 
                         reservation_Today.map( ( x : any , y ) => {
+
+                             const a_Payable = x['amount_payable'] ;
+                             const a_Paid    = x['amount_paid'] ;
+
 
                              return <tr key={y} className="f_11">
 
@@ -140,18 +143,12 @@ const Appointment_Records = ( ) => {
                                            { x['shop_status'] === '尚未到店' && <b className="fDred f_11">  { x['shop_status'] } </b> }
                                            { x['shop_status'] === '尚未到店' || <b className="fDblue f_11"> { x['shop_status'] } </b> }
                                        </td>
-                                       <td> { x['amount_payable'] }  </td>     
-                                       {/* <td> 
+                                       <td> { a_Payable }  </td>     
+                                        <td> 
                                            
+                                            { a_Payable !== a_Paid ? <b className="fRed"> { a_Paid }</b> : <span> { a_Paid } </span>  }
                                         
-                                         <input type="number" 
-                                                className="input is-small f_10" 
-                                                value={ x['amount_paid'] }
-                                                onChange={ e => handle_Amount_Paid( x , e ) } 
-                                                min={ 0 }  
-                                                style={{width:"85px",padding:"3px"}} /> 
-                                           
-                                       </td>     */}
+                                       </td>     
                                        <td>
 
                                            { x['shop_status'] === '尚未到店' &&

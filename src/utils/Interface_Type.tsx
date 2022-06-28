@@ -127,6 +127,12 @@ export interface IService extends ICustomer_Relative {
 
     beautician_Note : string ;   // 美容師備註
 
+
+
+    receive_Fee_Date : string ; // 收款日期
+
+
+
 }
 
 
@@ -501,6 +507,18 @@ export interface I_Pagination {
 }
 
 
+
+
+// 財務管理
+export interface I_Finance_Section {
+
+    service_Data    : any[] ;  // 洗澡美容 : 應收款
+    use_Plan_Data   : any[] ;  // 洗澡美容 : 扣 _ 預收款
+    plan_Data       : any[] ;  // 洗澡美容 : 預收款      
+    care_Lodge_Data : any[] ;  // 住宿安親 : 應收款
+    others_By_Date  : any[] ;  // 其他    : 收入、支出
+
+}
 
 
 

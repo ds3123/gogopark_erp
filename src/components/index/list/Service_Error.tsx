@@ -1,4 +1,3 @@
-
 import { useEffect , useState , useMemo } from "react"
 import { useSelector } from "react-redux"
 import Date_Picker from "templates/form/Date_Picker"
@@ -13,7 +12,6 @@ import { sort_Data_By_UpdatedDate } from 'utils/data/sort_data'
 
 import { useService_Is_GoHome_Unpaid } from 'hooks/data/useService'
 import { usePet_Apply_Reject , usePet_Is_Rejected } from 'hooks/data/usePet'
-
 
 
 
@@ -49,12 +47,6 @@ const Service_Error = ( ) => {
 
     // 取得資料 _ 寵物：拒接
     const pet_Is_Rejected = usePet_Is_Rejected() ;
-
-
-    
-    console.log( 'zzzz' , pet_Is_Apply_Reject )
-
-    
 
 
 

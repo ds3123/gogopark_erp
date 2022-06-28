@@ -1,21 +1,21 @@
-import React from "react"
+
 import { useRead_Employees } from 'hooks/ajax_crud/useAjax_Read'
-import {set_Side_Panel} from "store/actions/action_Global_Layout";
-import {useDispatch, useSelector} from "react-redux";
+import { set_Side_Panel } from "store/actions/action_Global_Layout";
+import { useDispatch } from "react-redux";
 import Update_Employee from "components/management/employee/edit/Update_Employee";
-import {useHistory} from "react-router-dom";
 
 
 
 /* 管理區 _ 員工 */
 const Employees = ( ) => {
 
+    
     const dispatch = useDispatch() ;
     const data     = useRead_Employees() ;  // 取得資料
 
 
     // 點選 _ 服務單
-    const click_Type = ( employee : any ) => dispatch( set_Side_Panel(true , <Update_Employee /> , { preLoadData : employee } ) ) ;
+    const click_Type = ( employee : any ) => dispatch( set_Side_Panel( true , <Update_Employee /> , { preLoadData : employee } ) ) ;
 
     const left = { textAlign:'left'} as const ;
 

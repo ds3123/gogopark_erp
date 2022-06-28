@@ -1,22 +1,33 @@
 
-import { useContext , FC , useEffect, useState } from "react" ;
+import { useContext , useEffect , useState } from "react" ;
 import { useSelector } from "react-redux";
 
 // useContext
 import { SidePanelContext } from "templates/panel/Side_Panel";
 import { FeeDetail } from "components/services/edit_components/summary_fee/Fee_Detail"
+import Plan_Plus_Payable from "../plan_components/Plan_Plus_Payable";
 
+
+type Payable = {
+
+  editType   : any ;
+  current    : any ;
+  receivable : number ;
+  register   : any ;
+  setValue   : any
+
+}
 
 
 
 // @ 應收金額
-const Amount_Payable : FC< {  editType : any , current : any , receivable : number } > = ( { editType  , current , receivable } ) => {
+const Amount_Payable = ( { editType  , current , receivable , register , setValue } : Payable ) => {
 
    // 應收金額
    const [ amount , set_Amount ] = useState( 0 ) ;
 
-   const value = useContext( SidePanelContext ) ;                      // 取得 context 值  
-   const data  = value.preLoadData ?  value.preLoadData : value.data ; // 預先取得資料
+   const value = useContext( SidePanelContext ) ;                     // 取得 context 值  
+   const data  = value.preLoadData ? value.preLoadData : value.data ; // 預先取得資料
 
    // 付款方式
    const paymentMethod = useSelector( ( state : any ) => state.Service.current_Payment_Method ) ;
@@ -61,36 +72,36 @@ const Amount_Payable : FC< {  editType : any , current : any , receivable : numb
 
 
    // 設定 _ 應收金額
-   useEffect(() => {
+   useEffect( () => {
 
-     set_Amount( get_Amount_Payable( data ) )
+     set_Amount( get_Amount_Payable( data ) ) ;
   
-   }, [ data ])
-   
+   } , [ data ] ) ;
 
+   
    return  <div className="column is-8-desktop">
 
-                { /* @ 新增資料  */ }   
-                { ( !editType && paymentMethod === '現金' ) &&
-
+                { /* @ 新增資料 ( 現金 / 信用卡 / 第三方支付 )  */ }   
+                { ( !editType && ( paymentMethod === '現金' || paymentMethod === '信用卡' || paymentMethod === '第三方支付' )  ) &&
                     <span className="tag is-large is-white">
-
-                        <b> 應收金額 :&nbsp;<span className="fRed" > { receivable }  </span> 元   </b>
-
+                        <b> 應收金額 :&nbsp;<span className="fRed"> { receivable } </span> 元 </b>
                     </span>
-
                 }
 
-                { /* @ 編輯資料  */ }   
-                { ( editType && data?.payment_method === '現金' ) &&
+                { /* @ 新增資料 ( 方案加價 )  */ }   
+                { ( !editType && paymentMethod === '方案' ) &&  <Plan_Plus_Payable register = { register } setValue = { setValue } editType = { editType } />   }
 
+
+                { /* @ 編輯資料 ( 現金 / 信用卡 / 第三方支付 )  */ }   
+                { ( editType && ( data?.payment_method === '現金' || data?.payment_method === '信用卡' || data?.payment_method === '第三方支付' ) ) &&
                     <span className="tag is-large is-white">
-                                                                    
-                        <b> 應收金額 :&nbsp;<span className="fRed" > { amount }  </span> 元   </b>
-
+                        <b> 應收金額 :&nbsp;<span className="fRed" > { amount }  </span> 元  </b>
                     </span>
-
                 }
+
+                { /* @ 編輯資料 ( 方案加價 )  */ }   
+                { ( editType && data?.payment_method === '方案' ) && <Plan_Plus_Payable register = { register } setValue = { setValue } editType = { editType } data = { data } /> }
+
 
                 { /* 消費明細 */ }
                 <FeeDetail current = { current }  editType = { editType } paymentMethod = { paymentMethod } />   

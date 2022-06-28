@@ -102,8 +102,8 @@ const Customers_Rows = ( props : any ) => {
     // 設定 _ 寵物資料
     useEffect( () => {
 
-        if( data['pets'] && data['pets'].length > 0 ){
-
+          if( data['pets'] && data['pets'].length > 0 ){
+ 
             set_Pets( data['pets'] )
     
           }else{

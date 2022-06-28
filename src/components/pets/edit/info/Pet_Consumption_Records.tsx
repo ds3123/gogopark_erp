@@ -1,5 +1,5 @@
 
-import { useEffect , useState , FC } from "react"
+import { useEffect , useState  } from "react"
 import axios from "utils/axios";
 import Pet_Service_Card from "templates/card/Pet_Service_Card"
 import Service_Info_Tab from "templates/tab/Service_Info_Tab"
@@ -14,7 +14,7 @@ type sType = 'basics' | 'bathes' | 'beauties' | 'cares' | 'lodges' | 'plans' ;
 
 
 // @ 寵物所有服務紀錄 ( for 列表點選 _ 服務紀錄，右側滑動面板 )
-const Pet_Consumption_Records : FC< pet_Records > = ( { pet_Data } ) => {
+const Pet_Consumption_Records = ( { pet_Data } : pet_Records ) => {
 
 
 

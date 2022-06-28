@@ -1,18 +1,18 @@
 
-import { FC , useEffect , useState } from "react" ;
+import { useEffect , useState } from "react" ;
 import { useDispatch , useSelector } from "react-redux";
 import { set_Self_Adjust_Amount , set_Service_Pickup_Fee } from 'store/actions/action_Plan'
 import { usePlan_Query_Custom_Plan_By_Name } from "hooks/data/usePlan"
 
 
 type pType = {
-    register : any ;
-    errors   : any ; 
+    register  : any ;
+    errors    : any ; 
 }
 
 
 // @ 方案的欄位
-const Plan_Type_Columns : FC< pType > = ( { register , errors } ) => {
+const Plan_Type_Columns = ( { register , errors  } : pType ) => {
 
     const dispatch = useDispatch() ;
 
@@ -56,8 +56,6 @@ const Plan_Type_Columns : FC< pType > = ( { register , errors } ) => {
     // 取得 _ 接送費 ( for 包月洗澡、包月美容 )
     const get_Pickup_Fee = ( type : string , price : number ) => dispatch( set_Service_Pickup_Fee( price ? price : 0 ) ) ;
 
-    
-
     // # 設定 _ 基本價格       
     useEffect( () => { 
 
@@ -92,7 +90,6 @@ const Plan_Type_Columns : FC< pType > = ( { register , errors } ) => {
   
      } , [ custom_Plan ] ) ;
   
-
     return  <>
 
                 { /* 基本價格 */ }

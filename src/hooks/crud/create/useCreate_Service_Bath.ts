@@ -45,10 +45,11 @@ export const useCreate_Service_Bath = () => {
                
                 dispatch( add_Plan_Used_Record( data , res , history ) ) ;
                
-                return false ;
+                return false 
+
             }
 
-        // # 一般洗澡單新增 ------------------------------------------------------------------------------------------------------
+          // # 一般洗澡單新增 ------------------------------
 
             // 新增成功通知
             toast( `🦄 已新增 : 洗澡單` , { position : "top-left" , autoClose: 1500 , hideProgressBar: false } );
@@ -60,6 +61,7 @@ export const useCreate_Service_Bath = () => {
             history.push( "/wrongpath" ) ;  // 錯誤路徑
             history.push( "/services" ) ;   // 正確路徑
 
+            
         }).catch( err => {
 
             alert( `新增 "洗澡單" 錯誤 ( ${ err } )，請稍候再試．`  ) ;

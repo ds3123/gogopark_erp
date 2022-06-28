@@ -2,6 +2,8 @@
 
 import axios from 'utils/axios'
 import { useState , useEffect } from 'react'
+import { sort_Data_By_CreatedDate } from 'utils/data/sort_data'
+
 
 
 
@@ -36,8 +38,6 @@ export const useService_Is_GoHome_Unpaid = ( service_Date : string ) => {
 } ;
 
 
-
-
 // 取得 _ 所有 服務異常 : "未處理" 數目
 export const useService_Error_In_Process_Num = () => {
 
@@ -65,6 +65,64 @@ export const useService_Error_In_Process_Num = () => {
     return num 
 
 }
+
+
+
+// 取得 _ 特定日期( 到店日期 )，所有服務單
+export const useService_Get_By_Date = ( date : string ) => {
+
+    const [ services , set_Services ] = useState< any[] >( [] ) ;
+
+    useEffect( () => {
+
+        axios.get( `/services/show_services/${ date }` ).then( res => {
+
+            // 排序 
+            const data = sort_Data_By_CreatedDate( res.data , 'desc' ) ;
+
+            set_Services( data ) ;
+
+        }).catch( err => {
+    
+            console.log( `資料錯誤 : ${ err }` ) ;
+    
+        }) ; 
+      
+    } , [ date ] ) ;
+
+    return services 
+
+}
+
+
+// 取得 _ 特定日期( 付款日期 )，所有服務單
+export const useService_Get_By_Payment_Date = ( date : string ) => {
+
+
+    const [ services , set_Services ] = useState< any[] >( [] ) ;
+
+    useEffect( () => {
+
+        axios.get( `/services/show_services_by_paymentdate/${ date }` ).then( res => {
+
+            // 排序 
+            const data = sort_Data_By_CreatedDate( res.data , 'desc' ) ;
+
+            set_Services( data ) ;
+
+        }).catch( err => {
+    
+            console.log( `資料錯誤 : ${ err }` ) ;
+    
+        }) ; 
+      
+    } , [ date ] ) ;
+
+    return services 
+
+}
+
+
 
 
 

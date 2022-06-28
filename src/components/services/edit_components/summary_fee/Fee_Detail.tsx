@@ -1,7 +1,7 @@
 
 
-import { FC , useEffect , useState } from "react"
-import { useHelper_Prices, usePrice_Plan } from "hooks/data/usePrice";
+import { useEffect , useState } from "react"
+import { useHelper_Prices , usePrice_Plan } from "hooks/data/usePrice";
 import { useSelector } from "react-redux";
 
 
@@ -26,7 +26,7 @@ type detail = {
 const margin = { marginLeft : "10px" , marginBottom : "15px" } ;
 
 // 基礎
-export const FeeDetail_Basic : FC< detail > = ( { servicePrice , pickupFee , selfAdjustAmount  } ) => {
+export const FeeDetail_Basic  = ( { servicePrice , pickupFee , selfAdjustAmount  } : detail  ) => {
 
     return  <>
               { servicePrice !== 0 && <b className="tag is-medium is-rounded" style={ margin }> 基礎費 : { servicePrice } 元  </b> }
@@ -37,7 +37,7 @@ export const FeeDetail_Basic : FC< detail > = ( { servicePrice , pickupFee , sel
 } ;
 
 // 洗澡
-export const FeeDetail_Bath : FC< detail > = ( { servicePrice , extraItem , extraBeauty , pickupFee , selfAdjustAmount } ) => {
+export const FeeDetail_Bath   = ( { servicePrice , extraItem , extraBeauty , pickupFee , selfAdjustAmount } : detail ) => {
 
         return  <>
                    { servicePrice !== 0 && <b className="tag is-medium is-rounded" style={ margin }> 洗澡費 :   { servicePrice } 元  </b> }
@@ -50,7 +50,7 @@ export const FeeDetail_Bath : FC< detail > = ( { servicePrice , extraItem , extr
 } ;
 
 // 美容
-export const FeeDetail_Beauty : FC< detail > = ( { servicePrice, extraItem , pickupFee, selfAdjustAmount } ) => {
+export const FeeDetail_Beauty = ( { servicePrice, extraItem , pickupFee, selfAdjustAmount } : detail ) => {
 
     return  <>
                 { servicePrice !== 0 && <b className="tag is-medium is-rounded" style={ margin }> 美容費 :   { servicePrice } 元  </b> }
@@ -62,7 +62,7 @@ export const FeeDetail_Beauty : FC< detail > = ( { servicePrice, extraItem , pic
 } ;
 
 // 安親
-export const FeeDetail_Care : FC< detail > = ( { servicePrice, pickupFee, selfAdjustAmount} ) => {
+export const FeeDetail_Care   = ( { servicePrice, pickupFee, selfAdjustAmount} : detail ) => {
 
     return  <>
               { servicePrice !== 0 && <b className="tag is-medium is-rounded" style={ margin }> 安親費 :   { servicePrice } 元  </b> }
@@ -73,7 +73,7 @@ export const FeeDetail_Care : FC< detail > = ( { servicePrice, pickupFee, selfAd
 } ;
 
 // 住宿
-export const FeeDetail_Lodge : FC< detail > = ( { servicePrice , pickupFee, selfAdjustAmount } ) => {
+export const FeeDetail_Lodge  = ( { servicePrice , pickupFee, selfAdjustAmount } : detail ) => {
 
     return  <>
                { servicePrice !== 0 && <b className="tag is-medium is-rounded" style={ margin }> 住宿費 :   { servicePrice } 元  </b> }
@@ -84,10 +84,10 @@ export const FeeDetail_Lodge : FC< detail > = ( { servicePrice , pickupFee, self
 } ;
 
 // 【 預設 】方案 : 包月洗澡
-export const FeeDetail_Plan_Bath : FC< detail > = ( { servicePrice, adjustAmount  } ) => {
+export const FeeDetail_Plan_Bath = ( { servicePrice, adjustAmount } : detail ) => {
 
     // 接送費 ( 方案有獨立的接送費輸入欄位 )
-    const plan_PickupFee          = useSelector(( state : any ) => state.Plan.service_Pickup_Fee )  ;
+    const plan_PickupFee         = useSelector(( state : any ) => state.Plan.service_Pickup_Fee )  ;
 
     return  <>
                 { servicePrice !== 0 && <b className="tag is-medium is-rounded" style={ margin }> 包月洗澡 _ 基本價格 : { servicePrice } 元  </b> }
@@ -98,7 +98,7 @@ export const FeeDetail_Plan_Bath : FC< detail > = ( { servicePrice, adjustAmount
 } ;
 
 // 【 預設 】方案 : 包月美容
-export const FeeDetail_Plan_Beauty : FC< detail > = ( { servicePrice, adjustAmount} ) => {
+export const FeeDetail_Plan_Beauty  = ( { servicePrice, adjustAmount} : detail ) => {
 
     // 接送費 ( 方案有獨立的接送費輸入欄位 )
     const plan_PickupFee = useSelector(( state : any ) => state.Plan.service_Pickup_Fee )  ;
@@ -113,7 +113,7 @@ export const FeeDetail_Plan_Beauty : FC< detail > = ( { servicePrice, adjustAmou
 
 
 // 【 自訂 】方案 
-export const FeeDetail_Plan_Custom : FC< detail > = ( {  current_Plan_Type , servicePrice , adjustAmount   } ) => {
+export const FeeDetail_Plan_Custom = ( {  current_Plan_Type , servicePrice , adjustAmount } : detail ) => {
 
   // 接送費 ( 方案有獨立的接送費輸入欄位 )
   const plan_PickupFee = useSelector( ( state : any ) => state.Plan.service_Pickup_Fee )  ;
@@ -136,7 +136,7 @@ type feeDetail = {
     paymentMethod : string ;
 }
 
-export const FeeDetail : FC< feeDetail > = ( { current , editType , paymentMethod } ) => {
+export const FeeDetail = ( { current , editType , paymentMethod } : feeDetail ) => {
 
 
    // 服務類型 ( Ex.初次洗澡優惠、單次洗澡、單次美容 )
@@ -211,14 +211,14 @@ export const FeeDetail : FC< feeDetail > = ( { current , editType , paymentMetho
                             pickupFee        : pickupFee ,
                             extraItem        : extraItemFee ,
                             selfAdjustAmount : Self_Adjust_Amount
-                         } ;
+                          } ;
 
       // 安親 : 一般安親
       const obj_Care_Ordinary = {
                                   servicePrice     : Care_Ordinary_Price ,
                                   pickupFee        : pickupFee ,
                                   selfAdjustAmount : Self_Adjust_Amount
-                                } ;
+                                 } ;
 
       // 安親 : 住宿_提早抵達
       const obj_Care_Ahead = {
@@ -279,6 +279,7 @@ export const FeeDetail : FC< feeDetail > = ( { current , editType , paymentMetho
 
                         { /* 主要服務 : 基礎、洗澡、美容  */ }
                         { current === '基礎' && <FeeDetail_Basic  { ...obj_Basic  } /> }
+
                         { current === '洗澡' && <FeeDetail_Bath   { ...obj_Bath   } /> }
                         { current === '美容' && <FeeDetail_Beauty { ...obj_Beauty } /> }
 
@@ -300,6 +301,8 @@ export const FeeDetail : FC< feeDetail > = ( { current , editType , paymentMetho
                   </>
 
               }
+
+
 
          </>
 

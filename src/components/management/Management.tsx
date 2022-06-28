@@ -3,8 +3,10 @@ import { useEffect  } from "react" ;
 import useMulti_NavOptions from "hooks/layout/useMulti_NavOptions";
 
 // 各頁面元件
-import Daily_Report from "components/management/finance/Daily_Report";
-
+import Unity_Report from "components/management/finance/Unity_Report";
+import Cash_Report from "components/management/finance/Cash_Report";
+import CreditCard_Report from "components/management/finance/CreditCard_Report";
+import ThirdParty_Report from "components/management/finance/ThirdParty_Report";
 import Species_Price_List from "components/management/price/Species_Price_List";
 import Service_Price from "components/management/price/service_type/Service_Price";
 import Basic_Price from "components/management/price/service_type/Basic_Price";
@@ -48,7 +50,10 @@ const Management = () => {
         switch( title ) {
 
             // # 財務管理
-            case '日報表'   : return <Daily_Report/> ;
+            case '綜合報表'  : return <Unity_Report/> ;
+            case '現金帳'    : return <Cash_Report/> ;
+            case '信用卡'    : return <CreditCard_Report/> ;
+            case '第三方支付' : return <ThirdParty_Report/> ;
           
             // # 價格管理
             case '品種價格' : return <Species_Price_List/> ;
@@ -62,6 +67,11 @@ const Management = () => {
 
             case '加價項目' : return <Extra_Item_Price/>  ;
             case '加價美容' : return <Extra_Beauty_Price/>  ;
+
+
+            // # 帳號管理
+            case '帳號管理' : return <>33</> ;
+
 
             // # 員工管理
             case '員工管理' : return <Employees/> ;
@@ -93,10 +103,9 @@ const Management = () => {
     const pet_Reject_Process_Num       = usePet_Reject_Process_Num();          // 寵物 ( 拒接 "處理中" : 數量 )    
     const service_Error_In_Process_Num = useService_Error_In_Process_Num();    // 服務 ( 異常 "未處理" : 數量 )   
     
+
     // 資料管理( 第二層 )顯示待處理數量
     const dataManagement_Note_Num      = customer_Reject_Process_Num + pet_Reject_Process_Num + service_Error_In_Process_Num ;       
-
-
 
 
     // 【 新增 】 資料後，藉由 cookie，重導向至相對應的區塊頁面
@@ -186,7 +195,7 @@ const Management = () => {
        // # 暫時、預先點選
        if( !redirect ){
          click_Second( '財務管理' ) ;
-         click_Third( '日報表' ) ;
+         click_Third( '綜合報表' ) ;
        }
 
     } , [] ) ;
@@ -258,16 +267,16 @@ const Management = () => {
         if( undo_Archive && ( undo_Archive === '客戶' || undo_Archive === '寵物' || undo_Archive === '洗美' ||　undo_Archive === '方案' || undo_Archive === '安親' || undo_Archive === '住宿'  ) ){
 
           click_Second('資料管理') ;
-       　 click_Third('封存資料') ;
+       　  click_Third('封存報表') ;
 
-    　　}
+    　 　}
 
 
     } , [] ) ;
 
 
     // 【 刪除 】
-    useEffect( ( ) => {
+    useEffect( () => {
 
         // * 封存資料
         const delete_Archive = cookie.load('after_Delete_Archive') ;
